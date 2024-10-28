@@ -1,0 +1,480 @@
+ESP-ROM:esp32c6-20220919
+Build:Sep 19 2022
+rst:0x1 (POWERON),boot:0x6c (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x40875720,len:0x1804
+load:0x4086c110,len:0xe2c
+load:0x4086e610,len:0x2e58
+entry 0x4086c11a
+[0;32mI (23) boot: ESP-IDF v5.3.1 2nd stage bootloader[0m
+[0;32mI (24) boot: compile time Oct 25 2024 20:09:58[0m
+[0;32mI (24) boot: chip revision: v0.0[0m
+[0;32mI (26) boot.esp32c6: SPI Speed      : 80MHz[0m
+[0;32mI (31) boot.esp32c6: SPI Mode       : DIO[0m
+[0;32mI (36) boot.esp32c6: SPI Flash Size : 16MB[0m
+[0;32mI (41) boot: Enabling RNG early entropy source...[0m
+[0;32mI (46) boot: Partition Table:[0m
+[0;32mI (50) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (57) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (65) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (72) boot:  2 factory          factory app      00 00 00010000 000e1000[0m
+[0;32mI (79) boot:  3 zb_storage       Unknown data     01 81 000f1000 00004000[0m
+[0;32mI (87) boot:  4 zb_fct           Unknown data     01 81 000f5000 00000400[0m
+[0;32mI (95) boot: End of partition table[0m
+[0;32mI (99) esp_image: segment 0: paddr=00010020 vaddr=420a0020 size=329a0h (207264) map[0m
+[0;32mI (150) esp_image: segment 1: paddr=000429c8 vaddr=40800000 size=0d650h ( 54864) load[0m
+[0;32mI (163) esp_image: segment 2: paddr=00050020 vaddr=42000020 size=966a0h (616096) map[0m
+[0;32mI (291) esp_image: segment 3: paddr=000e66c8 vaddr=4080d650 size=01f20h (  7968) load[0m
+[0;32mI (294) esp_image: segment 4: paddr=000e85f0 vaddr=4080f570 size=02144h (  8516) load[0m
+[0;32mI (303) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (303) boot: Disabling RNG early entropy source...[0m
+[0;32mI (320) cpu_start: Unicore app[0m
+[0;32mI (329) cpu_start: Pro cpu start user code[0m
+[0;32mI (329) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (329) app_init: Application information:[0m
+[0;32mI (332) app_init: Project name:     SCD30_ZIGBEE[0m
+[0;32mI (337) app_init: App version:      1[0m
+[0;32mI (342) app_init: Compile time:     Oct 25 2024 20:08:54[0m
+[0;32mI (348) app_init: ELF file SHA256:  b07050895...[0m
+[0;32mI (353) app_init: ESP-IDF:          v5.3.1[0m
+[0;32mI (358) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (362) efuse_init: Max chip rev:     v0.99 [0m
+[0;32mI (367) efuse_init: Chip rev:         v0.0[0m
+[0;32mI (372) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (379) heap_init: At 40815DD0 len 00066840 (410 KiB): RAM[0m
+[0;32mI (386) heap_init: At 4087C610 len 00002F54 (11 KiB): RAM[0m
+[0;32mI (392) heap_init: At 50000000 len 00003FE8 (15 KiB): RTCRAM[0m
+[0;32mI (399) spi_flash: detected chip: generic[0m
+[0;32mI (403) spi_flash: flash io: dio[0m
+[0;32mI (407) sleep: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (413) sleep: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (432) coexist: coex firmware version: 4482466[0m
+[0;32mI (448) coexist: coexist rom version 5b8dcfa[0m
+[0;32mI (449) main_task: Started on CPU0[0m
+[0;32mI (449) main_task: Calling app_main()[0m
+[0;32mI (449) ESP_SCD30_DRIVER: Starting I2C initialization...[0m
+[0;32mI (449) ESP_SCD30_DRIVER: SDA Pin: 21, SCL Pin: 22[0m
+[0;32mI (459) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (469) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;33mW (479) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.[0m
+[0;32mI (509) ESP_SCD30_DRIVER: I2C bus initialized successfully[0m
+[0;32mI (509) pm: Frequency switching config: CPU_MAX: 160, APB_MAX: 160, APB_MIN: 160, Light sleep: DISABLED[0m
+[0;32mI (519) ESP_SCD30_DRIVER: Stopped periodic measurement![0m
+[0;32mI (529) ESP_ZIGBEE_CORE: SDK Version: v1.5.1-d7b0a45-60ebec12-a9edc7b; esp32c6; 2024-10-12 03:22:09 UTC[0m
+[0;32mI (539) phy_init: phy_version 310,dde1ba9,Jun  4 2024,16:38:11[0m
+[0;32mI (579) phy: libbtbb version: 04952fd, Jun  4 2024, 16:38:26[0m
+ZBOSS: common/zb_init_default.c:181   ED build
+ZBOSS: common/zb_init_default.c:187   sizes: g_zb 7576 sched 224 bpool 16 nwk 912 aps 3040 addr 284 zdo 840
+ZBOSS: common/zb_init_default.c:196   sec 2
+ZBOSS: common/zb_init_default.c:198   zcl 768
+ZBOSS: common/zb_init_default.c:201   zll 960
+ZBOSS: common/zb_init_default.c:207   nvram 140
+ZBOSS: common/zb_init_default.c:210   buttons 200
+ZBOSS: common/zb_init_default.c:212   err_ind 4
+ZBOSS: common/zb_init_default.c:218   scheduler q size 80
+ZBOSS: common/zb_init_default.c:221   g_mac 816 g_imac 28
+ZBOSS: common/zb_init_default.c:225   Configurable mem build, use ZBOSS lib defaults = 0
+ZBOSS: common/zb_init_default.c:231   ZB_IOBUF_POOL_SIZE 80 ZB_NWK_IN_Q_SIZE 40 ZB_MAC_PENDING_QUEUE_SIZE 20 ZB_APS_DST_BINDING_TABLE_SIZE 16 ZB_APS_BIND_TRANS_TABLE_SIZE 20 ZB_N_APS_RETRANS_ENTRIES 27
+ZBOSS: common/zb_init_default.c:261   ZB_N_APS_KEY_PAIR_ARR_MAX_SIZE 8 ZB_IEEE_ADDR_TABLE_SIZE 64 ZB_NEIGHBOR_TABLE_SIZE 64 ZB_NWK_ROUTING_TABLE_SIZE 0 ZB_APS_DUPS_TABLE_SIZE 32
+[0;32mI (669) ESP_SCD30_DRIVER: Setting channel mask: 0x02108800[0m
+ZBOSS: zdo/af_descriptor.c:357   ep_count 1
+ZBOSS: zdo/zdo_app_prod_conf.c:144   no production config block found
+ZBOSS: zdo/zdo_app_prod_conf.c:781   no valid production configuration found, signaling to application
+[0;32mI (689) ESP_SCD30_DRIVER: Zigbee stack initialized[0m
+[0;32mI (699) ESP_SCD30_DRIVER: Unhandled signal: ZDO Config Ready (0x17), status: ESP_FAIL[0m
+[0;32mI (709) ESP_SCD30_DRIVER: Zigbee stack initialized[0m
+ZBOSS: commissioning/bdb/zdo_commissioning_bdb.c:349   dev type 2, joined 0, ext_pan_id 0, authenticated 0, tclk_valid 1
+ZBOSS: commissioning/bdb/zdo_commissioning_bdb.c:549   COMMISSIONING_STOP: app signal 5 comm status 0
+[0;32mI (729) ESP_SCD30_DRIVER: Device started in factory-new mode[0m
+[0;32mI (739) ESP_SCD30_DRIVER: Starting I2C initialization...[0m
+[0;32mI (739) ESP_SCD30_DRIVER: SDA Pin: 21, SCL Pin: 22[0m
+[0;31mE (749) i2c.common: I2C bus id(0) has already been acquired[0m
+[0;31mE (759) i2c.common: acquire bus failed[0m
+[0;31mE (759) i2c.master: i2c_new_master_bus(899): I2C bus acquire failed[0m
+[0;31mE (769) i2c.common: i2c_release_bus_handle(224): Bus not freed entirely[0m
+[0;31mE (769) ESP_SCD30_DRIVER: I2C bus initialization failed: ESP_ERR_INVALID_STATE[0m
+[0;31mE (779) ESP_SCD30_DRIVER: Failed to initialize I2C: ESP_ERR_INVALID_STATE[0m
+[0;31mE (789) ESP_SCD30_DRIVER: Deferred driver initialization FAILED[0m
+[0;32mI (799) ESP_SCD30_DRIVER: Starting network steering[0m
+ZBOSS: commissioning/bdb/zdo_commissioning_bdb.c:349   dev type 2, joined 0, ext_pan_id 0, authenticated 0, tclk_valid 1
+[0;32mI (809) ESP_SCD30_DRIVER: Started periodic measurements![0m
+[0;32mI (819) ESP_SCD30_DRIVER: Initialization complete[0m
+[0;32mI (819) main_task: Returned from app_main()[0m
+ZBOSS: nwk/nwk_join.c:186   low lqi 30
+ZBOSS: nwk/nwk_join.c:186   low lqi 5
+ZBOSS: nwk/nwk_join.c:186   low lqi 0
+ZBOSS: nwk/nwk_join.c:186   low lqi 0
+ZBOSS: nwk/nwk_join.c:186   low lqi 0
+ZBOSS: nwk/nwk_join.c:186   low lqi 0
+ZBOSS: nwk/nwk_join.c:293   Will assoc to pan 0xb364 on channel 15, dev 0x0, iface_id 0
+ZBOSS: mac/mac_associate.c:448   received association response
+ZBOSS: zdo/zdo_app_join.c:771   CONGRATULATIONS! joined status 0, addr 0x389a, iface_id 0, ch 15, rejoin 0
+ZBOSS: zdo/zdo_app_join.c:773   xpanid 48:e7:0b:6a:ff:0a:b5:31
+ZBOSS: mac/mac.c:2267   got unexpected association resp
+[0;32mI (3699) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3719) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3739) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3759) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3779) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3799) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3819) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3839) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3859) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3879) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3899) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3919) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3939) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3959) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3979) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (3999) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4019) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4039) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4059) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4079) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4099) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4119) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4169) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4189) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4209) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4229) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4339) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4359) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4379) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4399) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4489) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4509) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4529) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4549) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4569) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4589) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4609) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4699) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4719) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4739) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4759) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4779) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4799) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4819) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4839) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4859) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4879) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4899) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4969) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (4989) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5009) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5029) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5049) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5069) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5089) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5109) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5129) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5149) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5169) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5189) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5209) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5229) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5249) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5269) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5389) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5409) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5429) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5449) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5469) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5489) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5509) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5529) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5549) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5569) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5589) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5609) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5629) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5649) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5709) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5729) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5749) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5769) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5789) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5809) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5829) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5849) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5869) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5959) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5979) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (5999) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6019) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6039) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6059) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6079) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6099) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6119) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6139) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6159) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6179) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6199) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6219) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6239) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6259) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6279) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6299) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6319) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;33mW (6319) ESP_SCD30_DRIVER: CRC check failed for measurement 0[0m
+[0;32mI (6339) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6359) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6379) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6399) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6419) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6439) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6459) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6479) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6499) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6519) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6539) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6559) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6579) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6599) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6619) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6639) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6659) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6679) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6769) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6789) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6809) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6829) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6849) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6869) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6889) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6909) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6929) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6949) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6969) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (6989) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7009) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7029) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7049) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7069) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7089) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7109) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7129) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7149) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7169) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7189) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7209) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7229) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7249) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7269) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7289) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7309) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7329) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7349) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7369) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7389) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7409) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7429) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7449) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7469) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7489) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7509) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7529) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7549) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7569) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7589) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7609) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7629) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7649) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7669) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7689) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7709) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7729) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7749) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7769) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7789) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7809) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7829) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7849) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7869) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7959) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7979) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (7999) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8019) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8039) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8059) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8079) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8099) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8119) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8139) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8159) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8179) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8199) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8219) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8239) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8259) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8279) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8299) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8319) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8339) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8359) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8379) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8399) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8419) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8439) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8459) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8479) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8499) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8519) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8539) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8559) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8579) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8599) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8619) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8639) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8659) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8679) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8699) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8719) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8739) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8759) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8779) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8799) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8819) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8839) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8859) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8879) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8899) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8919) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8939) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8959) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8979) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (8999) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9019) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9039) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9059) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9079) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9099) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9119) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9139) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9159) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9179) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9199) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9219) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9239) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9259) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9279) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9299) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9319) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9339) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9359) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9379) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9399) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9419) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9439) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9459) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9479) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9499) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9519) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9539) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9559) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9599) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9619) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9639) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9749) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9769) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9789) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9809) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9829) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9849) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9869) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9889) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9909) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9929) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9949) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9969) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (9989) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10009) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10029) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10049) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10069) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10089) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10109) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10129) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10149) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10169) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10189) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10209) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10229) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10249) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10269) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10289) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10309) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10329) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10349) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10369) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10389) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10409) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10429) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10449) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10469) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10489) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10509) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10529) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10549) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10569) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10589) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10609) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10629) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10649) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10669) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10689) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10709) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10729) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10749) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10769) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10789) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10809) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10829) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10849) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10869) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10889) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10909) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10929) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10949) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10969) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (10989) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11009) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11029) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11049) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11069) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11089) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11109) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11129) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11149) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11169) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11189) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11209) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11229) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11249) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11269) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11289) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11309) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11329) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11349) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11369) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11389) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11409) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11429) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11449) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11469) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11489) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11509) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11529) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11549) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11569) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11589) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11609) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11629) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11649) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11669) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11689) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11709) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11729) ESP_SCD30_DRIVER: Unhandled signal: Can Sleep (0x16), status: ESP_OK[0m
+[0;32mI (11749) ESP_SCD30_DRIVE

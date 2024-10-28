@@ -1,0 +1,3509 @@
+ESP-ROM:esp32c6-20220919
+Build:Sep 19 2022
+rst:0x1 (POWERON),boot:0x6c (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x40875720,len:0x1804
+load:0x4086c110,len:0xe2c
+load:0x4086e610,len:0x2e58
+entry 0x4086c11a
+[0;32mI (23) boot: ESP-IDF v5.3.1 2nd stage bootloader[0m
+[0;32mI (24) boot: compile time Oct 25 2024 20:09:58[0m
+[0;32mI (24) boot: chip revision: v0.0[0m
+[0;32mI (26) boot.esp32c6: SPI Speed      : 80MHz[0m
+[0;32mI (31) boot.esp32c6: SPI Mode       : DIO[0m
+[0;32mI (36) boot.esp32c6: SPI Flash Size : 16MB[0m
+[0;32mI (41) boot: Enabling RNG early entropy source...[0m
+[0;32mI (46) boot: Partition Table:[0m
+[0;32mI (50) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (57) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (65) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (72) boot:  2 factory          factory app      00 00 00010000 000e1000[0m
+[0;32mI (79) boot:  3 zb_storage       Unknown data     01 81 000f1000 00004000[0m
+[0;32mI (87) boot:  4 zb_fct           Unknown data     01 81 000f5000 00000400[0m
+[0;32mI (95) boot: End of partition table[0m
+[0;32mI (99) esp_image: segment 0: paddr=00010020 vaddr=42090020 size=2e768h (190312) map[0m
+[0;32mI (146) esp_image: segment 1: paddr=0003e790 vaddr=40800000 size=01888h (  6280) load[0m
+[0;32mI (149) esp_image: segment 2: paddr=00040020 vaddr=42000020 size=87f78h (556920) map[0m
+[0;32mI (267) esp_image: segment 3: paddr=000c7fa0 vaddr=40801888 size=0dce8h ( 56552) load[0m
+[0;32mI (281) esp_image: segment 4: paddr=000d5c90 vaddr=4080f570 size=0211ch (  8476) load[0m
+[0;32mI (287) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (288) boot: Disabling RNG early entropy source...[0m
+[0;32mI (302) cpu_start: Unicore app[0m
+[0;32mI (310) cpu_start: Pro cpu start user code[0m
+[0;32mI (310) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (311) app_init: Application information:[0m
+[0;32mI (313) app_init: Project name:     SCD30_ZIGBEE[0m
+[0;32mI (319) app_init: App version:      1[0m
+[0;32mI (323) app_init: Compile time:     Oct 26 2024 11:19:38[0m
+[0;32mI (329) app_init: ELF file SHA256:  ab0bdd61b...[0m
+[0;32mI (334) app_init: ESP-IDF:          v5.3.1[0m
+[0;32mI (339) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (344) efuse_init: Max chip rev:     v0.99 [0m
+[0;32mI (349) efuse_init: Chip rev:         v0.0[0m
+[0;32mI (354) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (361) heap_init: At 40815D30 len 000668E0 (410 KiB): RAM[0m
+[0;32mI (367) heap_init: At 4087C610 len 00002F54 (11 KiB): RAM[0m
+[0;32mI (373) heap_init: At 50000000 len 00003FE8 (15 KiB): RTCRAM[0m
+[0;32mI (380) spi_flash: detected chip: generic[0m
+[0;32mI (384) spi_flash: flash io: dio[0m
+[0;32mI (388) sleep: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (395) sleep: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (413) coexist: coex firmware version: 4482466[0m
+[0;32mI (429) coexist: coexist rom version 5b8dcfa[0m
+[0;32mI (430) main_task: Started on CPU0[0m
+[0;32mI (430) main_task: Calling app_main()[0m
+[0;32mI (430) MAIN: Initializing NVS...[0m
+[0;32mI (440) MAIN: NVS initialized successfully[0m
+[0;32mI (440) MAIN: Initializing system components...[0m
+[0;32mI (440) I2C_HANDLER: Starting I2C initialization...[0m
+[0;32mI (450) I2C_HANDLER: SDA Pin: 21, SCL Pin: 22[0m
+[0;33mW (450) I2C_HANDLER: Attempting I2C bus recovery...[0m
+[0;32mI (460) gpio: GPIO[21]| InputEn: 0| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (470) gpio: GPIO[22]| InputEn: 0| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (480) gpio: GPIO[22]| InputEn: 0| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (480) gpio: GPIO[21]| InputEn: 0| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (490) I2C_HANDLER: I2C bus recovery completed[0m
+[0;32mI (500) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (510) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;33mW (520) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.[0m
+[0;32mI (550) I2C_HANDLER: I2C bus initialized successfully[0m
+[0;32mI (550) I2C_HANDLER: SCD30 device added to I2C bus[0m
+[0;33mW (660) I2C_HANDLER: Device probe failed for address 0x61, but continuing anyway[0m
+[0;32mI (660) ESP_ZIGBEE_CORE: SDK Version: v1.5.1-d7b0a45-60ebec12-a9edc7b; esp32c6; 2024-10-12 03:22:09 UTC[0m
+[0;32mI (660) phy_init: phy_version 310,dde1ba9,Jun  4 2024,16:38:11[0m
+[0;33mW (670) phy_init: failed to load RF calibration data (0x1102), falling back to full calibration[0m
+[0;33mW (710) phy_init: saving new calibration data because of checksum failure, mode(2)[0m
+[0;32mI (720) phy: libbtbb version: 04952fd, Jun  4 2024, 16:38:26[0m
+ZBOSS: common/zb_init_default.c:181   ED build
+ZBOSS: common/zb_init_default.c:187   sizes: g_zb 7576 sched 224 bpool 16 nwk 912 aps 3040 addr 284 zdo 840
+ZBOSS: common/zb_init_default.c:196   sec 2
+ZBOSS: common/zb_init_default.c:198   zcl 768
+ZBOSS: common/zb_init_default.c:201   zll 960
+ZBOSS: common/zb_init_default.c:207   nvram 140
+ZBOSS: common/zb_init_default.c:210   buttons 200
+ZBOSS: common/zb_init_default.c:212   err_ind 4
+ZBOSS: common/zb_init_default.c:218   scheduler q size 80
+ZBOSS: common/zb_init_default.c:221   g_mac 816 g_imac 28
+ZBOSS: common/zb_init_default.c:225   Configurable mem build, use ZBOSS lib defaults = 0
+ZBOSS: common/zb_init_default.c:231   ZB_IOBUF_POOL_SIZE 80 ZB_NWK_IN_Q_SIZE 40 ZB_MAC_PENDING_QUEUE_SIZE 20 ZB_APS_DST_BINDING_TABLE_SIZE 16 ZB_APS_BIND_TRANS_TABLE_SIZE 20 ZB_N_APS_RETRANS_ENTRIES 27
+ZBOSS: common/zb_init_default.c:261   ZB_N_APS_KEY_PAIR_ARR_MAX_SIZE 8 ZB_IEEE_ADDR_TABLE_SIZE 64 ZB_NEIGHBOR_TABLE_SIZE 64 ZB_NWK_ROUTING_TABLE_SIZE 0 ZB_APS_DUPS_TABLE_SIZE 32
+ZBOSS: zdo/af_descriptor.c:357   ep_count 1
+[0;32mI (810) pm: Frequency switching config: CPU_MAX: 160, APB_MAX: 160, APB_MIN: 160, Light sleep: DISABLED[0m
+[0;32mI (820) SCD30_DRIVER: Initializing SCD30 sensor[0m
+[0;32mI (830) I2C_HANDLER: Successfully added device with address 0x61[0m
+[0;32mI (1860) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (1860) SCD30_DRIVER: 0x00 [0m
+[0;32mI (1860) SCD30_DRIVER: 0x00 [0m
+[0;32mI (1860) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (3420) SCD30_DRIVER: Attempting to set temperature offset to 2.50°C[0m
+[0;32mI (3420) SCD30_DRIVER: Setting temperature offset to 2.50°C (250 ticks, 0x00FA)[0m
+[0;32mI (3480) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (3480) SCD30_DRIVER: 0xaa [0m
+[0;32mI (3480) SCD30_DRIVER: 0xfd [0m
+[0;32mI (3480) SCD30_DRIVER: 0xd8 [0m
+[0;32mI (3480) SCD30_DRIVER: Current temperature offset: 2.50°C (word: 0x00fa, ticks: 250)[0m
+[0;32mI (3490) SCD30_DRIVER: Verified temperature offset is set to 2.50°C[0m
+[0;32mI (3600) SCD30_DRIVER: Setting altitude compensation to 500 meters[0m
+[0;32mI (3630) SCD30_DRIVER: Altitude compensation enabled at 500 meters[0m
+[0;32mI (3660) SCD30_DRIVER: SCD30 initialized successfully after 1 attempt(s)[0m
+[0;32mI (5660) MAIN: SCD30 initialized successfully after 1 attempts[0m
+[0;32mI (5660) MAIN: System initialized successfully[0m
+[0;32mI (5660) I2C_HANDLER: Probing device at address 0x61...[0m
+[0;32mI (5660) I2C_HANDLER: Probe successful for address 0x61[0m
+[0;32mI (5670) I2C_HANDLER: I2C device found at address 0x61[0m
+[0;32mI (5670) MAIN: Starting Zigbee operations...[0m
+ZBOSS: zdo/zdo_app_prod_conf.c:144   no production config block found
+ZBOSS: zdo/zdo_app_prod_conf.c:781   no valid production configuration found, signaling to application
+[0;32mI (5810) MAIN: Zigbee operations started[0m
+[0;32mI (5810) MAIN: Starting SCD30 task...[0m
+[0;32mI (5820) MAIN: SCD30 task started[0m
+[0;32mI (5820) MAIN: Application startup complete[0m
+[0;32mI (5830) main_task: Returned from app_main()[0m
+[0;32mI (5880) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (5880) SCD30_DRIVER: 0xa5 [0m
+[0;32mI (5880) SCD30_DRIVER: 0xa5 [0m
+[0;32mI (5880) SCD30_DRIVER: 0x81 [0m
+[0;32mI (6410) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (6410) SCD30_DRIVER: 0x5c [0m
+[0;32mI (6410) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (6410) SCD30_DRIVER: 0x81 [0m
+[0;32mI (6940) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (6940) SCD30_DRIVER: 0x5c [0m
+[0;32mI (6940) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (6940) SCD30_DRIVER: 0x81 [0m
+[0;32mI (7470) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (7470) SCD30_DRIVER: 0x5c [0m
+[0;32mI (7470) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (7470) SCD30_DRIVER: 0x81 [0m
+[0;32mI (8000) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (8000) SCD30_DRIVER: 0x5c [0m
+[0;32mI (8000) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (8000) SCD30_DRIVER: 0x81 [0m
+[0;32mI (8530) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (8530) SCD30_DRIVER: 0x5c [0m
+[0;32mI (8530) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (8530) SCD30_DRIVER: 0x81 [0m
+[0;32mI (9060) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (9060) SCD30_DRIVER: 0x5c [0m
+[0;32mI (9060) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (9060) SCD30_DRIVER: 0x81 [0m
+[0;32mI (9590) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (9590) SCD30_DRIVER: 0x5c [0m
+[0;32mI (9590) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (9590) SCD30_DRIVER: 0x81 [0m
+[0;32mI (10120) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (10120) SCD30_DRIVER: 0x5c [0m
+[0;32mI (10120) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (10120) SCD30_DRIVER: 0x81 [0m
+[0;32mI (10650) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (10650) SCD30_DRIVER: 0x5c [0m
+[0;32mI (10650) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (10650) SCD30_DRIVER: 0x81 [0m
+[0;32mI (11180) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (11180) SCD30_DRIVER: 0x5c [0m
+[0;32mI (11180) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (11180) SCD30_DRIVER: 0x81 [0m
+[0;32mI (11710) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (11710) SCD30_DRIVER: 0x5c [0m
+[0;32mI (11710) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (11710) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (11740) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (11740) SCD30_DRIVER: 0x0a [0m
+[0;32mI (11740) SCD30_DRIVER: 0x00 [0m
+[0;32mI (11740) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (11770) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (11770) SCD30_DRIVER: 0x70 [0m
+[0;32mI (11770) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (11770) SCD30_DRIVER: 0x00 [0m
+[0;32mI (11770) SCD30_DRIVER: 0x00 [0m
+[0;32mI (11770) SCD30_DRIVER: 0x00 [0m
+[0;32mI (11780) SCD30_DRIVER: 0x81 [0m
+[0;32mI (11780) SCD30_DRIVER: 0x41 [0m
+[0;32mI (11790) SCD30_DRIVER: 0xca [0m
+[0;32mI (11790) SCD30_DRIVER: 0x60 [0m
+[0;32mI (11790) SCD30_DRIVER: 0x1b [0m
+[0;32mI (11800) SCD30_DRIVER: 0xca [0m
+[0;32mI (11800) SCD30_DRIVER: 0x69 [0m
+[0;32mI (11800) SCD30_DRIVER: 0x42 [0m
+[0;32mI (11810) SCD30_DRIVER: 0x50 [0m
+[0;32mI (11810) SCD30_DRIVER: 0xaf [0m
+[0;32mI (11810) SCD30_DRIVER: 0x0f [0m
+[0;32mI (11820) SCD30_DRIVER: 0x98 [0m
+[0;32mI (11820) SCD30_DRIVER: 0x98 [0m
+[0;33mW (11850) SCD30_DRIVER: Measurements out of valid range[0m
+[0;32mI (16880) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (16880) SCD30_DRIVER: 0x5c [0m
+[0;32mI (16880) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (16880) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (16910) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (16910) SCD30_DRIVER: 0x0a [0m
+[0;32mI (16910) SCD30_DRIVER: 0x00 [0m
+[0;32mI (16910) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (16940) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (16940) SCD30_DRIVER: 0x70 [0m
+[0;32mI (16940) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (16940) SCD30_DRIVER: 0x00 [0m
+[0;32mI (16940) SCD30_DRIVER: 0x2f [0m
+[0;32mI (16940) SCD30_DRIVER: 0x24 [0m
+[0;32mI (16950) SCD30_DRIVER: 0x86 [0m
+[0;32mI (16950) SCD30_DRIVER: 0x41 [0m
+[0;32mI (16960) SCD30_DRIVER: 0xc9 [0m
+[0;32mI (16960) SCD30_DRIVER: 0x33 [0m
+[0;32mI (16960) SCD30_DRIVER: 0xc8 [0m
+[0;32mI (16970) SCD30_DRIVER: 0xbf [0m
+[0;32mI (16970) SCD30_DRIVER: 0x8d [0m
+[0;32mI (16970) SCD30_DRIVER: 0x42 [0m
+[0;32mI (16980) SCD30_DRIVER: 0x50 [0m
+[0;32mI (16980) SCD30_DRIVER: 0xaf [0m
+[0;32mI (16980) SCD30_DRIVER: 0x62 [0m
+[0;32mI (16990) SCD30_DRIVER: 0xb5 [0m
+[0;32mI (16990) SCD30_DRIVER: 0x47 [0m
+[0;32mI (17020) SCD30_DRIVER: CO2: 656.7 ppm (avg: 218.9), Temperature: 22.72°C (avg: 7.57), Humidity: 52.1% (avg: 17.4)[0m
+[0;32mI (22050) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (22050) SCD30_DRIVER: 0x5c [0m
+[0;32mI (22050) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (22050) SCD30_DRIVER: 0x81 [0m
+[0;32mI (22580) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (22580) SCD30_DRIVER: 0x5c [0m
+[0;32mI (22580) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (22580) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (22610) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (22610) SCD30_DRIVER: 0x0a [0m
+[0;32mI (22610) SCD30_DRIVER: 0x00 [0m
+[0;32mI (22610) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (22640) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (22640) SCD30_DRIVER: 0x70 [0m
+[0;32mI (22640) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (22640) SCD30_DRIVER: 0x00 [0m
+[0;32mI (22640) SCD30_DRIVER: 0x1b [0m
+[0;32mI (22640) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (22650) SCD30_DRIVER: 0xe1 [0m
+[0;32mI (22650) SCD30_DRIVER: 0x41 [0m
+[0;32mI (22660) SCD30_DRIVER: 0xc9 [0m
+[0;32mI (22660) SCD30_DRIVER: 0x33 [0m
+[0;32mI (22660) SCD30_DRIVER: 0xad [0m
+[0;32mI (22670) SCD30_DRIVER: 0x00 [0m
+[0;32mI (22670) SCD30_DRIVER: 0x3e [0m
+[0;32mI (22670) SCD30_DRIVER: 0x42 [0m
+[0;32mI (22680) SCD30_DRIVER: 0x50 [0m
+[0;32mI (22680) SCD30_DRIVER: 0xaf [0m
+[0;32mI (22680) SCD30_DRIVER: 0xc6 [0m
+[0;32mI (22690) SCD30_DRIVER: 0x43 [0m
+[0;32mI (22690) SCD30_DRIVER: 0x1f [0m
+[0;32mI (22720) SCD30_DRIVER: CO2: 652.4 ppm (avg: 436.4), Temperature: 22.71°C (avg: 15.14), Humidity: 52.2% (avg: 34.8)[0m
+[0;32mI (27750) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (27750) SCD30_DRIVER: 0x5c [0m
+[0;32mI (27750) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (27750) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (27780) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (27780) SCD30_DRIVER: 0x0a [0m
+[0;32mI (27780) SCD30_DRIVER: 0x00 [0m
+[0;32mI (27780) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (27810) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (27810) SCD30_DRIVER: 0x70 [0m
+[0;32mI (27810) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (27810) SCD30_DRIVER: 0x00 [0m
+[0;32mI (27810) SCD30_DRIVER: 0x88 [0m
+[0;32mI (27810) SCD30_DRIVER: 0xe2 [0m
+[0;32mI (27820) SCD30_DRIVER: 0x36 [0m
+[0;32mI (27820) SCD30_DRIVER: 0x41 [0m
+[0;32mI (27830) SCD30_DRIVER: 0xc9 [0m
+[0;32mI (27830) SCD30_DRIVER: 0x33 [0m
+[0;32mI (27830) SCD30_DRIVER: 0x76 [0m
+[0;32mI (27840) SCD30_DRIVER: 0x85 [0m
+[0;32mI (27840) SCD30_DRIVER: 0x6f [0m
+[0;32mI (27840) SCD30_DRIVER: 0x42 [0m
+[0;32mI (27850) SCD30_DRIVER: 0x51 [0m
+[0;32mI (27850) SCD30_DRIVER: 0x9e [0m
+[0;32mI (27850) SCD30_DRIVER: 0x27 [0m
+[0;32mI (27860) SCD30_DRIVER: 0x81 [0m
+[0;32mI (27860) SCD30_DRIVER: 0xb8 [0m
+[0;32mI (27890) SCD30_DRIVER: CO2: 610.1 ppm (avg: 639.8), Temperature: 22.68°C (avg: 22.71), Humidity: 52.3% (avg: 52.2)[0m
+[0;32mI (32920) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (32920) SCD30_DRIVER: 0x5c [0m
+[0;32mI (32920) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (32920) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (32950) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (32950) SCD30_DRIVER: 0x0a [0m
+[0;32mI (32950) SCD30_DRIVER: 0x00 [0m
+[0;32mI (32950) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (32980) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (32980) SCD30_DRIVER: 0x70 [0m
+[0;32mI (32980) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (32980) SCD30_DRIVER: 0x00 [0m
+[0;32mI (32980) SCD30_DRIVER: 0x5d [0m
+[0;32mI (32980) SCD30_DRIVER: 0xdd [0m
+[0;32mI (32990) SCD30_DRIVER: 0x6e [0m
+[0;32mI (32990) SCD30_DRIVER: 0x41 [0m
+[0;32mI (33000) SCD30_DRIVER: 0xc9 [0m
+[0;32mI (33000) SCD30_DRIVER: 0x33 [0m
+[0;32mI (33000) SCD30_DRIVER: 0x40 [0m
+[0;32mI (33010) SCD30_DRIVER: 0xa3 [0m
+[0;32mI (33010) SCD30_DRIVER: 0xa7 [0m
+[0;32mI (33010) SCD30_DRIVER: 0x42 [0m
+[0;32mI (33020) SCD30_DRIVER: 0x51 [0m
+[0;32mI (33020) SCD30_DRIVER: 0x9e [0m
+[0;32mI (33020) SCD30_DRIVER: 0x63 [0m
+[0;32mI (33030) SCD30_DRIVER: 0xc8 [0m
+[0;32mI (33030) SCD30_DRIVER: 0x07 [0m
+[0;32mI (33060) SCD30_DRIVER: CO2: 629.5 ppm (avg: 630.7), Temperature: 22.66°C (avg: 22.68), Humidity: 52.3% (avg: 52.3)[0m
+[0;32mI (38090) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (38090) SCD30_DRIVER: 0x5c [0m
+[0;32mI (38090) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (38090) SCD30_DRIVER: 0x81 [0m
+[0;32mI (38620) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (38620) SCD30_DRIVER: 0x5c [0m
+[0;32mI (38620) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (38620) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (38650) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (38650) SCD30_DRIVER: 0x0a [0m
+[0;32mI (38650) SCD30_DRIVER: 0x00 [0m
+[0;32mI (38650) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (38680) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (38680) SCD30_DRIVER: 0x70 [0m
+[0;32mI (38680) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (38680) SCD30_DRIVER: 0x00 [0m
+[0;32mI (38680) SCD30_DRIVER: 0xcb [0m
+[0;32mI (38680) SCD30_DRIVER: 0x6e [0m
+[0;32mI (38690) SCD30_DRIVER: 0x95 [0m
+[0;32mI (38690) SCD30_DRIVER: 0x41 [0m
+[0;32mI (38700) SCD30_DRIVER: 0xc9 [0m
+[0;32mI (38700) SCD30_DRIVER: 0x33 [0m
+[0;32mI (38700) SCD30_DRIVER: 0x26 [0m
+[0;32mI (38710) SCD30_DRIVER: 0xb1 [0m
+[0;32mI (38710) SCD30_DRIVER: 0x89 [0m
+[0;32mI (38710) SCD30_DRIVER: 0x42 [0m
+[0;32mI (38720) SCD30_DRIVER: 0x51 [0m
+[0;32mI (38720) SCD30_DRIVER: 0x9e [0m
+[0;32mI (38720) SCD30_DRIVER: 0x87 [0m
+[0;32mI (38730) SCD30_DRIVER: 0x7e [0m
+[0;32mI (38730) SCD30_DRIVER: 0xeb [0m
+[0;32mI (38760) SCD30_DRIVER: CO2: 647.2 ppm (avg: 628.9), Temperature: 22.64°C (avg: 22.66), Humidity: 52.4% (avg: 52.3)[0m
+[0;32mI (43790) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (43790) SCD30_DRIVER: 0x5c [0m
+[0;32mI (43790) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (43790) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (43820) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (43820) SCD30_DRIVER: 0x0a [0m
+[0;32mI (43820) SCD30_DRIVER: 0x00 [0m
+[0;32mI (43820) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (43850) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (43850) SCD30_DRIVER: 0x70 [0m
+[0;32mI (43850) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (43850) SCD30_DRIVER: 0x00 [0m
+[0;32mI (43850) SCD30_DRIVER: 0x80 [0m
+[0;32mI (43850) SCD30_DRIVER: 0xc9 [0m
+[0;32mI (43860) SCD30_DRIVER: 0x6d [0m
+[0;32mI (43860) SCD30_DRIVER: 0x41 [0m
+[0;32mI (43870) SCD30_DRIVER: 0xc8 [0m
+[0;32mI (43870) SCD30_DRIVER: 0x02 [0m
+[0;32mI (43870) SCD30_DRIVER: 0x63 [0m
+[0;32mI (43880) SCD30_DRIVER: 0xc9 [0m
+[0;32mI (43880) SCD30_DRIVER: 0x36 [0m
+[0;32mI (43880) SCD30_DRIVER: 0x42 [0m
+[0;32mI (43890) SCD30_DRIVER: 0x51 [0m
+[0;32mI (43890) SCD30_DRIVER: 0x9e [0m
+[0;32mI (43890) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (43900) SCD30_DRIVER: 0x42 [0m
+[0;32mI (43900) SCD30_DRIVER: 0x9f [0m
+[0;32mI (43930) SCD30_DRIVER: CO2: 646.0 ppm (avg: 640.9), Temperature: 22.55°C (avg: 22.62), Humidity: 52.5% (avg: 52.4)[0m
+[0;32mI (48960) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (48960) SCD30_DRIVER: 0x5c [0m
+[0;32mI (48960) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (48960) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (48990) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (48990) SCD30_DRIVER: 0x0a [0m
+[0;32mI (48990) SCD30_DRIVER: 0x00 [0m
+[0;32mI (48990) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (49020) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (49020) SCD30_DRIVER: 0x70 [0m
+[0;32mI (49020) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (49020) SCD30_DRIVER: 0x00 [0m
+[0;32mI (49020) SCD30_DRIVER: 0xde [0m
+[0;32mI (49020) SCD30_DRIVER: 0xba [0m
+[0;32mI (49030) SCD30_DRIVER: 0x4c [0m
+[0;32mI (49030) SCD30_DRIVER: 0x41 [0m
+[0;32mI (49040) SCD30_DRIVER: 0xc7 [0m
+[0;32mI (49040) SCD30_DRIVER: 0x2c [0m
+[0;32mI (49040) SCD30_DRIVER: 0xf3 [0m
+[0;32mI (49050) SCD30_DRIVER: 0x81 [0m
+[0;32mI (49050) SCD30_DRIVER: 0xff [0m
+[0;32mI (49050) SCD30_DRIVER: 0x42 [0m
+[0;32mI (49060) SCD30_DRIVER: 0x52 [0m
+[0;32mI (49060) SCD30_DRIVER: 0xcd [0m
+[0;32mI (49060) SCD30_DRIVER: 0x4c [0m
+[0;32mI (49070) SCD30_DRIVER: 0xf0 [0m
+[0;32mI (49070) SCD30_DRIVER: 0x3e [0m
+[0;32mI (49100) SCD30_DRIVER: CO2: 647.5 ppm (avg: 646.9), Temperature: 22.49°C (avg: 22.56), Humidity: 52.6% (avg: 52.5)[0m
+[0;32mI (54130) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (54130) SCD30_DRIVER: 0x5c [0m
+[0;32mI (54130) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (54130) SCD30_DRIVER: 0x81 [0m
+[0;32mI (54660) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (54660) SCD30_DRIVER: 0x5c [0m
+[0;32mI (54660) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (54660) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (54690) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (54690) SCD30_DRIVER: 0x0a [0m
+[0;32mI (54690) SCD30_DRIVER: 0x00 [0m
+[0;32mI (54690) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (54720) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (54720) SCD30_DRIVER: 0x70 [0m
+[0;32mI (54720) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (54720) SCD30_DRIVER: 0x00 [0m
+[0;32mI (54720) SCD30_DRIVER: 0x32 [0m
+[0;32mI (54720) SCD30_DRIVER: 0x05 [0m
+[0;32mI (54730) SCD30_DRIVER: 0x1f [0m
+[0;32mI (54730) SCD30_DRIVER: 0x41 [0m
+[0;32mI (54740) SCD30_DRIVER: 0xc8 [0m
+[0;32mI (54740) SCD30_DRIVER: 0x02 [0m
+[0;32mI (54740) SCD30_DRIVER: 0x17 [0m
+[0;32mI (54750) SCD30_DRIVER: 0x74 [0m
+[0;32mI (54750) SCD30_DRIVER: 0x7d [0m
+[0;32mI (54750) SCD30_DRIVER: 0x42 [0m
+[0;32mI (54760) SCD30_DRIVER: 0x52 [0m
+[0;32mI (54760) SCD30_DRIVER: 0xcd [0m
+[0;32mI (54760) SCD30_DRIVER: 0xbe [0m
+[0;32mI (54770) SCD30_DRIVER: 0xcc [0m
+[0;32mI (54770) SCD30_DRIVER: 0x47 [0m
+[0;32mI (54800) SCD30_DRIVER: CO2: 644.8 ppm (avg: 646.1), Temperature: 22.51°C (avg: 22.52), Humidity: 52.7% (avg: 52.6)[0m
+[0;32mI (59830) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (59830) SCD30_DRIVER: 0x5c [0m
+[0;32mI (59830) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (59830) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (59860) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (59860) SCD30_DRIVER: 0x0a [0m
+[0;32mI (59860) SCD30_DRIVER: 0x00 [0m
+[0;32mI (59860) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (59890) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (59890) SCD30_DRIVER: 0x70 [0m
+[0;32mI (59890) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (59890) SCD30_DRIVER: 0x00 [0m
+[0;32mI (59890) SCD30_DRIVER: 0xf9 [0m
+[0;32mI (59890) SCD30_DRIVER: 0xdb [0m
+[0;32mI (59900) SCD30_DRIVER: 0xb4 [0m
+[0;32mI (59900) SCD30_DRIVER: 0x41 [0m
+[0;32mI (59910) SCD30_DRIVER: 0xc8 [0m
+[0;32mI (59910) SCD30_DRIVER: 0x02 [0m
+[0;32mI (59910) SCD30_DRIVER: 0x20 [0m
+[0;32mI (59920) SCD30_DRIVER: 0xa5 [0m
+[0;32mI (59920) SCD30_DRIVER: 0x54 [0m
+[0;32mI (59920) SCD30_DRIVER: 0x42 [0m
+[0;32mI (59930) SCD30_DRIVER: 0x53 [0m
+[0;32mI (59930) SCD30_DRIVER: 0xfc [0m
+[0;32mI (59930) SCD30_DRIVER: 0x43 [0m
+[0;32mI (59940) SCD30_DRIVER: 0x12 [0m
+[0;32mI (59940) SCD30_DRIVER: 0x04 [0m
+[0;32mI (59970) SCD30_DRIVER: CO2: 643.9 ppm (avg: 645.4), Temperature: 22.52°C (avg: 22.51), Humidity: 52.8% (avg: 52.7)[0m
+[0;32mI (65000) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (65000) SCD30_DRIVER: 0x5c [0m
+[0;32mI (65000) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (65000) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (65030) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (65030) SCD30_DRIVER: 0x0a [0m
+[0;32mI (65030) SCD30_DRIVER: 0x00 [0m
+[0;32mI (65030) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (65060) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (65060) SCD30_DRIVER: 0x70 [0m
+[0;32mI (65060) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (65060) SCD30_DRIVER: 0x00 [0m
+[0;32mI (65060) SCD30_DRIVER: 0x90 [0m
+[0;32mI (65060) SCD30_DRIVER: 0x81 [0m
+[0;32mI (65070) SCD30_DRIVER: 0x87 [0m
+[0;32mI (65070) SCD30_DRIVER: 0x41 [0m
+[0;32mI (65080) SCD30_DRIVER: 0xc8 [0m
+[0;32mI (65080) SCD30_DRIVER: 0x02 [0m
+[0;32mI (65080) SCD30_DRIVER: 0x24 [0m
+[0;32mI (65090) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (65090) SCD30_DRIVER: 0xa6 [0m
+[0;32mI (65090) SCD30_DRIVER: 0x42 [0m
+[0;32mI (65100) SCD30_DRIVER: 0x53 [0m
+[0;32mI (65100) SCD30_DRIVER: 0xfc [0m
+[0;32mI (65100) SCD30_DRIVER: 0x64 [0m
+[0;32mI (65110) SCD30_DRIVER: 0x34 [0m
+[0;32mI (65110) SCD30_DRIVER: 0x56 [0m
+[0;32mI (65140) SCD30_DRIVER: CO2: 642.3 ppm (avg: 643.6), Temperature: 22.52°C (avg: 22.52), Humidity: 52.8% (avg: 52.8)[0m
+[0;32mI (70170) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (70170) SCD30_DRIVER: 0x5c [0m
+[0;32mI (70170) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (70170) SCD30_DRIVER: 0x81 [0m
+[0;32mI (70700) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (70700) SCD30_DRIVER: 0x5c [0m
+[0;32mI (70700) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (70700) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (70730) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (70730) SCD30_DRIVER: 0x0a [0m
+[0;32mI (70730) SCD30_DRIVER: 0x00 [0m
+[0;32mI (70730) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (70760) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (70760) SCD30_DRIVER: 0x70 [0m
+[0;32mI (70760) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (70760) SCD30_DRIVER: 0x00 [0m
+[0;32mI (70760) SCD30_DRIVER: 0x6d [0m
+[0;32mI (70760) SCD30_DRIVER: 0x0b [0m
+[0;32mI (70770) SCD30_DRIVER: 0x7e [0m
+[0;32mI (70770) SCD30_DRIVER: 0x41 [0m
+[0;32mI (70780) SCD30_DRIVER: 0xc7 [0m
+[0;32mI (70780) SCD30_DRIVER: 0x2c [0m
+[0;32mI (70780) SCD30_DRIVER: 0xf3 [0m
+[0;32mI (70790) SCD30_DRIVER: 0x0a [0m
+[0;32mI (70790) SCD30_DRIVER: 0x6f [0m
+[0;32mI (70790) SCD30_DRIVER: 0x42 [0m
+[0;32mI (70800) SCD30_DRIVER: 0x54 [0m
+[0;32mI (70800) SCD30_DRIVER: 0x6b [0m
+[0;32mI (70800) SCD30_DRIVER: 0x53 [0m
+[0;32mI (70810) SCD30_DRIVER: 0x89 [0m
+[0;32mI (70810) SCD30_DRIVER: 0xb9 [0m
+[0;32mI (70840) SCD30_DRIVER: CO2: 641.7 ppm (avg: 642.6), Temperature: 22.49°C (avg: 22.51), Humidity: 53.1% (avg: 52.9)[0m
+[0;32mI (75870) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (75870) SCD30_DRIVER: 0x5c [0m
+[0;32mI (75870) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (75870) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (75900) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (75900) SCD30_DRIVER: 0x0a [0m
+[0;32mI (75900) SCD30_DRIVER: 0x00 [0m
+[0;32mI (75900) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (75930) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (75930) SCD30_DRIVER: 0x70 [0m
+[0;32mI (75930) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (75930) SCD30_DRIVER: 0x00 [0m
+[0;32mI (75930) SCD30_DRIVER: 0xeb [0m
+[0;32mI (75930) SCD30_DRIVER: 0x44 [0m
+[0;32mI (75940) SCD30_DRIVER: 0x14 [0m
+[0;32mI (75940) SCD30_DRIVER: 0x41 [0m
+[0;32mI (75950) SCD30_DRIVER: 0xc7 [0m
+[0;32mI (75950) SCD30_DRIVER: 0x2c [0m
+[0;32mI (75950) SCD30_DRIVER: 0x6a [0m
+[0;32mI (75960) SCD30_DRIVER: 0x38 [0m
+[0;32mI (75960) SCD30_DRIVER: 0x46 [0m
+[0;32mI (75960) SCD30_DRIVER: 0x42 [0m
+[0;32mI (75970) SCD30_DRIVER: 0x54 [0m
+[0;32mI (75970) SCD30_DRIVER: 0x6b [0m
+[0;32mI (75970) SCD30_DRIVER: 0x82 [0m
+[0;32mI (75980) SCD30_DRIVER: 0x11 [0m
+[0;32mI (75980) SCD30_DRIVER: 0x09 [0m
+[0;32mI (76010) SCD30_DRIVER: CO2: 647.7 ppm (avg: 643.9), Temperature: 22.43°C (avg: 22.48), Humidity: 53.1% (avg: 53.0)[0m
+[0;32mI (81040) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (81040) SCD30_DRIVER: 0x5c [0m
+[0;32mI (81040) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (81040) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (81070) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (81070) SCD30_DRIVER: 0x0a [0m
+[0;32mI (81070) SCD30_DRIVER: 0x00 [0m
+[0;32mI (81070) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (81100) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (81100) SCD30_DRIVER: 0x70 [0m
+[0;32mI (81100) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (81100) SCD30_DRIVER: 0x00 [0m
+[0;32mI (81100) SCD30_DRIVER: 0x70 [0m
+[0;32mI (81100) SCD30_DRIVER: 0x62 [0m
+[0;32mI (81110) SCD30_DRIVER: 0x63 [0m
+[0;32mI (81110) SCD30_DRIVER: 0x41 [0m
+[0;32mI (81120) SCD30_DRIVER: 0xc7 [0m
+[0;32mI (81120) SCD30_DRIVER: 0x2c [0m
+[0;32mI (81120) SCD30_DRIVER: 0x39 [0m
+[0;32mI (81130) SCD30_DRIVER: 0x72 [0m
+[0;32mI (81130) SCD30_DRIVER: 0x6a [0m
+[0;32mI (81130) SCD30_DRIVER: 0x42 [0m
+[0;32mI (81140) SCD30_DRIVER: 0x54 [0m
+[0;32mI (81140) SCD30_DRIVER: 0x6b [0m
+[0;32mI (81140) SCD30_DRIVER: 0x61 [0m
+[0;32mI (81150) SCD30_DRIVER: 0x3d [0m
+[0;32mI (81150) SCD30_DRIVER: 0xa9 [0m
+[0;32mI (81180) SCD30_DRIVER: CO2: 649.8 ppm (avg: 646.4), Temperature: 22.40°C (avg: 22.44), Humidity: 53.1% (avg: 53.1)[0m
+[0;32mI (86210) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (86210) SCD30_DRIVER: 0x5c [0m
+[0;32mI (86210) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (86210) SCD30_DRIVER: 0x81 [0m
+[0;32mI (86740) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (86740) SCD30_DRIVER: 0x5c [0m
+[0;32mI (86740) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (86740) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (86770) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (86770) SCD30_DRIVER: 0x0a [0m
+[0;32mI (86770) SCD30_DRIVER: 0x00 [0m
+[0;32mI (86770) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (86800) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (86800) SCD30_DRIVER: 0x70 [0m
+[0;32mI (86800) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (86800) SCD30_DRIVER: 0x00 [0m
+[0;32mI (86800) SCD30_DRIVER: 0xb8 [0m
+[0;32mI (86800) SCD30_DRIVER: 0x9d [0m
+[0;32mI (86810) SCD30_DRIVER: 0x52 [0m
+[0;32mI (86810) SCD30_DRIVER: 0x41 [0m
+[0;32mI (86820) SCD30_DRIVER: 0xc6 [0m
+[0;32mI (86820) SCD30_DRIVER: 0x1d [0m
+[0;32mI (86820) SCD30_DRIVER: 0x44 [0m
+[0;32mI (86830) SCD30_DRIVER: 0x50 [0m
+[0;32mI (86830) SCD30_DRIVER: 0xf5 [0m
+[0;32mI (86830) SCD30_DRIVER: 0x42 [0m
+[0;32mI (86840) SCD30_DRIVER: 0x56 [0m
+[0;32mI (86840) SCD30_DRIVER: 0x09 [0m
+[0;32mI (86840) SCD30_DRIVER: 0x0c [0m
+[0;32mI (86850) SCD30_DRIVER: 0xa2 [0m
+[0;32mI (86850) SCD30_DRIVER: 0xab [0m
+[0;32mI (86880) SCD30_DRIVER: CO2: 658.9 ppm (avg: 652.1), Temperature: 22.28°C (avg: 22.37), Humidity: 53.5% (avg: 53.2)[0m
+[0;32mI (91910) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (91910) SCD30_DRIVER: 0x5c [0m
+[0;32mI (91910) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (91910) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (91940) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (91940) SCD30_DRIVER: 0x0a [0m
+[0;32mI (91940) SCD30_DRIVER: 0x00 [0m
+[0;32mI (91940) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (91970) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (91970) SCD30_DRIVER: 0x70 [0m
+[0;32mI (91970) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (91970) SCD30_DRIVER: 0x00 [0m
+[0;32mI (91970) SCD30_DRIVER: 0x08 [0m
+[0;32mI (91970) SCD30_DRIVER: 0xd4 [0m
+[0;32mI (91980) SCD30_DRIVER: 0x76 [0m
+[0;32mI (91980) SCD30_DRIVER: 0x41 [0m
+[0;32mI (91990) SCD30_DRIVER: 0xc5 [0m
+[0;32mI (91990) SCD30_DRIVER: 0x4e [0m
+[0;32mI (91990) SCD30_DRIVER: 0xd8 [0m
+[0;32mI (92000) SCD30_DRIVER: 0x72 [0m
+[0;32mI (92000) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (92000) SCD30_DRIVER: 0x42 [0m
+[0;32mI (92010) SCD30_DRIVER: 0x57 [0m
+[0;32mI (92010) SCD30_DRIVER: 0x38 [0m
+[0;32mI (92010) SCD30_DRIVER: 0x49 [0m
+[0;32mI (92020) SCD30_DRIVER: 0x48 [0m
+[0;32mI (92020) SCD30_DRIVER: 0x4f [0m
+[0;32mI (92050) SCD30_DRIVER: CO2: 668.1 ppm (avg: 658.9), Temperature: 22.23°C (avg: 22.31), Humidity: 53.8% (avg: 53.5)[0m
+[0;32mI (97080) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (97080) SCD30_DRIVER: 0x5c [0m
+[0;32mI (97080) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (97080) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (97110) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (97110) SCD30_DRIVER: 0x0a [0m
+[0;32mI (97110) SCD30_DRIVER: 0x00 [0m
+[0;32mI (97110) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (97140) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (97140) SCD30_DRIVER: 0x70 [0m
+[0;32mI (97140) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (97140) SCD30_DRIVER: 0x00 [0m
+[0;32mI (97140) SCD30_DRIVER: 0x16 [0m
+[0;32mI (97140) SCD30_DRIVER: 0x88 [0m
+[0;32mI (97150) SCD30_DRIVER: 0x76 [0m
+[0;32mI (97150) SCD30_DRIVER: 0x41 [0m
+[0;32mI (97160) SCD30_DRIVER: 0xc6 [0m
+[0;32mI (97160) SCD30_DRIVER: 0x1d [0m
+[0;32mI (97160) SCD30_DRIVER: 0x1c [0m
+[0;32mI (97170) SCD30_DRIVER: 0x1b [0m
+[0;32mI (97170) SCD30_DRIVER: 0xf2 [0m
+[0;32mI (97170) SCD30_DRIVER: 0x42 [0m
+[0;32mI (97180) SCD30_DRIVER: 0x59 [0m
+[0;32mI (97180) SCD30_DRIVER: 0x27 [0m
+[0;32mI (97180) SCD30_DRIVER: 0x23 [0m
+[0;32mI (97190) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (97190) SCD30_DRIVER: 0xad [0m
+[0;32mI (97220) SCD30_DRIVER: CO2: 684.4 ppm (avg: 670.5), Temperature: 22.26°C (avg: 22.26), Humidity: 54.3% (avg: 53.9)[0m
+[0;32mI (102250) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (102250) SCD30_DRIVER: 0x5c [0m
+[0;32mI (102250) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (102250) SCD30_DRIVER: 0x81 [0m
+[0;32mI (102780) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (102780) SCD30_DRIVER: 0x5c [0m
+[0;32mI (102780) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (102780) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (102810) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (102810) SCD30_DRIVER: 0x0a [0m
+[0;32mI (102810) SCD30_DRIVER: 0x00 [0m
+[0;32mI (102810) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (102840) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (102840) SCD30_DRIVER: 0x70 [0m
+[0;32mI (102840) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (102840) SCD30_DRIVER: 0x00 [0m
+[0;32mI (102840) SCD30_DRIVER: 0x3d [0m
+[0;32mI (102840) SCD30_DRIVER: 0xe2 [0m
+[0;32mI (102850) SCD30_DRIVER: 0xd0 [0m
+[0;32mI (102850) SCD30_DRIVER: 0x41 [0m
+[0;32mI (102860) SCD30_DRIVER: 0xc5 [0m
+[0;32mI (102860) SCD30_DRIVER: 0x4e [0m
+[0;32mI (102860) SCD30_DRIVER: 0xed [0m
+[0;32mI (102870) SCD30_DRIVER: 0x71 [0m
+[0;32mI (102870) SCD30_DRIVER: 0x7e [0m
+[0;32mI (102870) SCD30_DRIVER: 0x42 [0m
+[0;32mI (102880) SCD30_DRIVER: 0x57 [0m
+[0;32mI (102880) SCD30_DRIVER: 0x38 [0m
+[0;32mI (102890) SCD30_DRIVER: 0x74 [0m
+[0;32mI (102890) SCD30_DRIVER: 0x26 [0m
+[0;32mI (102890) SCD30_DRIVER: 0x19 [0m
+[0;32mI (102920) SCD30_DRIVER: CO2: 701.0 ppm (avg: 684.5), Temperature: 22.24°C (avg: 22.25), Humidity: 53.9% (avg: 54.0)[0m
+[0;32mI (107950) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (107950) SCD30_DRIVER: 0x5c [0m
+[0;32mI (107950) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (107950) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (107980) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (107980) SCD30_DRIVER: 0x0a [0m
+[0;32mI (107980) SCD30_DRIVER: 0x00 [0m
+[0;32mI (107980) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (108010) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (108010) SCD30_DRIVER: 0x70 [0m
+[0;32mI (108010) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (108010) SCD30_DRIVER: 0x00 [0m
+[0;32mI (108010) SCD30_DRIVER: 0xd1 [0m
+[0;32mI (108010) SCD30_DRIVER: 0xff [0m
+[0;32mI (108020) SCD30_DRIVER: 0x1d [0m
+[0;32mI (108020) SCD30_DRIVER: 0x41 [0m
+[0;32mI (108030) SCD30_DRIVER: 0xc5 [0m
+[0;32mI (108030) SCD30_DRIVER: 0x4e [0m
+[0;32mI (108030) SCD30_DRIVER: 0xa3 [0m
+[0;32mI (108040) SCD30_DRIVER: 0xf2 [0m
+[0;32mI (108040) SCD30_DRIVER: 0xb3 [0m
+[0;32mI (108040) SCD30_DRIVER: 0x42 [0m
+[0;32mI (108050) SCD30_DRIVER: 0x56 [0m
+[0;32mI (108050) SCD30_DRIVER: 0x09 [0m
+[0;32mI (108060) SCD30_DRIVER: 0xa6 [0m
+[0;32mI (108060) SCD30_DRIVER: 0xe7 [0m
+[0;32mI (108060) SCD30_DRIVER: 0x72 [0m
+[0;32mI (108090) SCD30_DRIVER: CO2: 723.3 ppm (avg: 702.9), Temperature: 22.21°C (avg: 22.24), Humidity: 53.7% (avg: 53.9)[0m
+[0;32mI (113120) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (113120) SCD30_DRIVER: 0x5c [0m
+[0;32mI (113120) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (113120) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (113150) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (113150) SCD30_DRIVER: 0x0a [0m
+[0;32mI (113150) SCD30_DRIVER: 0x00 [0m
+[0;32mI (113150) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (113180) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (113180) SCD30_DRIVER: 0x70 [0m
+[0;32mI (113180) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (113180) SCD30_DRIVER: 0x00 [0m
+[0;32mI (113180) SCD30_DRIVER: 0xbf [0m
+[0;32mI (113180) SCD30_DRIVER: 0x79 [0m
+[0;32mI (113190) SCD30_DRIVER: 0xf9 [0m
+[0;32mI (113190) SCD30_DRIVER: 0x41 [0m
+[0;32mI (113200) SCD30_DRIVER: 0xc5 [0m
+[0;32mI (113200) SCD30_DRIVER: 0x4e [0m
+[0;32mI (113200) SCD30_DRIVER: 0x5a [0m
+[0;32mI (113210) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (113210) SCD30_DRIVER: 0xce [0m
+[0;32mI (113210) SCD30_DRIVER: 0x42 [0m
+[0;32mI (113220) SCD30_DRIVER: 0x56 [0m
+[0;32mI (113220) SCD30_DRIVER: 0x09 [0m
+[0;32mI (113230) SCD30_DRIVER: 0xed [0m
+[0;32mI (113230) SCD30_DRIVER: 0x0d [0m
+[0;32mI (113230) SCD30_DRIVER: 0xfb [0m
+[0;32mI (113260) SCD30_DRIVER: CO2: 727.0 ppm (avg: 717.1), Temperature: 22.17°C (avg: 22.21), Humidity: 53.7% (avg: 53.8)[0m
+[0;32mI (118290) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (118290) SCD30_DRIVER: 0x5c [0m
+[0;32mI (118290) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (118290) SCD30_DRIVER: 0x81 [0m
+[0;32mI (118820) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (118820) SCD30_DRIVER: 0x5c [0m
+[0;32mI (118820) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (118820) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (118850) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (118850) SCD30_DRIVER: 0x0a [0m
+[0;32mI (118850) SCD30_DRIVER: 0x00 [0m
+[0;32mI (118850) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (118880) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (118880) SCD30_DRIVER: 0x70 [0m
+[0;32mI (118880) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (118880) SCD30_DRIVER: 0x00 [0m
+[0;32mI (118880) SCD30_DRIVER: 0xfc [0m
+[0;32mI (118880) SCD30_DRIVER: 0x90 [0m
+[0;32mI (118890) SCD30_DRIVER: 0x14 [0m
+[0;32mI (118890) SCD30_DRIVER: 0x41 [0m
+[0;32mI (118900) SCD30_DRIVER: 0xc4 [0m
+[0;32mI (118900) SCD30_DRIVER: 0x7f [0m
+[0;32mI (118900) SCD30_DRIVER: 0x7e [0m
+[0;32mI (118910) SCD30_DRIVER: 0xd0 [0m
+[0;32mI (118910) SCD30_DRIVER: 0xd3 [0m
+[0;32mI (118910) SCD30_DRIVER: 0x42 [0m
+[0;32mI (118920) SCD30_DRIVER: 0x57 [0m
+[0;32mI (118920) SCD30_DRIVER: 0x38 [0m
+[0;32mI (118930) SCD30_DRIVER: 0x06 [0m
+[0;32mI (118930) SCD30_DRIVER: 0x49 [0m
+[0;32mI (118930) SCD30_DRIVER: 0x6e [0m
+[0;32mI (118960) SCD30_DRIVER: CO2: 719.9 ppm (avg: 723.4), Temperature: 22.06°C (avg: 22.15), Humidity: 53.8% (avg: 53.7)[0m
+[0;32mI (123990) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (123990) SCD30_DRIVER: 0x5c [0m
+[0;32mI (123990) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (123990) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (124020) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (124020) SCD30_DRIVER: 0x0a [0m
+[0;32mI (124020) SCD30_DRIVER: 0x00 [0m
+[0;32mI (124020) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (124050) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (124050) SCD30_DRIVER: 0x70 [0m
+[0;32mI (124050) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (124050) SCD30_DRIVER: 0x00 [0m
+[0;32mI (124050) SCD30_DRIVER: 0x3e [0m
+[0;32mI (124050) SCD30_DRIVER: 0x2a [0m
+[0;32mI (124060) SCD30_DRIVER: 0x03 [0m
+[0;32mI (124060) SCD30_DRIVER: 0x41 [0m
+[0;32mI (124070) SCD30_DRIVER: 0xc4 [0m
+[0;32mI (124070) SCD30_DRIVER: 0x7f [0m
+[0;32mI (124070) SCD30_DRIVER: 0x36 [0m
+[0;32mI (124080) SCD30_DRIVER: 0xd3 [0m
+[0;32mI (124080) SCD30_DRIVER: 0x3e [0m
+[0;32mI (124080) SCD30_DRIVER: 0x42 [0m
+[0;32mI (124090) SCD30_DRIVER: 0x57 [0m
+[0;32mI (124090) SCD30_DRIVER: 0x38 [0m
+[0;32mI (124100) SCD30_DRIVER: 0x4c [0m
+[0;32mI (124100) SCD30_DRIVER: 0xa6 [0m
+[0;32mI (124100) SCD30_DRIVER: 0xe6 [0m
+[0;32mI (124130) SCD30_DRIVER: CO2: 717.0 ppm (avg: 721.3), Temperature: 22.03°C (avg: 22.09), Humidity: 53.8% (avg: 53.8)[0m
+[0;32mI (129160) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (129160) SCD30_DRIVER: 0x5c [0m
+[0;32mI (129160) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (129160) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (129190) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (129190) SCD30_DRIVER: 0x0a [0m
+[0;32mI (129190) SCD30_DRIVER: 0x00 [0m
+[0;32mI (129190) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (129220) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (129220) SCD30_DRIVER: 0x70 [0m
+[0;32mI (129220) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (129220) SCD30_DRIVER: 0x00 [0m
+[0;32mI (129220) SCD30_DRIVER: 0x4b [0m
+[0;32mI (129220) SCD30_DRIVER: 0x6e [0m
+[0;32mI (129230) SCD30_DRIVER: 0xb6 [0m
+[0;32mI (129230) SCD30_DRIVER: 0x41 [0m
+[0;32mI (129240) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (129240) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (129240) SCD30_DRIVER: 0x92 [0m
+[0;32mI (129250) SCD30_DRIVER: 0x5b [0m
+[0;32mI (129250) SCD30_DRIVER: 0x81 [0m
+[0;32mI (129250) SCD30_DRIVER: 0x42 [0m
+[0;32mI (129260) SCD30_DRIVER: 0x57 [0m
+[0;32mI (129260) SCD30_DRIVER: 0x38 [0m
+[0;32mI (129270) SCD30_DRIVER: 0xbb [0m
+[0;32mI (129270) SCD30_DRIVER: 0x59 [0m
+[0;32mI (129270) SCD30_DRIVER: 0xfc [0m
+[0;32mI (129300) SCD30_DRIVER: CO2: 709.2 ppm (avg: 715.4), Temperature: 21.95°C (avg: 22.01), Humidity: 53.9% (avg: 53.8)[0m
+[0;32mI (134330) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (134330) SCD30_DRIVER: 0x5c [0m
+[0;32mI (134330) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (134330) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (134360) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (134360) SCD30_DRIVER: 0x0a [0m
+[0;32mI (134360) SCD30_DRIVER: 0x00 [0m
+[0;32mI (134360) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (134390) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (134390) SCD30_DRIVER: 0x70 [0m
+[0;32mI (134390) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (134390) SCD30_DRIVER: 0x00 [0m
+[0;32mI (134390) SCD30_DRIVER: 0x78 [0m
+[0;32mI (134390) SCD30_DRIVER: 0x83 [0m
+[0;32mI (134400) SCD30_DRIVER: 0xa4 [0m
+[0;32mI (134400) SCD30_DRIVER: 0x41 [0m
+[0;32mI (134410) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (134410) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (134410) SCD30_DRIVER: 0x66 [0m
+[0;32mI (134420) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (134420) SCD30_DRIVER: 0x31 [0m
+[0;32mI (134420) SCD30_DRIVER: 0x42 [0m
+[0;32mI (134430) SCD30_DRIVER: 0x5a [0m
+[0;32mI (134430) SCD30_DRIVER: 0x74 [0m
+[0;32mI (134440) SCD30_DRIVER: 0x48 [0m
+[0;32mI (134440) SCD30_DRIVER: 0x48 [0m
+[0;32mI (134440) SCD30_DRIVER: 0xbb [0m
+[0;32mI (134470) SCD30_DRIVER: CO2: 717.9 ppm (avg: 714.7), Temperature: 21.93°C (avg: 21.97), Humidity: 54.6% (avg: 54.1)[0m
+[0;32mI (139500) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (139500) SCD30_DRIVER: 0x5c [0m
+[0;32mI (139500) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (139500) SCD30_DRIVER: 0x81 [0m
+[0;32mI (140030) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (140030) SCD30_DRIVER: 0x5c [0m
+[0;32mI (140030) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (140030) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (140060) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (140060) SCD30_DRIVER: 0x0a [0m
+[0;32mI (140060) SCD30_DRIVER: 0x00 [0m
+[0;32mI (140060) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (140090) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (140090) SCD30_DRIVER: 0x70 [0m
+[0;32mI (140090) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (140090) SCD30_DRIVER: 0x00 [0m
+[0;32mI (140090) SCD30_DRIVER: 0x14 [0m
+[0;32mI (140090) SCD30_DRIVER: 0xc1 [0m
+[0;32mI (140100) SCD30_DRIVER: 0x1a [0m
+[0;32mI (140100) SCD30_DRIVER: 0x41 [0m
+[0;32mI (140110) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (140110) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (140110) SCD30_DRIVER: 0xcf [0m
+[0;32mI (140120) SCD30_DRIVER: 0x27 [0m
+[0;32mI (140120) SCD30_DRIVER: 0xa3 [0m
+[0;32mI (140120) SCD30_DRIVER: 0x42 [0m
+[0;32mI (140130) SCD30_DRIVER: 0x5c [0m
+[0;32mI (140130) SCD30_DRIVER: 0xd2 [0m
+[0;32mI (140140) SCD30_DRIVER: 0x9a [0m
+[0;32mI (140140) SCD30_DRIVER: 0x9c [0m
+[0;32mI (140140) SCD30_DRIVER: 0x66 [0m
+[0;32mI (140170) SCD30_DRIVER: CO2: 740.3 ppm (avg: 722.5), Temperature: 21.98°C (avg: 21.95), Humidity: 55.2% (avg: 54.6)[0m
+[0;32mI (145200) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (145200) SCD30_DRIVER: 0x5c [0m
+[0;32mI (145200) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (145200) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (145230) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (145230) SCD30_DRIVER: 0x0a [0m
+[0;32mI (145230) SCD30_DRIVER: 0x00 [0m
+[0;32mI (145230) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (145260) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (145260) SCD30_DRIVER: 0x70 [0m
+[0;32mI (145260) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (145260) SCD30_DRIVER: 0x00 [0m
+[0;32mI (145260) SCD30_DRIVER: 0xb5 [0m
+[0;32mI (145260) SCD30_DRIVER: 0x90 [0m
+[0;32mI (145270) SCD30_DRIVER: 0x5e [0m
+[0;32mI (145270) SCD30_DRIVER: 0x41 [0m
+[0;32mI (145280) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (145280) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (145280) SCD30_DRIVER: 0x6d [0m
+[0;32mI (145290) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (145290) SCD30_DRIVER: 0xd3 [0m
+[0;32mI (145290) SCD30_DRIVER: 0x42 [0m
+[0;32mI (145300) SCD30_DRIVER: 0x5a [0m
+[0;32mI (145300) SCD30_DRIVER: 0x74 [0m
+[0;32mI (145310) SCD30_DRIVER: 0xc2 [0m
+[0;32mI (145310) SCD30_DRIVER: 0x36 [0m
+[0;32mI (145310) SCD30_DRIVER: 0x91 [0m
+[0;32mI (145340) SCD30_DRIVER: CO2: 758.8 ppm (avg: 739.0), Temperature: 21.93°C (avg: 21.94), Humidity: 54.7% (avg: 54.8)[0m
+[0;32mI (150370) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (150370) SCD30_DRIVER: 0x5c [0m
+[0;32mI (150370) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (150370) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (150400) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (150400) SCD30_DRIVER: 0x0a [0m
+[0;32mI (150400) SCD30_DRIVER: 0x00 [0m
+[0;32mI (150400) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (150430) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (150430) SCD30_DRIVER: 0x70 [0m
+[0;32mI (150430) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (150430) SCD30_DRIVER: 0x00 [0m
+[0;32mI (150430) SCD30_DRIVER: 0x86 [0m
+[0;32mI (150430) SCD30_DRIVER: 0xb7 [0m
+[0;32mI (150440) SCD30_DRIVER: 0xd0 [0m
+[0;32mI (150440) SCD30_DRIVER: 0x41 [0m
+[0;32mI (150450) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (150450) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (150450) SCD30_DRIVER: 0x43 [0m
+[0;32mI (150460) SCD30_DRIVER: 0x82 [0m
+[0;32mI (150460) SCD30_DRIVER: 0x3d [0m
+[0;32mI (150460) SCD30_DRIVER: 0x42 [0m
+[0;32mI (150470) SCD30_DRIVER: 0x59 [0m
+[0;32mI (150470) SCD30_DRIVER: 0x27 [0m
+[0;32mI (150480) SCD30_DRIVER: 0xe3 [0m
+[0;32mI (150480) SCD30_DRIVER: 0x15 [0m
+[0;32mI (150480) SCD30_DRIVER: 0x6c [0m
+[0;32mI (150510) SCD30_DRIVER: CO2: 766.1 ppm (avg: 755.1), Temperature: 21.91°C (avg: 21.94), Humidity: 54.5% (avg: 54.8)[0m
+[0;32mI (155540) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (155540) SCD30_DRIVER: 0x5c [0m
+[0;32mI (155540) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (155540) SCD30_DRIVER: 0x81 [0m
+[0;32mI (156070) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (156070) SCD30_DRIVER: 0x5c [0m
+[0;32mI (156070) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (156070) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (156100) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (156100) SCD30_DRIVER: 0x0a [0m
+[0;32mI (156100) SCD30_DRIVER: 0x00 [0m
+[0;32mI (156100) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (156130) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (156130) SCD30_DRIVER: 0x70 [0m
+[0;32mI (156130) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (156130) SCD30_DRIVER: 0x00 [0m
+[0;32mI (156130) SCD30_DRIVER: 0x2d [0m
+[0;32mI (156130) SCD30_DRIVER: 0x6f [0m
+[0;32mI (156140) SCD30_DRIVER: 0x88 [0m
+[0;32mI (156140) SCD30_DRIVER: 0x41 [0m
+[0;32mI (156150) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (156150) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (156150) SCD30_DRIVER: 0xa7 [0m
+[0;32mI (156160) SCD30_DRIVER: 0xea [0m
+[0;32mI (156160) SCD30_DRIVER: 0xca [0m
+[0;32mI (156160) SCD30_DRIVER: 0x42 [0m
+[0;32mI (156170) SCD30_DRIVER: 0x59 [0m
+[0;32mI (156170) SCD30_DRIVER: 0x27 [0m
+[0;32mI (156180) SCD30_DRIVER: 0xa5 [0m
+[0;32mI (156180) SCD30_DRIVER: 0xa5 [0m
+[0;32mI (156180) SCD30_DRIVER: 0x00 [0m
+[0;32mI (156210) SCD30_DRIVER: CO2: 760.7 ppm (avg: 761.9), Temperature: 21.96°C (avg: 21.93), Humidity: 54.4% (avg: 54.5)[0m
+[0;32mI (161240) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (161240) SCD30_DRIVER: 0x5c [0m
+[0;32mI (161240) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (161240) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (161270) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (161270) SCD30_DRIVER: 0x0a [0m
+[0;32mI (161270) SCD30_DRIVER: 0x00 [0m
+[0;32mI (161270) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (161300) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (161300) SCD30_DRIVER: 0x70 [0m
+[0;32mI (161300) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (161300) SCD30_DRIVER: 0x00 [0m
+[0;32mI (161300) SCD30_DRIVER: 0x64 [0m
+[0;32mI (161300) SCD30_DRIVER: 0xc2 [0m
+[0;32mI (161310) SCD30_DRIVER: 0x72 [0m
+[0;32mI (161310) SCD30_DRIVER: 0x41 [0m
+[0;32mI (161320) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (161320) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (161320) SCD30_DRIVER: 0x7e [0m
+[0;32mI (161330) SCD30_DRIVER: 0x98 [0m
+[0;32mI (161330) SCD30_DRIVER: 0x57 [0m
+[0;32mI (161330) SCD30_DRIVER: 0x42 [0m
+[0;32mI (161340) SCD30_DRIVER: 0x59 [0m
+[0;32mI (161340) SCD30_DRIVER: 0x27 [0m
+[0;32mI (161350) SCD30_DRIVER: 0xa4 [0m
+[0;32mI (161350) SCD30_DRIVER: 0x95 [0m
+[0;32mI (161350) SCD30_DRIVER: 0x31 [0m
+[0;32mI (161380) SCD30_DRIVER: CO2: 757.6 ppm (avg: 761.5), Temperature: 21.94°C (avg: 21.93), Humidity: 54.4% (avg: 54.4)[0m
+[0;32mI (166410) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (166410) SCD30_DRIVER: 0x5c [0m
+[0;32mI (166410) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (166410) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (166440) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (166440) SCD30_DRIVER: 0x0a [0m
+[0;32mI (166440) SCD30_DRIVER: 0x00 [0m
+[0;32mI (166440) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (166470) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (166470) SCD30_DRIVER: 0x70 [0m
+[0;32mI (166470) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (166470) SCD30_DRIVER: 0x00 [0m
+[0;32mI (166470) SCD30_DRIVER: 0x19 [0m
+[0;32mI (166470) SCD30_DRIVER: 0x1d [0m
+[0;32mI (166480) SCD30_DRIVER: 0x23 [0m
+[0;32mI (166480) SCD30_DRIVER: 0x41 [0m
+[0;32mI (166490) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (166490) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (166490) SCD30_DRIVER: 0xad [0m
+[0;32mI (166500) SCD30_DRIVER: 0x3b [0m
+[0;32mI (166500) SCD30_DRIVER: 0x11 [0m
+[0;32mI (166500) SCD30_DRIVER: 0x42 [0m
+[0;32mI (166510) SCD30_DRIVER: 0x59 [0m
+[0;32mI (166510) SCD30_DRIVER: 0x27 [0m
+[0;32mI (166520) SCD30_DRIVER: 0xa3 [0m
+[0;32mI (166520) SCD30_DRIVER: 0x95 [0m
+[0;32mI (166520) SCD30_DRIVER: 0x9f [0m
+[0;32mI (166550) SCD30_DRIVER: CO2: 748.4 ppm (avg: 755.6), Temperature: 21.96°C (avg: 21.95), Humidity: 54.4% (avg: 54.4)[0m
+[0;32mI (171580) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (171580) SCD30_DRIVER: 0x5c [0m
+[0;32mI (171580) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (171580) SCD30_DRIVER: 0x81 [0m
+[0;32mI (172110) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (172110) SCD30_DRIVER: 0x5c [0m
+[0;32mI (172110) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (172110) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (172140) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (172140) SCD30_DRIVER: 0x0a [0m
+[0;32mI (172140) SCD30_DRIVER: 0x00 [0m
+[0;32mI (172140) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (172170) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (172170) SCD30_DRIVER: 0x70 [0m
+[0;32mI (172170) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (172170) SCD30_DRIVER: 0x00 [0m
+[0;32mI (172170) SCD30_DRIVER: 0x47 [0m
+[0;32mI (172170) SCD30_DRIVER: 0xe9 [0m
+[0;32mI (172180) SCD30_DRIVER: 0xef [0m
+[0;32mI (172180) SCD30_DRIVER: 0x41 [0m
+[0;32mI (172190) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (172190) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (172190) SCD30_DRIVER: 0xf7 [0m
+[0;32mI (172200) SCD30_DRIVER: 0xa9 [0m
+[0;32mI (172200) SCD30_DRIVER: 0x43 [0m
+[0;32mI (172200) SCD30_DRIVER: 0x42 [0m
+[0;32mI (172210) SCD30_DRIVER: 0x59 [0m
+[0;32mI (172210) SCD30_DRIVER: 0x27 [0m
+[0;32mI (172220) SCD30_DRIVER: 0xd8 [0m
+[0;32mI (172220) SCD30_DRIVER: 0xfb [0m
+[0;32mI (172220) SCD30_DRIVER: 0x1a [0m
+[0;32mI (172250) SCD30_DRIVER: CO2: 741.1 ppm (avg: 749.0), Temperature: 22.00°C (avg: 21.96), Humidity: 54.5% (avg: 54.4)[0m
+[0;32mI (177280) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (177280) SCD30_DRIVER: 0x5c [0m
+[0;32mI (177280) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (177280) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (177310) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (177310) SCD30_DRIVER: 0x0a [0m
+[0;32mI (177310) SCD30_DRIVER: 0x00 [0m
+[0;32mI (177310) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (177340) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (177340) SCD30_DRIVER: 0x70 [0m
+[0;32mI (177340) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (177340) SCD30_DRIVER: 0x00 [0m
+[0;32mI (177340) SCD30_DRIVER: 0xe0 [0m
+[0;32mI (177340) SCD30_DRIVER: 0xd8 [0m
+[0;32mI (177350) SCD30_DRIVER: 0x4a [0m
+[0;32mI (177350) SCD30_DRIVER: 0x41 [0m
+[0;32mI (177360) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (177360) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (177360) SCD30_DRIVER: 0xae [0m
+[0;32mI (177370) SCD30_DRIVER: 0xe0 [0m
+[0;32mI (177370) SCD30_DRIVER: 0xd2 [0m
+[0;32mI (177370) SCD30_DRIVER: 0x42 [0m
+[0;32mI (177380) SCD30_DRIVER: 0x59 [0m
+[0;32mI (177380) SCD30_DRIVER: 0x27 [0m
+[0;32mI (177390) SCD30_DRIVER: 0xa6 [0m
+[0;32mI (177390) SCD30_DRIVER: 0x72 [0m
+[0;32mI (177390) SCD30_DRIVER: 0xbe [0m
+[0;32mI (177420) SCD30_DRIVER: CO2: 735.5 ppm (avg: 741.7), Temperature: 21.96°C (avg: 21.97), Humidity: 54.4% (avg: 54.4)[0m
+[0;32mI (182450) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (182450) SCD30_DRIVER: 0x5c [0m
+[0;32mI (182450) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (182450) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (182480) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (182480) SCD30_DRIVER: 0x0a [0m
+[0;32mI (182480) SCD30_DRIVER: 0x00 [0m
+[0;32mI (182480) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (182510) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (182510) SCD30_DRIVER: 0x70 [0m
+[0;32mI (182510) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (182510) SCD30_DRIVER: 0x00 [0m
+[0;32mI (182510) SCD30_DRIVER: 0xff [0m
+[0;32mI (182510) SCD30_DRIVER: 0xc6 [0m
+[0;32mI (182520) SCD30_DRIVER: 0xe1 [0m
+[0;32mI (182520) SCD30_DRIVER: 0x41 [0m
+[0;32mI (182530) SCD30_DRIVER: 0xc2 [0m
+[0;32mI (182530) SCD30_DRIVER: 0xd9 [0m
+[0;32mI (182530) SCD30_DRIVER: 0xdd [0m
+[0;32mI (182540) SCD30_DRIVER: 0xd0 [0m
+[0;32mI (182540) SCD30_DRIVER: 0x01 [0m
+[0;32mI (182540) SCD30_DRIVER: 0x42 [0m
+[0;32mI (182550) SCD30_DRIVER: 0x59 [0m
+[0;32mI (182550) SCD30_DRIVER: 0x27 [0m
+[0;32mI (182560) SCD30_DRIVER: 0xa8 [0m
+[0;32mI (182560) SCD30_DRIVER: 0xa0 [0m
+[0;32mI (182560) SCD30_DRIVER: 0xb5 [0m
+[0;32mI (182590) SCD30_DRIVER: CO2: 724.0 ppm (avg: 733.5), Temperature: 21.86°C (avg: 21.94), Humidity: 54.4% (avg: 54.4)[0m
+[0;32mI (187620) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (187620) SCD30_DRIVER: 0x5c [0m
+[0;32mI (187620) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (187620) SCD30_DRIVER: 0x81 [0m
+[0;32mI (188150) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (188150) SCD30_DRIVER: 0x5c [0m
+[0;32mI (188150) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (188150) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (188180) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (188180) SCD30_DRIVER: 0x0a [0m
+[0;32mI (188180) SCD30_DRIVER: 0x00 [0m
+[0;32mI (188180) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (188210) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (188210) SCD30_DRIVER: 0x70 [0m
+[0;32mI (188210) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (188210) SCD30_DRIVER: 0x00 [0m
+[0;32mI (188210) SCD30_DRIVER: 0xbc [0m
+[0;32mI (188210) SCD30_DRIVER: 0x1b [0m
+[0;32mI (188220) SCD30_DRIVER: 0x0d [0m
+[0;32mI (188220) SCD30_DRIVER: 0x41 [0m
+[0;32mI (188230) SCD30_DRIVER: 0xc2 [0m
+[0;32mI (188230) SCD30_DRIVER: 0xd9 [0m
+[0;32mI (188230) SCD30_DRIVER: 0x7a [0m
+[0;32mI (188240) SCD30_DRIVER: 0x8f [0m
+[0;32mI (188240) SCD30_DRIVER: 0x00 [0m
+[0;32mI (188240) SCD30_DRIVER: 0x42 [0m
+[0;32mI (188250) SCD30_DRIVER: 0x5a [0m
+[0;32mI (188250) SCD30_DRIVER: 0x74 [0m
+[0;32mI (188260) SCD30_DRIVER: 0x4b [0m
+[0;32mI (188260) SCD30_DRIVER: 0x2b [0m
+[0;32mI (188260) SCD30_DRIVER: 0x7e [0m
+[0;32mI (188290) SCD30_DRIVER: CO2: 706.9 ppm (avg: 722.1), Temperature: 21.81°C (avg: 21.88), Humidity: 54.6% (avg: 54.5)[0m
+[0;32mI (193320) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (193320) SCD30_DRIVER: 0x5c [0m
+[0;32mI (193320) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (193320) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (193350) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (193350) SCD30_DRIVER: 0x0a [0m
+[0;32mI (193350) SCD30_DRIVER: 0x00 [0m
+[0;32mI (193350) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (193380) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (193380) SCD30_DRIVER: 0x70 [0m
+[0;32mI (193380) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (193380) SCD30_DRIVER: 0x00 [0m
+[0;32mI (193380) SCD30_DRIVER: 0xe2 [0m
+[0;32mI (193380) SCD30_DRIVER: 0x7d [0m
+[0;32mI (193390) SCD30_DRIVER: 0x9a [0m
+[0;32mI (193390) SCD30_DRIVER: 0x41 [0m
+[0;32mI (193400) SCD30_DRIVER: 0xc2 [0m
+[0;32mI (193400) SCD30_DRIVER: 0xd9 [0m
+[0;32mI (193400) SCD30_DRIVER: 0x53 [0m
+[0;32mI (193410) SCD30_DRIVER: 0xe4 [0m
+[0;32mI (193410) SCD30_DRIVER: 0x4e [0m
+[0;32mI (193410) SCD30_DRIVER: 0x42 [0m
+[0;32mI (193420) SCD30_DRIVER: 0x5b [0m
+[0;32mI (193420) SCD30_DRIVER: 0x45 [0m
+[0;32mI (193430) SCD30_DRIVER: 0x2f [0m
+[0;32mI (193430) SCD30_DRIVER: 0xf9 [0m
+[0;32mI (193430) SCD30_DRIVER: 0xce [0m
+[0;32mI (193460) SCD30_DRIVER: CO2: 683.5 ppm (avg: 704.8), Temperature: 21.79°C (avg: 21.82), Humidity: 54.8% (avg: 54.6)[0m
+[0;32mI (198490) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (198490) SCD30_DRIVER: 0x5c [0m
+[0;32mI (198490) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (198490) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (198520) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (198520) SCD30_DRIVER: 0x0a [0m
+[0;32mI (198520) SCD30_DRIVER: 0x00 [0m
+[0;32mI (198520) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (198550) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (198550) SCD30_DRIVER: 0x70 [0m
+[0;32mI (198550) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (198550) SCD30_DRIVER: 0x00 [0m
+[0;32mI (198550) SCD30_DRIVER: 0xad [0m
+[0;32mI (198550) SCD30_DRIVER: 0x91 [0m
+[0;32mI (198560) SCD30_DRIVER: 0x36 [0m
+[0;32mI (198560) SCD30_DRIVER: 0x41 [0m
+[0;32mI (198570) SCD30_DRIVER: 0xc2 [0m
+[0;32mI (198570) SCD30_DRIVER: 0xd9 [0m
+[0;32mI (198570) SCD30_DRIVER: 0x12 [0m
+[0;32mI (198580) SCD30_DRIVER: 0x4f [0m
+[0;32mI (198580) SCD30_DRIVER: 0x25 [0m
+[0;32mI (198580) SCD30_DRIVER: 0x42 [0m
+[0;32mI (198590) SCD30_DRIVER: 0x5b [0m
+[0;32mI (198590) SCD30_DRIVER: 0x45 [0m
+[0;32mI (198600) SCD30_DRIVER: 0x91 [0m
+[0;32mI (198600) SCD30_DRIVER: 0x81 [0m
+[0;32mI (198600) SCD30_DRIVER: 0x73 [0m
+[0;32mI (198630) SCD30_DRIVER: CO2: 670.7 ppm (avg: 687.1), Temperature: 21.76°C (avg: 21.79), Humidity: 54.9% (avg: 54.8)[0m
+[0;32mI (203660) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (203660) SCD30_DRIVER: 0x5c [0m
+[0;32mI (203660) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (203660) SCD30_DRIVER: 0x81 [0m
+[0;32mI (204190) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (204190) SCD30_DRIVER: 0x5c [0m
+[0;32mI (204190) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (204190) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (204220) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (204220) SCD30_DRIVER: 0x0a [0m
+[0;32mI (204220) SCD30_DRIVER: 0x00 [0m
+[0;32mI (204220) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (204250) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (204250) SCD30_DRIVER: 0x70 [0m
+[0;32mI (204250) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (204250) SCD30_DRIVER: 0x00 [0m
+[0;32mI (204250) SCD30_DRIVER: 0xa8 [0m
+[0;32mI (204250) SCD30_DRIVER: 0x1f [0m
+[0;32mI (204260) SCD30_DRIVER: 0x24 [0m
+[0;32mI (204260) SCD30_DRIVER: 0x41 [0m
+[0;32mI (204270) SCD30_DRIVER: 0xc1 [0m
+[0;32mI (204270) SCD30_DRIVER: 0x8a [0m
+[0;32mI (204270) SCD30_DRIVER: 0x94 [0m
+[0;32mI (204280) SCD30_DRIVER: 0xfd [0m
+[0;32mI (204280) SCD30_DRIVER: 0x81 [0m
+[0;32mI (204280) SCD30_DRIVER: 0x42 [0m
+[0;32mI (204290) SCD30_DRIVER: 0x5b [0m
+[0;32mI (204290) SCD30_DRIVER: 0x45 [0m
+[0;32mI (204300) SCD30_DRIVER: 0xc8 [0m
+[0;32mI (204300) SCD30_DRIVER: 0x6f [0m
+[0;32mI (204300) SCD30_DRIVER: 0x89 [0m
+[0;32mI (204330) SCD30_DRIVER: CO2: 662.6 ppm (avg: 672.3), Temperature: 21.70°C (avg: 21.75), Humidity: 54.9% (avg: 54.9)[0m
+[0;32mI (209360) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (209360) SCD30_DRIVER: 0x5c [0m
+[0;32mI (209360) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (209360) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (209390) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (209390) SCD30_DRIVER: 0x0a [0m
+[0;32mI (209390) SCD30_DRIVER: 0x00 [0m
+[0;32mI (209390) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (209420) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (209420) SCD30_DRIVER: 0x70 [0m
+[0;32mI (209420) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (209420) SCD30_DRIVER: 0x00 [0m
+[0;32mI (209420) SCD30_DRIVER: 0x1d [0m
+[0;32mI (209420) SCD30_DRIVER: 0x99 [0m
+[0;32mI (209430) SCD30_DRIVER: 0x1e [0m
+[0;32mI (209430) SCD30_DRIVER: 0x41 [0m
+[0;32mI (209440) SCD30_DRIVER: 0xc1 [0m
+[0;32mI (209440) SCD30_DRIVER: 0x8a [0m
+[0;32mI (209440) SCD30_DRIVER: 0xab [0m
+[0;32mI (209450) SCD30_DRIVER: 0xbd [0m
+[0;32mI (209450) SCD30_DRIVER: 0x97 [0m
+[0;32mI (209450) SCD30_DRIVER: 0x42 [0m
+[0;32mI (209460) SCD30_DRIVER: 0x5c [0m
+[0;32mI (209460) SCD30_DRIVER: 0xd2 [0m
+[0;32mI (209470) SCD30_DRIVER: 0x75 [0m
+[0;32mI (209470) SCD30_DRIVER: 0x48 [0m
+[0;32mI (209470) SCD30_DRIVER: 0x49 [0m
+[0;32mI (209500) SCD30_DRIVER: CO2: 664.5 ppm (avg: 665.9), Temperature: 21.71°C (avg: 21.72), Humidity: 55.1% (avg: 55.0)[0m
+[0;32mI (214530) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (214530) SCD30_DRIVER: 0x5c [0m
+[0;32mI (214530) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (214530) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (214560) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (214560) SCD30_DRIVER: 0x0a [0m
+[0;32mI (214560) SCD30_DRIVER: 0x00 [0m
+[0;32mI (214560) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (214590) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (214590) SCD30_DRIVER: 0x70 [0m
+[0;32mI (214590) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (214590) SCD30_DRIVER: 0x00 [0m
+[0;32mI (214590) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (214590) SCD30_DRIVER: 0x33 [0m
+[0;32mI (214600) SCD30_DRIVER: 0x8c [0m
+[0;32mI (214600) SCD30_DRIVER: 0x41 [0m
+[0;32mI (214610) SCD30_DRIVER: 0xc1 [0m
+[0;32mI (214610) SCD30_DRIVER: 0x8a [0m
+[0;32mI (214610) SCD30_DRIVER: 0xde [0m
+[0;32mI (214620) SCD30_DRIVER: 0x3f [0m
+[0;32mI (214620) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (214620) SCD30_DRIVER: 0x42 [0m
+[0;32mI (214630) SCD30_DRIVER: 0x5c [0m
+[0;32mI (214630) SCD30_DRIVER: 0xd2 [0m
+[0;32mI (214640) SCD30_DRIVER: 0x95 [0m
+[0;32mI (214640) SCD30_DRIVER: 0x7d [0m
+[0;32mI (214640) SCD30_DRIVER: 0x0f [0m
+[0;32mI (214670) SCD30_DRIVER: CO2: 663.8 ppm (avg: 663.6), Temperature: 21.73°C (avg: 21.71), Humidity: 55.1% (avg: 55.1)[0m
+[0;32mI (219700) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (219700) SCD30_DRIVER: 0x5c [0m
+[0;32mI (219700) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (219700) SCD30_DRIVER: 0x81 [0m
+[0;32mI (220230) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (220230) SCD30_DRIVER: 0x5c [0m
+[0;32mI (220230) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (220230) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (220260) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (220260) SCD30_DRIVER: 0x0a [0m
+[0;32mI (220260) SCD30_DRIVER: 0x00 [0m
+[0;32mI (220260) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (220290) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (220290) SCD30_DRIVER: 0x70 [0m
+[0;32mI (220290) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (220290) SCD30_DRIVER: 0x00 [0m
+[0;32mI (220290) SCD30_DRIVER: 0x91 [0m
+[0;32mI (220290) SCD30_DRIVER: 0x9e [0m
+[0;32mI (220300) SCD30_DRIVER: 0x1e [0m
+[0;32mI (220300) SCD30_DRIVER: 0x41 [0m
+[0;32mI (220310) SCD30_DRIVER: 0xc1 [0m
+[0;32mI (220310) SCD30_DRIVER: 0x8a [0m
+[0;32mI (220310) SCD30_DRIVER: 0x7d [0m
+[0;32mI (220320) SCD30_DRIVER: 0x81 [0m
+[0;32mI (220320) SCD30_DRIVER: 0xb1 [0m
+[0;32mI (220320) SCD30_DRIVER: 0x42 [0m
+[0;32mI (220330) SCD30_DRIVER: 0x5c [0m
+[0;32mI (220330) SCD30_DRIVER: 0xd2 [0m
+[0;32mI (220340) SCD30_DRIVER: 0xa9 [0m
+[0;32mI (220340) SCD30_DRIVER: 0x70 [0m
+[0;32mI (220340) SCD30_DRIVER: 0x45 [0m
+[0;32mI (220370) SCD30_DRIVER: CO2: 670.3 ppm (avg: 666.2), Temperature: 21.69°C (avg: 21.71), Humidity: 55.2% (avg: 55.1)[0m
+[0;32mI (225400) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (225400) SCD30_DRIVER: 0x5c [0m
+[0;32mI (225400) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (225400) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (225430) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (225430) SCD30_DRIVER: 0x0a [0m
+[0;32mI (225430) SCD30_DRIVER: 0x00 [0m
+[0;32mI (225430) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (225460) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (225460) SCD30_DRIVER: 0x70 [0m
+[0;32mI (225460) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (225460) SCD30_DRIVER: 0x00 [0m
+[0;32mI (225460) SCD30_DRIVER: 0xfb [0m
+[0;32mI (225460) SCD30_DRIVER: 0xcb [0m
+[0;32mI (225470) SCD30_DRIVER: 0x2e [0m
+[0;32mI (225470) SCD30_DRIVER: 0x41 [0m
+[0;32mI (225480) SCD30_DRIVER: 0xc1 [0m
+[0;32mI (225480) SCD30_DRIVER: 0x8a [0m
+[0;32mI (225480) SCD30_DRIVER: 0x74 [0m
+[0;32mI (225490) SCD30_DRIVER: 0xaa [0m
+[0;32mI (225490) SCD30_DRIVER: 0x1e [0m
+[0;32mI (225490) SCD30_DRIVER: 0x42 [0m
+[0;32mI (225500) SCD30_DRIVER: 0x5c [0m
+[0;32mI (225500) SCD30_DRIVER: 0xd2 [0m
+[0;32mI (225510) SCD30_DRIVER: 0xdb [0m
+[0;32mI (225510) SCD30_DRIVER: 0x1a [0m
+[0;32mI (225510) SCD30_DRIVER: 0xc7 [0m
+[0;32mI (225540) SCD30_DRIVER: CO2: 667.9 ppm (avg: 667.3), Temperature: 21.68°C (avg: 21.70), Humidity: 55.2% (avg: 55.2)[0m
+[0;32mI (230570) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (230570) SCD30_DRIVER: 0x5c [0m
+[0;32mI (230570) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (230570) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (230600) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (230600) SCD30_DRIVER: 0x0a [0m
+[0;32mI (230600) SCD30_DRIVER: 0x00 [0m
+[0;32mI (230600) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (230630) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (230630) SCD30_DRIVER: 0x70 [0m
+[0;32mI (230630) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (230630) SCD30_DRIVER: 0x00 [0m
+[0;32mI (230630) SCD30_DRIVER: 0x44 [0m
+[0;32mI (230630) SCD30_DRIVER: 0x22 [0m
+[0;32mI (230640) SCD30_DRIVER: 0x6f [0m
+[0;32mI (230640) SCD30_DRIVER: 0x41 [0m
+[0;32mI (230650) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (230650) SCD30_DRIVER: 0xbb [0m
+[0;32mI (230650) SCD30_DRIVER: 0xde [0m
+[0;32mI (230660) SCD30_DRIVER: 0x09 [0m
+[0;32mI (230660) SCD30_DRIVER: 0xa0 [0m
+[0;32mI (230660) SCD30_DRIVER: 0x42 [0m
+[0;32mI (230670) SCD30_DRIVER: 0x5c [0m
+[0;32mI (230670) SCD30_DRIVER: 0xd2 [0m
+[0;32mI (230680) SCD30_DRIVER: 0xc8 [0m
+[0;32mI (230680) SCD30_DRIVER: 0x67 [0m
+[0;32mI (230680) SCD30_DRIVER: 0x30 [0m
+[0;32mI (230710) SCD30_DRIVER: CO2: 669.1 ppm (avg: 669.1), Temperature: 21.61°C (avg: 21.66), Humidity: 55.2% (avg: 55.2)[0m
+[0;32mI (235740) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (235740) SCD30_DRIVER: 0x5c [0m
+[0;32mI (235740) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (235740) SCD30_DRIVER: 0x81 [0m
+[0;32mI (236270) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (236270) SCD30_DRIVER: 0x5c [0m
+[0;32mI (236270) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (236270) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (236300) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (236300) SCD30_DRIVER: 0x0a [0m
+[0;32mI (236300) SCD30_DRIVER: 0x00 [0m
+[0;32mI (236300) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (236330) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (236330) SCD30_DRIVER: 0x70 [0m
+[0;32mI (236330) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (236330) SCD30_DRIVER: 0x00 [0m
+[0;32mI (236330) SCD30_DRIVER: 0x40 [0m
+[0;32mI (236330) SCD30_DRIVER: 0xa5 [0m
+[0;32mI (236340) SCD30_DRIVER: 0x01 [0m
+[0;32mI (236340) SCD30_DRIVER: 0x41 [0m
+[0;32mI (236350) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (236350) SCD30_DRIVER: 0xbb [0m
+[0;32mI (236350) SCD30_DRIVER: 0xdb [0m
+[0;32mI (236360) SCD30_DRIVER: 0x74 [0m
+[0;32mI (236360) SCD30_DRIVER: 0x63 [0m
+[0;32mI (236360) SCD30_DRIVER: 0x42 [0m
+[0;32mI (236370) SCD30_DRIVER: 0x5d [0m
+[0;32mI (236370) SCD30_DRIVER: 0xe3 [0m
+[0;32mI (236380) SCD30_DRIVER: 0x0e [0m
+[0;32mI (236380) SCD30_DRIVER: 0x3a [0m
+[0;32mI (236380) SCD30_DRIVER: 0xf2 [0m
+[0;32mI (236410) SCD30_DRIVER: CO2: 669.0 ppm (avg: 668.7), Temperature: 21.61°C (avg: 21.63), Humidity: 55.3% (avg: 55.2)[0m
+[0;32mI (241440) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (241440) SCD30_DRIVER: 0x5c [0m
+[0;32mI (241440) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (241440) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (241470) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (241470) SCD30_DRIVER: 0x0a [0m
+[0;32mI (241470) SCD30_DRIVER: 0x00 [0m
+[0;32mI (241470) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (241500) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (241500) SCD30_DRIVER: 0x70 [0m
+[0;32mI (241500) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (241500) SCD30_DRIVER: 0x00 [0m
+[0;32mI (241500) SCD30_DRIVER: 0x21 [0m
+[0;32mI (241500) SCD30_DRIVER: 0x42 [0m
+[0;32mI (241510) SCD30_DRIVER: 0xf6 [0m
+[0;32mI (241510) SCD30_DRIVER: 0x41 [0m
+[0;32mI (241520) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (241520) SCD30_DRIVER: 0xbb [0m
+[0;32mI (241520) SCD30_DRIVER: 0x40 [0m
+[0;32mI (241530) SCD30_DRIVER: 0x24 [0m
+[0;32mI (241530) SCD30_DRIVER: 0x4a [0m
+[0;32mI (241530) SCD30_DRIVER: 0x42 [0m
+[0;32mI (241540) SCD30_DRIVER: 0x5d [0m
+[0;32mI (241540) SCD30_DRIVER: 0xe3 [0m
+[0;32mI (241550) SCD30_DRIVER: 0x20 [0m
+[0;32mI (241550) SCD30_DRIVER: 0x54 [0m
+[0;32mI (241550) SCD30_DRIVER: 0xe7 [0m
+[0;32mI (241580) SCD30_DRIVER: CO2: 664.5 ppm (avg: 667.5), Temperature: 21.53°C (avg: 21.58), Humidity: 55.3% (avg: 55.2)[0m
+[0;32mI (246610) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (246610) SCD30_DRIVER: 0x5c [0m
+[0;32mI (246610) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (246610) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (246640) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (246640) SCD30_DRIVER: 0x0a [0m
+[0;32mI (246640) SCD30_DRIVER: 0x00 [0m
+[0;32mI (246640) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (246670) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (246670) SCD30_DRIVER: 0x70 [0m
+[0;32mI (246670) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (246670) SCD30_DRIVER: 0x00 [0m
+[0;32mI (246670) SCD30_DRIVER: 0x81 [0m
+[0;32mI (246670) SCD30_DRIVER: 0xa7 [0m
+[0;32mI (246680) SCD30_DRIVER: 0x3d [0m
+[0;32mI (246680) SCD30_DRIVER: 0x41 [0m
+[0;32mI (246690) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (246690) SCD30_DRIVER: 0xbb [0m
+[0;32mI (246690) SCD30_DRIVER: 0x1d [0m
+[0;32mI (246700) SCD30_DRIVER: 0x85 [0m
+[0;32mI (246700) SCD30_DRIVER: 0x20 [0m
+[0;32mI (246700) SCD30_DRIVER: 0x42 [0m
+[0;32mI (246710) SCD30_DRIVER: 0x5d [0m
+[0;32mI (246710) SCD30_DRIVER: 0xe3 [0m
+[0;32mI (246720) SCD30_DRIVER: 0xb8 [0m
+[0;32mI (246720) SCD30_DRIVER: 0x3e [0m
+[0;32mI (246720) SCD30_DRIVER: 0xfd [0m
+[0;32mI (246750) SCD30_DRIVER: CO2: 662.0 ppm (avg: 665.2), Temperature: 21.51°C (avg: 21.55), Humidity: 55.4% (avg: 55.3)[0m
+[0;32mI (251780) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (251780) SCD30_DRIVER: 0x5c [0m
+[0;32mI (251780) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (251780) SCD30_DRIVER: 0x81 [0m
+[0;32mI (252310) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (252310) SCD30_DRIVER: 0x5c [0m
+[0;32mI (252310) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (252310) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (252340) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (252340) SCD30_DRIVER: 0x0a [0m
+[0;32mI (252340) SCD30_DRIVER: 0x00 [0m
+[0;32mI (252340) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (252370) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (252370) SCD30_DRIVER: 0x70 [0m
+[0;32mI (252370) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (252370) SCD30_DRIVER: 0x00 [0m
+[0;32mI (252370) SCD30_DRIVER: 0x21 [0m
+[0;32mI (252370) SCD30_DRIVER: 0x2e [0m
+[0;32mI (252380) SCD30_DRIVER: 0x30 [0m
+[0;32mI (252380) SCD30_DRIVER: 0x41 [0m
+[0;32mI (252390) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (252390) SCD30_DRIVER: 0xbb [0m
+[0;32mI (252390) SCD30_DRIVER: 0x52 [0m
+[0;32mI (252400) SCD30_DRIVER: 0xc9 [0m
+[0;32mI (252400) SCD30_DRIVER: 0x70 [0m
+[0;32mI (252400) SCD30_DRIVER: 0x42 [0m
+[0;32mI (252410) SCD30_DRIVER: 0x5d [0m
+[0;32mI (252410) SCD30_DRIVER: 0xe3 [0m
+[0;32mI (252420) SCD30_DRIVER: 0xdd [0m
+[0;32mI (252420) SCD30_DRIVER: 0xe7 [0m
+[0;32mI (252420) SCD30_DRIVER: 0x53 [0m
+[0;32mI (252450) SCD30_DRIVER: CO2: 660.5 ppm (avg: 662.4), Temperature: 21.54°C (avg: 21.53), Humidity: 55.5% (avg: 55.4)[0m
+[0;32mI (257480) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (257480) SCD30_DRIVER: 0x5c [0m
+[0;32mI (257480) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (257480) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (257510) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (257510) SCD30_DRIVER: 0x0a [0m
+[0;32mI (257510) SCD30_DRIVER: 0x00 [0m
+[0;32mI (257510) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (257540) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (257540) SCD30_DRIVER: 0x70 [0m
+[0;32mI (257540) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (257540) SCD30_DRIVER: 0x00 [0m
+[0;32mI (257540) SCD30_DRIVER: 0x89 [0m
+[0;32mI (257540) SCD30_DRIVER: 0x08 [0m
+[0;32mI (257550) SCD30_DRIVER: 0xd8 [0m
+[0;32mI (257550) SCD30_DRIVER: 0x41 [0m
+[0;32mI (257560) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (257560) SCD30_DRIVER: 0xbb [0m
+[0;32mI (257560) SCD30_DRIVER: 0x51 [0m
+[0;32mI (257570) SCD30_DRIVER: 0xbc [0m
+[0;32mI (257570) SCD30_DRIVER: 0x50 [0m
+[0;32mI (257570) SCD30_DRIVER: 0x42 [0m
+[0;32mI (257580) SCD30_DRIVER: 0x5d [0m
+[0;32mI (257580) SCD30_DRIVER: 0xe3 [0m
+[0;32mI (257590) SCD30_DRIVER: 0xf3 [0m
+[0;32mI (257590) SCD30_DRIVER: 0x07 [0m
+[0;32mI (257590) SCD30_DRIVER: 0x23 [0m
+[0;32mI (257620) SCD30_DRIVER: CO2: 658.1 ppm (avg: 660.2), Temperature: 21.54°C (avg: 21.53), Humidity: 55.5% (avg: 55.5)[0m
+[0;32mI (262650) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (262650) SCD30_DRIVER: 0x5c [0m
+[0;32mI (262650) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (262650) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (262680) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (262680) SCD30_DRIVER: 0x0a [0m
+[0;32mI (262680) SCD30_DRIVER: 0x00 [0m
+[0;32mI (262680) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (262710) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (262710) SCD30_DRIVER: 0x70 [0m
+[0;32mI (262710) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (262710) SCD30_DRIVER: 0x00 [0m
+[0;32mI (262710) SCD30_DRIVER: 0xd0 [0m
+[0;32mI (262710) SCD30_DRIVER: 0x45 [0m
+[0;32mI (262720) SCD30_DRIVER: 0x8d [0m
+[0;32mI (262720) SCD30_DRIVER: 0x41 [0m
+[0;32mI (262730) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (262730) SCD30_DRIVER: 0xbb [0m
+[0;32mI (262730) SCD30_DRIVER: 0x82 [0m
+[0;32mI (262740) SCD30_DRIVER: 0x48 [0m
+[0;32mI (262740) SCD30_DRIVER: 0xff [0m
+[0;32mI (262740) SCD30_DRIVER: 0x42 [0m
+[0;32mI (262750) SCD30_DRIVER: 0x5e [0m
+[0;32mI (262750) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (262760) SCD30_DRIVER: 0x3d [0m
+[0;32mI (262760) SCD30_DRIVER: 0xb5 [0m
+[0;32mI (262760) SCD30_DRIVER: 0x39 [0m
+[0;32mI (262790) SCD30_DRIVER: CO2: 655.3 ppm (avg: 658.0), Temperature: 21.56°C (avg: 21.55), Humidity: 55.6% (avg: 55.5)[0m
+[0;32mI (267820) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (267820) SCD30_DRIVER: 0x5c [0m
+[0;32mI (267820) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (267820) SCD30_DRIVER: 0x81 [0m
+[0;32mI (268350) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (268350) SCD30_DRIVER: 0x5c [0m
+[0;32mI (268350) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (268350) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (268380) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (268380) SCD30_DRIVER: 0x0a [0m
+[0;32mI (268380) SCD30_DRIVER: 0x00 [0m
+[0;32mI (268380) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (268410) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (268410) SCD30_DRIVER: 0x70 [0m
+[0;32mI (268410) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (268410) SCD30_DRIVER: 0x00 [0m
+[0;32mI (268410) SCD30_DRIVER: 0x6c [0m
+[0;32mI (268410) SCD30_DRIVER: 0xc9 [0m
+[0;32mI (268420) SCD30_DRIVER: 0xaf [0m
+[0;32mI (268420) SCD30_DRIVER: 0x41 [0m
+[0;32mI (268430) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (268430) SCD30_DRIVER: 0xbb [0m
+[0;32mI (268430) SCD30_DRIVER: 0x81 [0m
+[0;32mI (268440) SCD30_DRIVER: 0xf9 [0m
+[0;32mI (268440) SCD30_DRIVER: 0x5c [0m
+[0;32mI (268440) SCD30_DRIVER: 0x42 [0m
+[0;32mI (268450) SCD30_DRIVER: 0x5e [0m
+[0;32mI (268450) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (268460) SCD30_DRIVER: 0x47 [0m
+[0;32mI (268460) SCD30_DRIVER: 0x9c [0m
+[0;32mI (268460) SCD30_DRIVER: 0xe2 [0m
+[0;32mI (268490) SCD30_DRIVER: CO2: 653.7 ppm (avg: 655.7), Temperature: 21.56°C (avg: 21.56), Humidity: 55.6% (avg: 55.5)[0m
+[0;32mI (273520) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (273520) SCD30_DRIVER: 0x5c [0m
+[0;32mI (273520) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (273520) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (273550) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (273550) SCD30_DRIVER: 0x0a [0m
+[0;32mI (273550) SCD30_DRIVER: 0x00 [0m
+[0;32mI (273550) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (273580) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (273580) SCD30_DRIVER: 0x70 [0m
+[0;32mI (273580) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (273580) SCD30_DRIVER: 0x00 [0m
+[0;32mI (273580) SCD30_DRIVER: 0x81 [0m
+[0;32mI (273580) SCD30_DRIVER: 0xf5 [0m
+[0;32mI (273590) SCD30_DRIVER: 0x21 [0m
+[0;32mI (273590) SCD30_DRIVER: 0x41 [0m
+[0;32mI (273600) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (273600) SCD30_DRIVER: 0xbb [0m
+[0;32mI (273600) SCD30_DRIVER: 0x7c [0m
+[0;32mI (273610) SCD30_DRIVER: 0x90 [0m
+[0;32mI (273610) SCD30_DRIVER: 0x37 [0m
+[0;32mI (273610) SCD30_DRIVER: 0x42 [0m
+[0;32mI (273620) SCD30_DRIVER: 0x5e [0m
+[0;32mI (273620) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (273630) SCD30_DRIVER: 0x50 [0m
+[0;32mI (273630) SCD30_DRIVER: 0xf1 [0m
+[0;32mI (273630) SCD30_DRIVER: 0xd5 [0m
+[0;32mI (273660) SCD30_DRIVER: CO2: 654.0 ppm (avg: 654.3), Temperature: 21.56°C (avg: 21.56), Humidity: 55.6% (avg: 55.6)[0m
+[0;32mI (278690) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (278690) SCD30_DRIVER: 0x5c [0m
+[0;32mI (278690) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (278690) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (278720) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (278720) SCD30_DRIVER: 0x0a [0m
+[0;32mI (278720) SCD30_DRIVER: 0x00 [0m
+[0;32mI (278720) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (278750) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (278750) SCD30_DRIVER: 0x70 [0m
+[0;32mI (278750) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (278750) SCD30_DRIVER: 0x00 [0m
+[0;32mI (278750) SCD30_DRIVER: 0x3c [0m
+[0;32mI (278750) SCD30_DRIVER: 0xcd [0m
+[0;32mI (278760) SCD30_DRIVER: 0x8c [0m
+[0;32mI (278760) SCD30_DRIVER: 0x41 [0m
+[0;32mI (278770) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (278770) SCD30_DRIVER: 0xbb [0m
+[0;32mI (278770) SCD30_DRIVER: 0x92 [0m
+[0;32mI (278780) SCD30_DRIVER: 0xdb [0m
+[0;32mI (278780) SCD30_DRIVER: 0xfb [0m
+[0;32mI (278780) SCD30_DRIVER: 0x42 [0m
+[0;32mI (278790) SCD30_DRIVER: 0x5e [0m
+[0;32mI (278790) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (278800) SCD30_DRIVER: 0xa2 [0m
+[0;32mI (278800) SCD30_DRIVER: 0x96 [0m
+[0;32mI (278800) SCD30_DRIVER: 0x38 [0m
+[0;32mI (278830) SCD30_DRIVER: CO2: 653.0 ppm (avg: 653.6), Temperature: 21.57°C (avg: 21.57), Humidity: 55.7% (avg: 55.6)[0m
+[0;32mI (283860) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (283860) SCD30_DRIVER: 0x5c [0m
+[0;32mI (283860) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (283860) SCD30_DRIVER: 0x81 [0m
+[0;32mI (284390) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (284390) SCD30_DRIVER: 0x5c [0m
+[0;32mI (284390) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (284390) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (284420) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (284420) SCD30_DRIVER: 0x0a [0m
+[0;32mI (284420) SCD30_DRIVER: 0x00 [0m
+[0;32mI (284420) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (284450) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (284450) SCD30_DRIVER: 0x70 [0m
+[0;32mI (284450) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (284450) SCD30_DRIVER: 0x00 [0m
+[0;32mI (284450) SCD30_DRIVER: 0x55 [0m
+[0;32mI (284450) SCD30_DRIVER: 0xfd [0m
+[0;32mI (284460) SCD30_DRIVER: 0xdf [0m
+[0;32mI (284460) SCD30_DRIVER: 0x41 [0m
+[0;32mI (284470) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (284470) SCD30_DRIVER: 0xbb [0m
+[0;32mI (284470) SCD30_DRIVER: 0x57 [0m
+[0;32mI (284480) SCD30_DRIVER: 0x79 [0m
+[0;32mI (284480) SCD30_DRIVER: 0xb8 [0m
+[0;32mI (284480) SCD30_DRIVER: 0x42 [0m
+[0;32mI (284490) SCD30_DRIVER: 0x5e [0m
+[0;32mI (284490) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (284500) SCD30_DRIVER: 0xe2 [0m
+[0;32mI (284500) SCD30_DRIVER: 0x80 [0m
+[0;32mI (284500) SCD30_DRIVER: 0x54 [0m
+[0;32mI (284530) SCD30_DRIVER: CO2: 653.3 ppm (avg: 653.4), Temperature: 21.54°C (avg: 21.56), Humidity: 55.7% (avg: 55.7)[0m
+[0;32mI (289560) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (289560) SCD30_DRIVER: 0x5c [0m
+[0;32mI (289560) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (289560) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (289590) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (289590) SCD30_DRIVER: 0x0a [0m
+[0;32mI (289590) SCD30_DRIVER: 0x00 [0m
+[0;32mI (289590) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (289620) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (289620) SCD30_DRIVER: 0x70 [0m
+[0;32mI (289620) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (289620) SCD30_DRIVER: 0x00 [0m
+[0;32mI (289620) SCD30_DRIVER: 0x91 [0m
+[0;32mI (289620) SCD30_DRIVER: 0x40 [0m
+[0;32mI (289630) SCD30_DRIVER: 0x05 [0m
+[0;32mI (289630) SCD30_DRIVER: 0x41 [0m
+[0;32mI (289640) SCD30_DRIVER: 0xbf [0m
+[0;32mI (289640) SCD30_DRIVER: 0x6d [0m
+[0;32mI (289640) SCD30_DRIVER: 0xa9 [0m
+[0;32mI (289650) SCD30_DRIVER: 0x99 [0m
+[0;32mI (289650) SCD30_DRIVER: 0x0c [0m
+[0;32mI (289650) SCD30_DRIVER: 0x42 [0m
+[0;32mI (289660) SCD30_DRIVER: 0x5e [0m
+[0;32mI (289660) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (289670) SCD30_DRIVER: 0x88 [0m
+[0;32mI (289670) SCD30_DRIVER: 0x37 [0m
+[0;32mI (289670) SCD30_DRIVER: 0xc7 [0m
+[0;32mI (289700) SCD30_DRIVER: CO2: 654.3 ppm (avg: 653.5), Temperature: 21.46°C (avg: 21.52), Humidity: 55.6% (avg: 55.7)[0m
+[0;32mI (294730) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (294730) SCD30_DRIVER: 0x5c [0m
+[0;32mI (294730) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (294730) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (294760) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (294760) SCD30_DRIVER: 0x0a [0m
+[0;32mI (294760) SCD30_DRIVER: 0x00 [0m
+[0;32mI (294760) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (294790) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (294790) SCD30_DRIVER: 0x70 [0m
+[0;32mI (294790) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (294790) SCD30_DRIVER: 0x00 [0m
+[0;32mI (294790) SCD30_DRIVER: 0x8f [0m
+[0;32mI (294790) SCD30_DRIVER: 0x45 [0m
+[0;32mI (294800) SCD30_DRIVER: 0xf3 [0m
+[0;32mI (294800) SCD30_DRIVER: 0x41 [0m
+[0;32mI (294810) SCD30_DRIVER: 0xbe [0m
+[0;32mI (294810) SCD30_DRIVER: 0x5c [0m
+[0;32mI (294810) SCD30_DRIVER: 0xf6 [0m
+[0;32mI (294820) SCD30_DRIVER: 0x9b [0m
+[0;32mI (294820) SCD30_DRIVER: 0x10 [0m
+[0;32mI (294820) SCD30_DRIVER: 0x42 [0m
+[0;32mI (294830) SCD30_DRIVER: 0x5e [0m
+[0;32mI (294830) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (294840) SCD30_DRIVER: 0xfc [0m
+[0;32mI (294840) SCD30_DRIVER: 0x7f [0m
+[0;32mI (294840) SCD30_DRIVER: 0xfb [0m
+[0;32mI (294870) SCD30_DRIVER: CO2: 654.2 ppm (avg: 654.0), Temperature: 21.37°C (avg: 21.46), Humidity: 55.7% (avg: 55.7)[0m
+[0;32mI (299900) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (299900) SCD30_DRIVER: 0x5c [0m
+[0;32mI (299900) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (299900) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (299930) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (299930) SCD30_DRIVER: 0x0a [0m
+[0;32mI (299930) SCD30_DRIVER: 0x00 [0m
+[0;32mI (299930) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (299960) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (299960) SCD30_DRIVER: 0x70 [0m
+[0;32mI (299960) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (299960) SCD30_DRIVER: 0x00 [0m
+[0;32mI (299960) SCD30_DRIVER: 0xc8 [0m
+[0;32mI (299960) SCD30_DRIVER: 0xb4 [0m
+[0;32mI (299970) SCD30_DRIVER: 0x67 [0m
+[0;32mI (299970) SCD30_DRIVER: 0x41 [0m
+[0;32mI (299980) SCD30_DRIVER: 0xbf [0m
+[0;32mI (299980) SCD30_DRIVER: 0x6d [0m
+[0;32mI (299980) SCD30_DRIVER: 0x4f [0m
+[0;32mI (299990) SCD30_DRIVER: 0xed [0m
+[0;32mI (299990) SCD30_DRIVER: 0x1c [0m
+[0;32mI (299990) SCD30_DRIVER: 0x42 [0m
+[0;32mI (300000) SCD30_DRIVER: 0x5f [0m
+[0;32mI (300000) SCD30_DRIVER: 0x81 [0m
+[0;32mI (300010) SCD30_DRIVER: 0x8c [0m
+[0;32mI (300010) SCD30_DRIVER: 0x66 [0m
+[0;32mI (300010) SCD30_DRIVER: 0x0b [0m
+[0;32mI (300040) SCD30_DRIVER: CO2: 651.1 ppm (avg: 653.2), Temperature: 21.41°C (avg: 21.41), Humidity: 55.9% (avg: 55.8)[0m
+[0;32mI (305070) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (305070) SCD30_DRIVER: 0x5c [0m
+[0;32mI (305070) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (305070) SCD30_DRIVER: 0x81 [0m
+[0;32mI (305600) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (305600) SCD30_DRIVER: 0x5c [0m
+[0;32mI (305600) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (305600) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (305630) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (305630) SCD30_DRIVER: 0x0a [0m
+[0;32mI (305630) SCD30_DRIVER: 0x00 [0m
+[0;32mI (305630) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (305660) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (305660) SCD30_DRIVER: 0x70 [0m
+[0;32mI (305660) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (305660) SCD30_DRIVER: 0x00 [0m
+[0;32mI (305660) SCD30_DRIVER: 0x75 [0m
+[0;32mI (305660) SCD30_DRIVER: 0xb7 [0m
+[0;32mI (305670) SCD30_DRIVER: 0xe5 [0m
+[0;32mI (305670) SCD30_DRIVER: 0x41 [0m
+[0;32mI (305680) SCD30_DRIVER: 0xbf [0m
+[0;32mI (305680) SCD30_DRIVER: 0x6d [0m
+[0;32mI (305680) SCD30_DRIVER: 0x83 [0m
+[0;32mI (305690) SCD30_DRIVER: 0x4e [0m
+[0;32mI (305690) SCD30_DRIVER: 0xad [0m
+[0;32mI (305690) SCD30_DRIVER: 0x42 [0m
+[0;32mI (305700) SCD30_DRIVER: 0x5f [0m
+[0;32mI (305700) SCD30_DRIVER: 0x81 [0m
+[0;32mI (305710) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (305710) SCD30_DRIVER: 0xb9 [0m
+[0;32mI (305710) SCD30_DRIVER: 0x31 [0m
+[0;32mI (305740) SCD30_DRIVER: CO2: 649.8 ppm (avg: 651.7), Temperature: 21.44°C (avg: 21.41), Humidity: 55.9% (avg: 55.9)[0m
+[0;32mI (310770) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (310770) SCD30_DRIVER: 0x5c [0m
+[0;32mI (310770) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (310770) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (310800) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (310800) SCD30_DRIVER: 0x0a [0m
+[0;32mI (310800) SCD30_DRIVER: 0x00 [0m
+[0;32mI (310800) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (310830) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (310830) SCD30_DRIVER: 0x70 [0m
+[0;32mI (310830) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (310830) SCD30_DRIVER: 0x00 [0m
+[0;32mI (310830) SCD30_DRIVER: 0x72 [0m
+[0;32mI (310830) SCD30_DRIVER: 0xf7 [0m
+[0;32mI (310840) SCD30_DRIVER: 0x76 [0m
+[0;32mI (310840) SCD30_DRIVER: 0x41 [0m
+[0;32mI (310850) SCD30_DRIVER: 0xbf [0m
+[0;32mI (310850) SCD30_DRIVER: 0x6d [0m
+[0;32mI (310850) SCD30_DRIVER: 0x64 [0m
+[0;32mI (310860) SCD30_DRIVER: 0xfd [0m
+[0;32mI (310860) SCD30_DRIVER: 0x99 [0m
+[0;32mI (310860) SCD30_DRIVER: 0x42 [0m
+[0;32mI (310870) SCD30_DRIVER: 0x5f [0m
+[0;32mI (310870) SCD30_DRIVER: 0x81 [0m
+[0;32mI (310880) SCD30_DRIVER: 0xa2 [0m
+[0;32mI (310880) SCD30_DRIVER: 0xe4 [0m
+[0;32mI (310880) SCD30_DRIVER: 0xa2 [0m
+[0;32mI (310910) SCD30_DRIVER: CO2: 649.8 ppm (avg: 650.3), Temperature: 21.42°C (avg: 21.43), Humidity: 55.9% (avg: 55.9)[0m
+[0;32mI (315940) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (315940) SCD30_DRIVER: 0x5c [0m
+[0;32mI (315940) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (315940) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (315970) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (315970) SCD30_DRIVER: 0x0a [0m
+[0;32mI (315970) SCD30_DRIVER: 0x00 [0m
+[0;32mI (315970) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (316000) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (316000) SCD30_DRIVER: 0x70 [0m
+[0;32mI (316000) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (316000) SCD30_DRIVER: 0x00 [0m
+[0;32mI (316000) SCD30_DRIVER: 0x91 [0m
+[0;32mI (316000) SCD30_DRIVER: 0x28 [0m
+[0;32mI (316010) SCD30_DRIVER: 0x07 [0m
+[0;32mI (316010) SCD30_DRIVER: 0x41 [0m
+[0;32mI (316020) SCD30_DRIVER: 0xbf [0m
+[0;32mI (316020) SCD30_DRIVER: 0x6d [0m
+[0;32mI (316020) SCD30_DRIVER: 0xda [0m
+[0;32mI (316030) SCD30_DRIVER: 0xaa [0m
+[0;32mI (316030) SCD30_DRIVER: 0x8c [0m
+[0;32mI (316030) SCD30_DRIVER: 0x42 [0m
+[0;32mI (316040) SCD30_DRIVER: 0x5f [0m
+[0;32mI (316040) SCD30_DRIVER: 0x81 [0m
+[0;32mI (316050) SCD30_DRIVER: 0xc7 [0m
+[0;32mI (316050) SCD30_DRIVER: 0x55 [0m
+[0;32mI (316050) SCD30_DRIVER: 0x0e [0m
+[0;32mI (316080) SCD30_DRIVER: CO2: 650.3 ppm (avg: 650.0), Temperature: 21.48°C (avg: 21.45), Humidity: 55.9% (avg: 55.9)[0m
+[0;32mI (321110) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (321110) SCD30_DRIVER: 0x5c [0m
+[0;32mI (321110) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (321110) SCD30_DRIVER: 0x81 [0m
+[0;32mI (321640) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (321640) SCD30_DRIVER: 0x5c [0m
+[0;32mI (321640) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (321640) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (321670) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (321670) SCD30_DRIVER: 0x0a [0m
+[0;32mI (321670) SCD30_DRIVER: 0x00 [0m
+[0;32mI (321670) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (321700) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (321700) SCD30_DRIVER: 0x70 [0m
+[0;32mI (321700) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (321700) SCD30_DRIVER: 0x00 [0m
+[0;32mI (321700) SCD30_DRIVER: 0x8e [0m
+[0;32mI (321700) SCD30_DRIVER: 0x65 [0m
+[0;32mI (321710) SCD30_DRIVER: 0x81 [0m
+[0;32mI (321710) SCD30_DRIVER: 0x41 [0m
+[0;32mI (321720) SCD30_DRIVER: 0xbf [0m
+[0;32mI (321720) SCD30_DRIVER: 0x6d [0m
+[0;32mI (321720) SCD30_DRIVER: 0xd8 [0m
+[0;32mI (321730) SCD30_DRIVER: 0x5b [0m
+[0;32mI (321730) SCD30_DRIVER: 0xe6 [0m
+[0;32mI (321730) SCD30_DRIVER: 0x42 [0m
+[0;32mI (321740) SCD30_DRIVER: 0x5f [0m
+[0;32mI (321740) SCD30_DRIVER: 0x81 [0m
+[0;32mI (321750) SCD30_DRIVER: 0xc8 [0m
+[0;32mI (321750) SCD30_DRIVER: 0x13 [0m
+[0;32mI (321750) SCD30_DRIVER: 0x0c [0m
+[0;32mI (321780) SCD30_DRIVER: CO2: 650.2 ppm (avg: 650.1), Temperature: 21.48°C (avg: 21.46), Humidity: 55.9% (avg: 55.9)[0m
+[0;32mI (326810) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (326810) SCD30_DRIVER: 0x5c [0m
+[0;32mI (326810) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (326810) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (326840) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (326840) SCD30_DRIVER: 0x0a [0m
+[0;32mI (326840) SCD30_DRIVER: 0x00 [0m
+[0;32mI (326840) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (326870) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (326870) SCD30_DRIVER: 0x70 [0m
+[0;32mI (326870) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (326870) SCD30_DRIVER: 0x00 [0m
+[0;32mI (326870) SCD30_DRIVER: 0xb8 [0m
+[0;32mI (326870) SCD30_DRIVER: 0xd2 [0m
+[0;32mI (326880) SCD30_DRIVER: 0x41 [0m
+[0;32mI (326880) SCD30_DRIVER: 0x41 [0m
+[0;32mI (326890) SCD30_DRIVER: 0xbf [0m
+[0;32mI (326890) SCD30_DRIVER: 0x6d [0m
+[0;32mI (326890) SCD30_DRIVER: 0xbb [0m
+[0;32mI (326900) SCD30_DRIVER: 0x08 [0m
+[0;32mI (326900) SCD30_DRIVER: 0xb3 [0m
+[0;32mI (326900) SCD30_DRIVER: 0x42 [0m
+[0;32mI (326910) SCD30_DRIVER: 0x5f [0m
+[0;32mI (326910) SCD30_DRIVER: 0x81 [0m
+[0;32mI (326920) SCD30_DRIVER: 0xf9 [0m
+[0;32mI (326920) SCD30_DRIVER: 0x5b [0m
+[0;32mI (326920) SCD30_DRIVER: 0xce [0m
+[0;32mI (326950) SCD30_DRIVER: CO2: 650.9 ppm (avg: 650.5), Temperature: 21.47°C (avg: 21.48), Humidity: 56.0% (avg: 56.0)[0m
+[0;32mI (331980) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (331980) SCD30_DRIVER: 0x5c [0m
+[0;32mI (331980) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (331980) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (332010) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (332010) SCD30_DRIVER: 0x0a [0m
+[0;32mI (332010) SCD30_DRIVER: 0x00 [0m
+[0;32mI (332010) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (332040) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (332040) SCD30_DRIVER: 0x70 [0m
+[0;32mI (332040) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (332040) SCD30_DRIVER: 0x00 [0m
+[0;32mI (332040) SCD30_DRIVER: 0xb6 [0m
+[0;32mI (332040) SCD30_DRIVER: 0x52 [0m
+[0;32mI (332050) SCD30_DRIVER: 0x56 [0m
+[0;32mI (332050) SCD30_DRIVER: 0x41 [0m
+[0;32mI (332060) SCD30_DRIVER: 0xbf [0m
+[0;32mI (332060) SCD30_DRIVER: 0x6d [0m
+[0;32mI (332060) SCD30_DRIVER: 0x9e [0m
+[0;32mI (332070) SCD30_DRIVER: 0x07 [0m
+[0;32mI (332070) SCD30_DRIVER: 0x36 [0m
+[0;32mI (332070) SCD30_DRIVER: 0x42 [0m
+[0;32mI (332080) SCD30_DRIVER: 0x60 [0m
+[0;32mI (332080) SCD30_DRIVER: 0x6a [0m
+[0;32mI (332090) SCD30_DRIVER: 0x1e [0m
+[0;32mI (332090) SCD30_DRIVER: 0x5f [0m
+[0;32mI (332090) SCD30_DRIVER: 0xd2 [0m
+[0;32mI (332120) SCD30_DRIVER: CO2: 650.8 ppm (avg: 650.7), Temperature: 21.45°C (avg: 21.47), Humidity: 56.0% (avg: 56.0)[0m
+[0;32mI (337150) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (337150) SCD30_DRIVER: 0x5c [0m
+[0;32mI (337150) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (337150) SCD30_DRIVER: 0x81 [0m
+[0;32mI (337680) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (337680) SCD30_DRIVER: 0x5c [0m
+[0;32mI (337680) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (337680) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (337710) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (337710) SCD30_DRIVER: 0x0a [0m
+[0;32mI (337710) SCD30_DRIVER: 0x00 [0m
+[0;32mI (337710) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (337740) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (337740) SCD30_DRIVER: 0x70 [0m
+[0;32mI (337740) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (337740) SCD30_DRIVER: 0x00 [0m
+[0;32mI (337740) SCD30_DRIVER: 0xb9 [0m
+[0;32mI (337740) SCD30_DRIVER: 0x35 [0m
+[0;32mI (337750) SCD30_DRIVER: 0xe3 [0m
+[0;32mI (337750) SCD30_DRIVER: 0x41 [0m
+[0;32mI (337760) SCD30_DRIVER: 0xbf [0m
+[0;32mI (337760) SCD30_DRIVER: 0x6d [0m
+[0;32mI (337760) SCD30_DRIVER: 0x66 [0m
+[0;32mI (337770) SCD30_DRIVER: 0x00 [0m
+[0;32mI (337770) SCD30_DRIVER: 0x8e [0m
+[0;32mI (337770) SCD30_DRIVER: 0x42 [0m
+[0;32mI (337780) SCD30_DRIVER: 0x60 [0m
+[0;32mI (337780) SCD30_DRIVER: 0x6a [0m
+[0;32mI (337790) SCD30_DRIVER: 0x3f [0m
+[0;32mI (337790) SCD30_DRIVER: 0xee [0m
+[0;32mI (337790) SCD30_DRIVER: 0x74 [0m
+[0;32mI (337820) SCD30_DRIVER: CO2: 650.9 ppm (avg: 650.9), Temperature: 21.42°C (avg: 21.45), Humidity: 56.1% (avg: 56.0)[0m
+[0;32mI (342850) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (342850) SCD30_DRIVER: 0x5c [0m
+[0;32mI (342850) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (342850) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (342880) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (342880) SCD30_DRIVER: 0x0a [0m
+[0;32mI (342880) SCD30_DRIVER: 0x00 [0m
+[0;32mI (342880) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (342910) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (342910) SCD30_DRIVER: 0x70 [0m
+[0;32mI (342910) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (342910) SCD30_DRIVER: 0x00 [0m
+[0;32mI (342910) SCD30_DRIVER: 0x82 [0m
+[0;32mI (342910) SCD30_DRIVER: 0xc1 [0m
+[0;32mI (342920) SCD30_DRIVER: 0x0d [0m
+[0;32mI (342920) SCD30_DRIVER: 0x41 [0m
+[0;32mI (342930) SCD30_DRIVER: 0xbf [0m
+[0;32mI (342930) SCD30_DRIVER: 0x6d [0m
+[0;32mI (342930) SCD30_DRIVER: 0x64 [0m
+[0;32mI (342940) SCD30_DRIVER: 0xfa [0m
+[0;32mI (342940) SCD30_DRIVER: 0x0e [0m
+[0;32mI (342940) SCD30_DRIVER: 0x42 [0m
+[0;32mI (342950) SCD30_DRIVER: 0x60 [0m
+[0;32mI (342950) SCD30_DRIVER: 0x6a [0m
+[0;32mI (342960) SCD30_DRIVER: 0xed [0m
+[0;32mI (342960) SCD30_DRIVER: 0x9b [0m
+[0;32mI (342960) SCD30_DRIVER: 0x64 [0m
+[0;32mI (342990) SCD30_DRIVER: CO2: 650.0 ppm (avg: 650.6), Temperature: 21.42°C (avg: 21.43), Humidity: 56.2% (avg: 56.1)[0m
+[0;32mI (348020) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (348020) SCD30_DRIVER: 0x5c [0m
+[0;32mI (348020) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (348020) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (348050) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (348050) SCD30_DRIVER: 0x0a [0m
+[0;32mI (348050) SCD30_DRIVER: 0x00 [0m
+[0;32mI (348050) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (348080) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (348080) SCD30_DRIVER: 0x70 [0m
+[0;32mI (348080) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (348080) SCD30_DRIVER: 0x00 [0m
+[0;32mI (348080) SCD30_DRIVER: 0xb1 [0m
+[0;32mI (348080) SCD30_DRIVER: 0x5f [0m
+[0;32mI (348090) SCD30_DRIVER: 0xb4 [0m
+[0;32mI (348090) SCD30_DRIVER: 0x41 [0m
+[0;32mI (348100) SCD30_DRIVER: 0xbf [0m
+[0;32mI (348100) SCD30_DRIVER: 0x6d [0m
+[0;32mI (348100) SCD30_DRIVER: 0xbb [0m
+[0;32mI (348110) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (348110) SCD30_DRIVER: 0x1e [0m
+[0;32mI (348110) SCD30_DRIVER: 0x42 [0m
+[0;32mI (348120) SCD30_DRIVER: 0x60 [0m
+[0;32mI (348120) SCD30_DRIVER: 0x6a [0m
+[0;32mI (348130) SCD30_DRIVER: 0xc1 [0m
+[0;32mI (348130) SCD30_DRIVER: 0xdb [0m
+[0;32mI (348130) SCD30_DRIVER: 0x31 [0m
+[0;32mI (348160) SCD30_DRIVER: CO2: 650.8 ppm (avg: 650.6), Temperature: 21.47°C (avg: 21.44), Humidity: 56.2% (avg: 56.2)[0m
+[0;32mI (353190) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (353190) SCD30_DRIVER: 0x5c [0m
+[0;32mI (353190) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (353190) SCD30_DRIVER: 0x81 [0m
+[0;32mI (353720) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (353720) SCD30_DRIVER: 0x5c [0m
+[0;32mI (353720) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (353720) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (353750) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (353750) SCD30_DRIVER: 0x0a [0m
+[0;32mI (353750) SCD30_DRIVER: 0x00 [0m
+[0;32mI (353750) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (353780) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (353780) SCD30_DRIVER: 0x70 [0m
+[0;32mI (353780) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (353780) SCD30_DRIVER: 0x00 [0m
+[0;32mI (353780) SCD30_DRIVER: 0xd4 [0m
+[0;32mI (353780) SCD30_DRIVER: 0x95 [0m
+[0;32mI (353790) SCD30_DRIVER: 0x0a [0m
+[0;32mI (353790) SCD30_DRIVER: 0x41 [0m
+[0;32mI (353800) SCD30_DRIVER: 0xbf [0m
+[0;32mI (353800) SCD30_DRIVER: 0x6d [0m
+[0;32mI (353800) SCD30_DRIVER: 0x63 [0m
+[0;32mI (353810) SCD30_DRIVER: 0xdc [0m
+[0;32mI (353810) SCD30_DRIVER: 0x80 [0m
+[0;32mI (353810) SCD30_DRIVER: 0x42 [0m
+[0;32mI (353820) SCD30_DRIVER: 0x60 [0m
+[0;32mI (353820) SCD30_DRIVER: 0x6a [0m
+[0;32mI (353830) SCD30_DRIVER: 0xec [0m
+[0;32mI (353830) SCD30_DRIVER: 0x98 [0m
+[0;32mI (353830) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (353860) SCD30_DRIVER: CO2: 651.3 ppm (avg: 650.7), Temperature: 21.42°C (avg: 21.44), Humidity: 56.2% (avg: 56.2)[0m
+[0;32mI (358890) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (358890) SCD30_DRIVER: 0x5c [0m
+[0;32mI (358890) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (358890) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (358920) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (358920) SCD30_DRIVER: 0x0a [0m
+[0;32mI (358920) SCD30_DRIVER: 0x00 [0m
+[0;32mI (358920) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (358950) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (358950) SCD30_DRIVER: 0x70 [0m
+[0;32mI (358950) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (358950) SCD30_DRIVER: 0x00 [0m
+[0;32mI (358950) SCD30_DRIVER: 0xb6 [0m
+[0;32mI (358950) SCD30_DRIVER: 0xca [0m
+[0;32mI (358960) SCD30_DRIVER: 0xd6 [0m
+[0;32mI (358960) SCD30_DRIVER: 0x41 [0m
+[0;32mI (358970) SCD30_DRIVER: 0xbf [0m
+[0;32mI (358970) SCD30_DRIVER: 0x6d [0m
+[0;32mI (358970) SCD30_DRIVER: 0x48 [0m
+[0;32mI (358980) SCD30_DRIVER: 0x6b [0m
+[0;32mI (358980) SCD30_DRIVER: 0x6e [0m
+[0;32mI (358980) SCD30_DRIVER: 0x42 [0m
+[0;32mI (358990) SCD30_DRIVER: 0x61 [0m
+[0;32mI (358990) SCD30_DRIVER: 0x5b [0m
+[0;32mI (359000) SCD30_DRIVER: 0x97 [0m
+[0;32mI (359000) SCD30_DRIVER: 0xe6 [0m
+[0;32mI (359000) SCD30_DRIVER: 0x05 [0m
+[0;32mI (359030) SCD30_DRIVER: CO2: 650.9 ppm (avg: 651.0), Temperature: 21.41°C (avg: 21.43), Humidity: 56.4% (avg: 56.3)[0m
+[0;32mI (364060) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (364060) SCD30_DRIVER: 0x5c [0m
+[0;32mI (364060) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (364060) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (364090) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (364090) SCD30_DRIVER: 0x0a [0m
+[0;32mI (364090) SCD30_DRIVER: 0x00 [0m
+[0;32mI (364090) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (364120) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (364120) SCD30_DRIVER: 0x70 [0m
+[0;32mI (364120) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (364120) SCD30_DRIVER: 0x00 [0m
+[0;32mI (364120) SCD30_DRIVER: 0xa1 [0m
+[0;32mI (364120) SCD30_DRIVER: 0x62 [0m
+[0;32mI (364130) SCD30_DRIVER: 0x53 [0m
+[0;32mI (364130) SCD30_DRIVER: 0x41 [0m
+[0;32mI (364140) SCD30_DRIVER: 0xbf [0m
+[0;32mI (364140) SCD30_DRIVER: 0x6d [0m
+[0;32mI (364140) SCD30_DRIVER: 0x2d [0m
+[0;32mI (364150) SCD30_DRIVER: 0x47 [0m
+[0;32mI (364150) SCD30_DRIVER: 0xb7 [0m
+[0;32mI (364150) SCD30_DRIVER: 0x42 [0m
+[0;32mI (364160) SCD30_DRIVER: 0x61 [0m
+[0;32mI (364160) SCD30_DRIVER: 0x5b [0m
+[0;32mI (364170) SCD30_DRIVER: 0x6f [0m
+[0;32mI (364170) SCD30_DRIVER: 0xba [0m
+[0;32mI (364170) SCD30_DRIVER: 0x29 [0m
+[0;32mI (364200) SCD30_DRIVER: CO2: 650.5 ppm (avg: 650.9), Temperature: 21.40°C (avg: 21.41), Humidity: 56.4% (avg: 56.3)[0m
+[0;32mI (369230) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (369230) SCD30_DRIVER: 0x5c [0m
+[0;32mI (369230) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (369230) SCD30_DRIVER: 0x81 [0m
+[0;32mI (369760) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (369760) SCD30_DRIVER: 0x5c [0m
+[0;32mI (369760) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (369760) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (369790) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (369790) SCD30_DRIVER: 0x0a [0m
+[0;32mI (369790) SCD30_DRIVER: 0x00 [0m
+[0;32mI (369790) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (369820) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (369820) SCD30_DRIVER: 0x70 [0m
+[0;32mI (369820) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (369820) SCD30_DRIVER: 0x00 [0m
+[0;32mI (369820) SCD30_DRIVER: 0x87 [0m
+[0;32mI (369820) SCD30_DRIVER: 0x12 [0m
+[0;32mI (369830) SCD30_DRIVER: 0x2d [0m
+[0;32mI (369830) SCD30_DRIVER: 0x41 [0m
+[0;32mI (369840) SCD30_DRIVER: 0xbf [0m
+[0;32mI (369840) SCD30_DRIVER: 0x6d [0m
+[0;32mI (369840) SCD30_DRIVER: 0x4e [0m
+[0;32mI (369850) SCD30_DRIVER: 0x97 [0m
+[0;32mI (369850) SCD30_DRIVER: 0xcb [0m
+[0;32mI (369850) SCD30_DRIVER: 0x42 [0m
+[0;32mI (369860) SCD30_DRIVER: 0x61 [0m
+[0;32mI (369860) SCD30_DRIVER: 0x5b [0m
+[0;32mI (369870) SCD30_DRIVER: 0x51 [0m
+[0;32mI (369870) SCD30_DRIVER: 0xca [0m
+[0;32mI (369870) SCD30_DRIVER: 0x0e [0m
+[0;32mI (369900) SCD30_DRIVER: CO2: 650.1 ppm (avg: 650.5), Temperature: 21.41°C (avg: 21.41), Humidity: 56.3% (avg: 56.4)[0m
+[0;32mI (374930) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (374930) SCD30_DRIVER: 0x5c [0m
+[0;32mI (374930) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (374930) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (374960) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (374960) SCD30_DRIVER: 0x0a [0m
+[0;32mI (374960) SCD30_DRIVER: 0x00 [0m
+[0;32mI (374960) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (374990) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (374990) SCD30_DRIVER: 0x70 [0m
+[0;32mI (374990) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (374990) SCD30_DRIVER: 0x00 [0m
+[0;32mI (374990) SCD30_DRIVER: 0xbf [0m
+[0;32mI (374990) SCD30_DRIVER: 0xc5 [0m
+[0;32mI (375000) SCD30_DRIVER: 0x3b [0m
+[0;32mI (375000) SCD30_DRIVER: 0x41 [0m
+[0;32mI (375010) SCD30_DRIVER: 0xbf [0m
+[0;32mI (375010) SCD30_DRIVER: 0x6d [0m
+[0;32mI (375010) SCD30_DRIVER: 0x34 [0m
+[0;32mI (375020) SCD30_DRIVER: 0x0b [0m
+[0;32mI (375020) SCD30_DRIVER: 0x5a [0m
+[0;32mI (375020) SCD30_DRIVER: 0x42 [0m
+[0;32mI (375030) SCD30_DRIVER: 0x61 [0m
+[0;32mI (375030) SCD30_DRIVER: 0x5b [0m
+[0;32mI (375040) SCD30_DRIVER: 0x59 [0m
+[0;32mI (375040) SCD30_DRIVER: 0x7f [0m
+[0;32mI (375040) SCD30_DRIVER: 0x73 [0m
+[0;32mI (375070) SCD30_DRIVER: CO2: 651.0 ppm (avg: 650.5), Temperature: 21.40°C (avg: 21.40), Humidity: 56.3% (avg: 56.3)[0m
+[0;32mI (380100) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (380100) SCD30_DRIVER: 0x5c [0m
+[0;32mI (380100) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (380100) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (380130) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (380130) SCD30_DRIVER: 0x0a [0m
+[0;32mI (380130) SCD30_DRIVER: 0x00 [0m
+[0;32mI (380130) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (380160) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (380160) SCD30_DRIVER: 0x70 [0m
+[0;32mI (380160) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (380160) SCD30_DRIVER: 0x00 [0m
+[0;32mI (380160) SCD30_DRIVER: 0x9b [0m
+[0;32mI (380160) SCD30_DRIVER: 0xb1 [0m
+[0;32mI (380170) SCD30_DRIVER: 0x58 [0m
+[0;32mI (380170) SCD30_DRIVER: 0x41 [0m
+[0;32mI (380180) SCD30_DRIVER: 0xbf [0m
+[0;32mI (380180) SCD30_DRIVER: 0x6d [0m
+[0;32mI (380180) SCD30_DRIVER: 0x50 [0m
+[0;32mI (380190) SCD30_DRIVER: 0x7e [0m
+[0;32mI (380190) SCD30_DRIVER: 0x81 [0m
+[0;32mI (380190) SCD30_DRIVER: 0x42 [0m
+[0;32mI (380200) SCD30_DRIVER: 0x61 [0m
+[0;32mI (380200) SCD30_DRIVER: 0x5b [0m
+[0;32mI (380210) SCD30_DRIVER: 0x94 [0m
+[0;32mI (380210) SCD30_DRIVER: 0x44 [0m
+[0;32mI (380210) SCD30_DRIVER: 0xb6 [0m
+[0;32mI (380240) SCD30_DRIVER: CO2: 650.4 ppm (avg: 650.5), Temperature: 21.41°C (avg: 21.41), Humidity: 56.4% (avg: 56.4)[0m
+[0;32mI (385270) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (385270) SCD30_DRIVER: 0x5c [0m
+[0;32mI (385270) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (385270) SCD30_DRIVER: 0x81 [0m
+[0;32mI (385800) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (385800) SCD30_DRIVER: 0x5c [0m
+[0;32mI (385800) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (385800) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (385830) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (385830) SCD30_DRIVER: 0x0a [0m
+[0;32mI (385830) SCD30_DRIVER: 0x00 [0m
+[0;32mI (385830) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (385860) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (385860) SCD30_DRIVER: 0x70 [0m
+[0;32mI (385860) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (385860) SCD30_DRIVER: 0x00 [0m
+[0;32mI (385860) SCD30_DRIVER: 0xcf [0m
+[0;32mI (385860) SCD30_DRIVER: 0x08 [0m
+[0;32mI (385870) SCD30_DRIVER: 0x0b [0m
+[0;32mI (385870) SCD30_DRIVER: 0x41 [0m
+[0;32mI (385880) SCD30_DRIVER: 0xbf [0m
+[0;32mI (385880) SCD30_DRIVER: 0x6d [0m
+[0;32mI (385880) SCD30_DRIVER: 0x1b [0m
+[0;32mI (385890) SCD30_DRIVER: 0x2b [0m
+[0;32mI (385890) SCD30_DRIVER: 0x99 [0m
+[0;32mI (385890) SCD30_DRIVER: 0x42 [0m
+[0;32mI (385900) SCD30_DRIVER: 0x61 [0m
+[0;32mI (385900) SCD30_DRIVER: 0x5b [0m
+[0;32mI (385910) SCD30_DRIVER: 0xbd [0m
+[0;32mI (385910) SCD30_DRIVER: 0x57 [0m
+[0;32mI (385910) SCD30_DRIVER: 0xb9 [0m
+[0;32mI (385940) SCD30_DRIVER: CO2: 651.2 ppm (avg: 650.9), Temperature: 21.39°C (avg: 21.40), Humidity: 56.4% (avg: 56.4)[0m
+[0;32mI (390970) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (390970) SCD30_DRIVER: 0x5c [0m
+[0;32mI (390970) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (390970) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (391000) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (391000) SCD30_DRIVER: 0x0a [0m
+[0;32mI (391000) SCD30_DRIVER: 0x00 [0m
+[0;32mI (391000) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (391030) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (391030) SCD30_DRIVER: 0x70 [0m
+[0;32mI (391030) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (391030) SCD30_DRIVER: 0x00 [0m
+[0;32mI (391030) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (391030) SCD30_DRIVER: 0x9c [0m
+[0;32mI (391040) SCD30_DRIVER: 0x54 [0m
+[0;32mI (391040) SCD30_DRIVER: 0x41 [0m
+[0;32mI (391050) SCD30_DRIVER: 0xbf [0m
+[0;32mI (391050) SCD30_DRIVER: 0x6d [0m
+[0;32mI (391050) SCD30_DRIVER: 0x01 [0m
+[0;32mI (391060) SCD30_DRIVER: 0x7d [0m
+[0;32mI (391060) SCD30_DRIVER: 0xc1 [0m
+[0;32mI (391060) SCD30_DRIVER: 0x42 [0m
+[0;32mI (391070) SCD30_DRIVER: 0x61 [0m
+[0;32mI (391070) SCD30_DRIVER: 0x5b [0m
+[0;32mI (391080) SCD30_DRIVER: 0xcf [0m
+[0;32mI (391080) SCD30_DRIVER: 0x76 [0m
+[0;32mI (391080) SCD30_DRIVER: 0xec [0m
+[0;32mI (391110) SCD30_DRIVER: CO2: 650.8 ppm (avg: 650.8), Temperature: 21.38°C (avg: 21.39), Humidity: 56.5% (avg: 56.4)[0m
+[0;32mI (396140) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (396140) SCD30_DRIVER: 0x5c [0m
+[0;32mI (396140) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (396140) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (396170) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (396170) SCD30_DRIVER: 0x0a [0m
+[0;32mI (396170) SCD30_DRIVER: 0x00 [0m
+[0;32mI (396170) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (396200) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (396200) SCD30_DRIVER: 0x70 [0m
+[0;32mI (396200) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (396200) SCD30_DRIVER: 0x00 [0m
+[0;32mI (396200) SCD30_DRIVER: 0x8a [0m
+[0;32mI (396200) SCD30_DRIVER: 0x4e [0m
+[0;32mI (396210) SCD30_DRIVER: 0x6e [0m
+[0;32mI (396210) SCD30_DRIVER: 0x41 [0m
+[0;32mI (396220) SCD30_DRIVER: 0xbe [0m
+[0;32mI (396220) SCD30_DRIVER: 0x5c [0m
+[0;32mI (396220) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (396230) SCD30_DRIVER: 0x17 [0m
+[0;32mI (396230) SCD30_DRIVER: 0x14 [0m
+[0;32mI (396230) SCD30_DRIVER: 0x42 [0m
+[0;32mI (396240) SCD30_DRIVER: 0x61 [0m
+[0;32mI (396240) SCD30_DRIVER: 0x5b [0m
+[0;32mI (396250) SCD30_DRIVER: 0xbb [0m
+[0;32mI (396250) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (396250) SCD30_DRIVER: 0x4d [0m
+[0;32mI (396280) SCD30_DRIVER: CO2: 650.2 ppm (avg: 650.7), Temperature: 21.36°C (avg: 21.38), Humidity: 56.4% (avg: 56.4)[0m
+[0;32mI (401310) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (401310) SCD30_DRIVER: 0x5c [0m
+[0;32mI (401310) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (401310) SCD30_DRIVER: 0x81 [0m
+[0;32mI (401840) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (401840) SCD30_DRIVER: 0x5c [0m
+[0;32mI (401840) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (401840) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (401870) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (401870) SCD30_DRIVER: 0x0a [0m
+[0;32mI (401870) SCD30_DRIVER: 0x00 [0m
+[0;32mI (401870) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (401900) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (401900) SCD30_DRIVER: 0x70 [0m
+[0;32mI (401900) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (401900) SCD30_DRIVER: 0x00 [0m
+[0;32mI (401900) SCD30_DRIVER: 0x71 [0m
+[0;32mI (401900) SCD30_DRIVER: 0x63 [0m
+[0;32mI (401910) SCD30_DRIVER: 0xa6 [0m
+[0;32mI (401910) SCD30_DRIVER: 0x41 [0m
+[0;32mI (401920) SCD30_DRIVER: 0xbe [0m
+[0;32mI (401920) SCD30_DRIVER: 0x5c [0m
+[0;32mI (401920) SCD30_DRIVER: 0xea [0m
+[0;32mI (401930) SCD30_DRIVER: 0x55 [0m
+[0;32mI (401930) SCD30_DRIVER: 0x92 [0m
+[0;32mI (401930) SCD30_DRIVER: 0x42 [0m
+[0;32mI (401940) SCD30_DRIVER: 0x62 [0m
+[0;32mI (401940) SCD30_DRIVER: 0x08 [0m
+[0;32mI (401950) SCD30_DRIVER: 0x1a [0m
+[0;32mI (401950) SCD30_DRIVER: 0x8a [0m
+[0;32mI (401950) SCD30_DRIVER: 0xa0 [0m
+[0;32mI (401980) SCD30_DRIVER: CO2: 649.8 ppm (avg: 650.2), Temperature: 21.36°C (avg: 21.37), Humidity: 56.5% (avg: 56.5)[0m
+[0;32mI (407010) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (407010) SCD30_DRIVER: 0x5c [0m
+[0;32mI (407010) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (407010) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (407040) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (407040) SCD30_DRIVER: 0x0a [0m
+[0;32mI (407040) SCD30_DRIVER: 0x00 [0m
+[0;32mI (407040) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (407070) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (407070) SCD30_DRIVER: 0x70 [0m
+[0;32mI (407070) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (407070) SCD30_DRIVER: 0x00 [0m
+[0;32mI (407070) SCD30_DRIVER: 0x69 [0m
+[0;32mI (407070) SCD30_DRIVER: 0x62 [0m
+[0;32mI (407080) SCD30_DRIVER: 0xce [0m
+[0;32mI (407080) SCD30_DRIVER: 0x41 [0m
+[0;32mI (407090) SCD30_DRIVER: 0xbe [0m
+[0;32mI (407090) SCD30_DRIVER: 0x5c [0m
+[0;32mI (407090) SCD30_DRIVER: 0xd1 [0m
+[0;32mI (407100) SCD30_DRIVER: 0x7d [0m
+[0;32mI (407100) SCD30_DRIVER: 0x05 [0m
+[0;32mI (407100) SCD30_DRIVER: 0x42 [0m
+[0;32mI (407110) SCD30_DRIVER: 0x62 [0m
+[0;32mI (407110) SCD30_DRIVER: 0x08 [0m
+[0;32mI (407120) SCD30_DRIVER: 0x2b [0m
+[0;32mI (407120) SCD30_DRIVER: 0x41 [0m
+[0;32mI (407120) SCD30_DRIVER: 0x4b [0m
+[0;32mI (407150) SCD30_DRIVER: CO2: 649.6 ppm (avg: 649.9), Temperature: 21.35°C (avg: 21.36), Humidity: 56.5% (avg: 56.5)[0m
+[0;32mI (412180) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (412180) SCD30_DRIVER: 0x5c [0m
+[0;32mI (412180) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (412180) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (412210) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (412210) SCD30_DRIVER: 0x0a [0m
+[0;32mI (412210) SCD30_DRIVER: 0x00 [0m
+[0;32mI (412210) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (412240) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (412240) SCD30_DRIVER: 0x70 [0m
+[0;32mI (412240) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (412240) SCD30_DRIVER: 0x00 [0m
+[0;32mI (412240) SCD30_DRIVER: 0xa6 [0m
+[0;32mI (412240) SCD30_DRIVER: 0x55 [0m
+[0;32mI (412250) SCD30_DRIVER: 0xaf [0m
+[0;32mI (412250) SCD30_DRIVER: 0x41 [0m
+[0;32mI (412260) SCD30_DRIVER: 0xbe [0m
+[0;32mI (412260) SCD30_DRIVER: 0x5c [0m
+[0;32mI (412260) SCD30_DRIVER: 0xb8 [0m
+[0;32mI (412270) SCD30_DRIVER: 0xec [0m
+[0;32mI (412270) SCD30_DRIVER: 0x9b [0m
+[0;32mI (412270) SCD30_DRIVER: 0x42 [0m
+[0;32mI (412280) SCD30_DRIVER: 0x62 [0m
+[0;32mI (412280) SCD30_DRIVER: 0x08 [0m
+[0;32mI (412290) SCD30_DRIVER: 0x20 [0m
+[0;32mI (412290) SCD30_DRIVER: 0x49 [0m
+[0;32mI (412290) SCD30_DRIVER: 0xe8 [0m
+[0;32mI (412320) SCD30_DRIVER: CO2: 650.6 ppm (avg: 650.0), Temperature: 21.34°C (avg: 21.35), Humidity: 56.5% (avg: 56.5)[0m
+[0;32mI (417350) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (417350) SCD30_DRIVER: 0x5c [0m
+[0;32mI (417350) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (417350) SCD30_DRIVER: 0x81 [0m
+[0;32mI (417880) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (417880) SCD30_DRIVER: 0x5c [0m
+[0;32mI (417880) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (417880) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (417910) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (417910) SCD30_DRIVER: 0x0a [0m
+[0;32mI (417910) SCD30_DRIVER: 0x00 [0m
+[0;32mI (417910) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (417940) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (417940) SCD30_DRIVER: 0x70 [0m
+[0;32mI (417940) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (417940) SCD30_DRIVER: 0x00 [0m
+[0;32mI (417940) SCD30_DRIVER: 0x27 [0m
+[0;32mI (417940) SCD30_DRIVER: 0x7e [0m
+[0;32mI (417950) SCD30_DRIVER: 0x14 [0m
+[0;32mI (417950) SCD30_DRIVER: 0x41 [0m
+[0;32mI (417960) SCD30_DRIVER: 0xbe [0m
+[0;32mI (417960) SCD30_DRIVER: 0x5c [0m
+[0;32mI (417960) SCD30_DRIVER: 0x4e [0m
+[0;32mI (417970) SCD30_DRIVER: 0x93 [0m
+[0;32mI (417970) SCD30_DRIVER: 0x0f [0m
+[0;32mI (417970) SCD30_DRIVER: 0x42 [0m
+[0;32mI (417980) SCD30_DRIVER: 0x62 [0m
+[0;32mI (417980) SCD30_DRIVER: 0x08 [0m
+[0;32mI (417990) SCD30_DRIVER: 0x42 [0m
+[0;32mI (417990) SCD30_DRIVER: 0x8f [0m
+[0;32mI (417990) SCD30_DRIVER: 0x85 [0m
+[0;32mI (418020) SCD30_DRIVER: CO2: 648.6 ppm (avg: 649.6), Temperature: 21.29°C (avg: 21.33), Humidity: 56.6% (avg: 56.5)[0m
+[0;32mI (423050) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (423050) SCD30_DRIVER: 0x5c [0m
+[0;32mI (423050) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (423050) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (423080) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (423080) SCD30_DRIVER: 0x0a [0m
+[0;32mI (423080) SCD30_DRIVER: 0x00 [0m
+[0;32mI (423080) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (423110) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (423110) SCD30_DRIVER: 0x70 [0m
+[0;32mI (423110) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (423110) SCD30_DRIVER: 0x00 [0m
+[0;32mI (423110) SCD30_DRIVER: 0x42 [0m
+[0;32mI (423110) SCD30_DRIVER: 0x96 [0m
+[0;32mI (423120) SCD30_DRIVER: 0x4e [0m
+[0;32mI (423120) SCD30_DRIVER: 0x41 [0m
+[0;32mI (423130) SCD30_DRIVER: 0xbe [0m
+[0;32mI (423130) SCD30_DRIVER: 0x5c [0m
+[0;32mI (423130) SCD30_DRIVER: 0x88 [0m
+[0;32mI (423140) SCD30_DRIVER: 0x97 [0m
+[0;32mI (423140) SCD30_DRIVER: 0x3b [0m
+[0;32mI (423140) SCD30_DRIVER: 0x42 [0m
+[0;32mI (423150) SCD30_DRIVER: 0x63 [0m
+[0;32mI (423150) SCD30_DRIVER: 0x39 [0m
+[0;32mI (423160) SCD30_DRIVER: 0x4f [0m
+[0;32mI (423160) SCD30_DRIVER: 0xec [0m
+[0;32mI (423160) SCD30_DRIVER: 0x2d [0m
+[0;32mI (423190) SCD30_DRIVER: CO2: 649.0 ppm (avg: 649.4), Temperature: 21.32°C (avg: 21.32), Humidity: 56.8% (avg: 56.6)[0m
+[0;32mI (428220) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (428220) SCD30_DRIVER: 0x5c [0m
+[0;32mI (428220) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (428220) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (428250) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (428250) SCD30_DRIVER: 0x0a [0m
+[0;32mI (428250) SCD30_DRIVER: 0x00 [0m
+[0;32mI (428250) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (428280) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (428280) SCD30_DRIVER: 0x70 [0m
+[0;32mI (428280) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (428280) SCD30_DRIVER: 0x00 [0m
+[0;32mI (428280) SCD30_DRIVER: 0x45 [0m
+[0;32mI (428280) SCD30_DRIVER: 0xf7 [0m
+[0;32mI (428290) SCD30_DRIVER: 0x6a [0m
+[0;32mI (428290) SCD30_DRIVER: 0x41 [0m
+[0;32mI (428300) SCD30_DRIVER: 0xbe [0m
+[0;32mI (428300) SCD30_DRIVER: 0x5c [0m
+[0;32mI (428300) SCD30_DRIVER: 0x70 [0m
+[0;32mI (428310) SCD30_DRIVER: 0xd3 [0m
+[0;32mI (428310) SCD30_DRIVER: 0xed [0m
+[0;32mI (428310) SCD30_DRIVER: 0x42 [0m
+[0;32mI (428320) SCD30_DRIVER: 0x63 [0m
+[0;32mI (428320) SCD30_DRIVER: 0x39 [0m
+[0;32mI (428330) SCD30_DRIVER: 0x78 [0m
+[0;32mI (428330) SCD30_DRIVER: 0x89 [0m
+[0;32mI (428330) SCD30_DRIVER: 0x7f [0m
+[0;32mI (428360) SCD30_DRIVER: CO2: 649.1 ppm (avg: 648.9), Temperature: 21.31°C (avg: 21.30), Humidity: 56.9% (avg: 56.8)[0m
+[0;32mI (433390) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (433390) SCD30_DRIVER: 0x5c [0m
+[0;32mI (433390) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (433390) SCD30_DRIVER: 0x81 [0m
+[0;32mI (433920) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (433920) SCD30_DRIVER: 0x5c [0m
+[0;32mI (433920) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (433920) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (433950) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (433950) SCD30_DRIVER: 0x0a [0m
+[0;32mI (433950) SCD30_DRIVER: 0x00 [0m
+[0;32mI (433950) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (433980) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (433980) SCD30_DRIVER: 0x70 [0m
+[0;32mI (433980) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (433980) SCD30_DRIVER: 0x00 [0m
+[0;32mI (433980) SCD30_DRIVER: 0x59 [0m
+[0;32mI (433980) SCD30_DRIVER: 0xe0 [0m
+[0;32mI (433990) SCD30_DRIVER: 0x64 [0m
+[0;32mI (433990) SCD30_DRIVER: 0x41 [0m
+[0;32mI (434000) SCD30_DRIVER: 0xbe [0m
+[0;32mI (434000) SCD30_DRIVER: 0x5c [0m
+[0;32mI (434000) SCD30_DRIVER: 0x3d [0m
+[0;32mI (434010) SCD30_DRIVER: 0xf5 [0m
+[0;32mI (434010) SCD30_DRIVER: 0x04 [0m
+[0;32mI (434010) SCD30_DRIVER: 0x42 [0m
+[0;32mI (434020) SCD30_DRIVER: 0x63 [0m
+[0;32mI (434020) SCD30_DRIVER: 0x39 [0m
+[0;32mI (434030) SCD30_DRIVER: 0x35 [0m
+[0;32mI (434030) SCD30_DRIVER: 0xc8 [0m
+[0;32mI (434030) SCD30_DRIVER: 0xba [0m
+[0;32mI (434060) SCD30_DRIVER: CO2: 649.4 ppm (avg: 649.2), Temperature: 21.28°C (avg: 21.30), Humidity: 56.8% (avg: 56.8)[0m
+[0;32mI (439090) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (439090) SCD30_DRIVER: 0x5c [0m
+[0;32mI (439090) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (439090) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (439120) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (439120) SCD30_DRIVER: 0x0a [0m
+[0;32mI (439120) SCD30_DRIVER: 0x00 [0m
+[0;32mI (439120) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (439150) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (439150) SCD30_DRIVER: 0x70 [0m
+[0;32mI (439150) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (439150) SCD30_DRIVER: 0x00 [0m
+[0;32mI (439150) SCD30_DRIVER: 0x59 [0m
+[0;32mI (439150) SCD30_DRIVER: 0xd3 [0m
+[0;32mI (439160) SCD30_DRIVER: 0xf2 [0m
+[0;32mI (439160) SCD30_DRIVER: 0x41 [0m
+[0;32mI (439170) SCD30_DRIVER: 0xbe [0m
+[0;32mI (439170) SCD30_DRIVER: 0x5c [0m
+[0;32mI (439170) SCD30_DRIVER: 0x7e [0m
+[0;32mI (439180) SCD30_DRIVER: 0x3a [0m
+[0;32mI (439180) SCD30_DRIVER: 0xc9 [0m
+[0;32mI (439180) SCD30_DRIVER: 0x42 [0m
+[0;32mI (439190) SCD30_DRIVER: 0x63 [0m
+[0;32mI (439190) SCD30_DRIVER: 0x39 [0m
+[0;32mI (439200) SCD30_DRIVER: 0x2d [0m
+[0;32mI (439200) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (439200) SCD30_DRIVER: 0x09 [0m
+[0;32mI (439230) SCD30_DRIVER: CO2: 649.4 ppm (avg: 649.3), Temperature: 21.31°C (avg: 21.30), Humidity: 56.8% (avg: 56.8)[0m
+[0;32mI (444260) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (444260) SCD30_DRIVER: 0x5c [0m
+[0;32mI (444260) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (444260) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (444290) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (444290) SCD30_DRIVER: 0x0a [0m
+[0;32mI (444290) SCD30_DRIVER: 0x00 [0m
+[0;32mI (444290) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (444320) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (444320) SCD30_DRIVER: 0x70 [0m
+[0;32mI (444320) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (444320) SCD30_DRIVER: 0x00 [0m
+[0;32mI (444320) SCD30_DRIVER: 0xa0 [0m
+[0;32mI (444320) SCD30_DRIVER: 0x4b [0m
+[0;32mI (444330) SCD30_DRIVER: 0xa9 [0m
+[0;32mI (444330) SCD30_DRIVER: 0x41 [0m
+[0;32mI (444340) SCD30_DRIVER: 0xbe [0m
+[0;32mI (444340) SCD30_DRIVER: 0x5c [0m
+[0;32mI (444340) SCD30_DRIVER: 0x67 [0m
+[0;32mI (444350) SCD30_DRIVER: 0x3c [0m
+[0;32mI (444350) SCD30_DRIVER: 0xc2 [0m
+[0;32mI (444350) SCD30_DRIVER: 0x42 [0m
+[0;32mI (444360) SCD30_DRIVER: 0x63 [0m
+[0;32mI (444360) SCD30_DRIVER: 0x39 [0m
+[0;32mI (444370) SCD30_DRIVER: 0x2f [0m
+[0;32mI (444370) SCD30_DRIVER: 0x73 [0m
+[0;32mI (444370) SCD30_DRIVER: 0x6f [0m
+[0;32mI (444400) SCD30_DRIVER: CO2: 650.5 ppm (avg: 649.8), Temperature: 21.30°C (avg: 21.30), Humidity: 56.8% (avg: 56.8)[0m
+[0;32mI (449430) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (449430) SCD30_DRIVER: 0x5c [0m
+[0;32mI (449430) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (449430) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (449460) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (449460) SCD30_DRIVER: 0x0a [0m
+[0;32mI (449460) SCD30_DRIVER: 0x00 [0m
+[0;32mI (449460) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (449490) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (449490) SCD30_DRIVER: 0x70 [0m
+[0;32mI (449490) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (449490) SCD30_DRIVER: 0x00 [0m
+[0;32mI (449490) SCD30_DRIVER: 0x68 [0m
+[0;32mI (449490) SCD30_DRIVER: 0xdc [0m
+[0;32mI (449500) SCD30_DRIVER: 0x9a [0m
+[0;32mI (449500) SCD30_DRIVER: 0x41 [0m
+[0;32mI (449510) SCD30_DRIVER: 0xbe [0m
+[0;32mI (449510) SCD30_DRIVER: 0x5c [0m
+[0;32mI (449510) SCD30_DRIVER: 0x35 [0m
+[0;32mI (449520) SCD30_DRIVER: 0x28 [0m
+[0;32mI (449520) SCD30_DRIVER: 0x7b [0m
+[0;32mI (449520) SCD30_DRIVER: 0x42 [0m
+[0;32mI (449530) SCD30_DRIVER: 0x63 [0m
+[0;32mI (449530) SCD30_DRIVER: 0x39 [0m
+[0;32mI (449540) SCD30_DRIVER: 0x2a [0m
+[0;32mI (449540) SCD30_DRIVER: 0x5e [0m
+[0;32mI (449540) SCD30_DRIVER: 0xd2 [0m
+[0;32mI (449570) SCD30_DRIVER: CO2: 649.6 ppm (avg: 649.8), Temperature: 21.28°C (avg: 21.30), Humidity: 56.8% (avg: 56.8)[0m
+[0;32mI (454600) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (454600) SCD30_DRIVER: 0x5c [0m
+[0;32mI (454600) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (454600) SCD30_DRIVER: 0x81 [0m
+[0;32mI (455130) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (455130) SCD30_DRIVER: 0x5c [0m
+[0;32mI (455130) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (455130) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (455160) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (455160) SCD30_DRIVER: 0x0a [0m
+[0;32mI (455160) SCD30_DRIVER: 0x00 [0m
+[0;32mI (455160) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (455190) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (455190) SCD30_DRIVER: 0x70 [0m
+[0;32mI (455190) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (455190) SCD30_DRIVER: 0x00 [0m
+[0;32mI (455190) SCD30_DRIVER: 0x8f [0m
+[0;32mI (455190) SCD30_DRIVER: 0xe5 [0m
+[0;32mI (455200) SCD30_DRIVER: 0x0f [0m
+[0;32mI (455200) SCD30_DRIVER: 0x41 [0m
+[0;32mI (455210) SCD30_DRIVER: 0xbe [0m
+[0;32mI (455210) SCD30_DRIVER: 0x5c [0m
+[0;32mI (455210) SCD30_DRIVER: 0x3a [0m
+[0;32mI (455220) SCD30_DRIVER: 0x02 [0m
+[0;32mI (455220) SCD30_DRIVER: 0xbf [0m
+[0;32mI (455220) SCD30_DRIVER: 0x42 [0m
+[0;32mI (455230) SCD30_DRIVER: 0x63 [0m
+[0;32mI (455230) SCD30_DRIVER: 0x39 [0m
+[0;32mI (455240) SCD30_DRIVER: 0xa2 [0m
+[0;32mI (455240) SCD30_DRIVER: 0x5d [0m
+[0;32mI (455240) SCD30_DRIVER: 0x95 [0m
+[0;32mI (455270) SCD30_DRIVER: CO2: 650.2 ppm (avg: 650.1), Temperature: 21.28°C (avg: 21.28), Humidity: 56.9% (avg: 56.8)[0m
+[0;32mI (460300) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (460300) SCD30_DRIVER: 0x5c [0m
+[0;32mI (460300) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (460300) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (460330) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (460330) SCD30_DRIVER: 0x0a [0m
+[0;32mI (460330) SCD30_DRIVER: 0x00 [0m
+[0;32mI (460330) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (460360) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (460360) SCD30_DRIVER: 0x70 [0m
+[0;32mI (460360) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (460360) SCD30_DRIVER: 0x00 [0m
+[0;32mI (460360) SCD30_DRIVER: 0xc2 [0m
+[0;32mI (460360) SCD30_DRIVER: 0x62 [0m
+[0;32mI (460370) SCD30_DRIVER: 0x2b [0m
+[0;32mI (460370) SCD30_DRIVER: 0x41 [0m
+[0;32mI (460380) SCD30_DRIVER: 0xbd [0m
+[0;32mI (460380) SCD30_DRIVER: 0x0f [0m
+[0;32mI (460380) SCD30_DRIVER: 0xcc [0m
+[0;32mI (460390) SCD30_DRIVER: 0x41 [0m
+[0;32mI (460390) SCD30_DRIVER: 0x93 [0m
+[0;32mI (460390) SCD30_DRIVER: 0x42 [0m
+[0;32mI (460400) SCD30_DRIVER: 0x63 [0m
+[0;32mI (460400) SCD30_DRIVER: 0x39 [0m
+[0;32mI (460410) SCD30_DRIVER: 0x8f [0m
+[0;32mI (460410) SCD30_DRIVER: 0xef [0m
+[0;32mI (460410) SCD30_DRIVER: 0xd4 [0m
+[0;32mI (460440) SCD30_DRIVER: CO2: 651.0 ppm (avg: 650.3), Temperature: 21.22°C (avg: 21.26), Humidity: 56.9% (avg: 56.9)[0m
+[0;32mI (465470) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (465470) SCD30_DRIVER: 0x5c [0m
+[0;32mI (465470) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (465470) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (465500) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (465500) SCD30_DRIVER: 0x0a [0m
+[0;32mI (465500) SCD30_DRIVER: 0x00 [0m
+[0;32mI (465500) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (465530) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (465530) SCD30_DRIVER: 0x70 [0m
+[0;32mI (465530) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (465530) SCD30_DRIVER: 0x00 [0m
+[0;32mI (465530) SCD30_DRIVER: 0x8b [0m
+[0;32mI (465530) SCD30_DRIVER: 0xf5 [0m
+[0;32mI (465540) SCD30_DRIVER: 0xcf [0m
+[0;32mI (465540) SCD30_DRIVER: 0x41 [0m
+[0;32mI (465550) SCD30_DRIVER: 0xbd [0m
+[0;32mI (465550) SCD30_DRIVER: 0x0f [0m
+[0;32mI (465550) SCD30_DRIVER: 0x9a [0m
+[0;32mI (465560) SCD30_DRIVER: 0xea [0m
+[0;32mI (465560) SCD30_DRIVER: 0x38 [0m
+[0;32mI (465560) SCD30_DRIVER: 0x42 [0m
+[0;32mI (465570) SCD30_DRIVER: 0x63 [0m
+[0;32mI (465570) SCD30_DRIVER: 0x39 [0m
+[0;32mI (465580) SCD30_DRIVER: 0xf5 [0m
+[0;32mI (465580) SCD30_DRIVER: 0x7e [0m
+[0;32mI (465580) SCD30_DRIVER: 0x09 [0m
+[0;32mI (465610) SCD30_DRIVER: CO2: 650.2 ppm (avg: 650.5), Temperature: 21.20°C (avg: 21.23), Humidity: 57.0% (avg: 56.9)[0m
+[0;32mI (470640) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (470640) SCD30_DRIVER: 0x5c [0m
+[0;32mI (470640) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (470640) SCD30_DRIVER: 0x81 [0m
+[0;32mI (471170) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (471170) SCD30_DRIVER: 0x5c [0m
+[0;32mI (471170) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (471170) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (471200) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (471200) SCD30_DRIVER: 0x0a [0m
+[0;32mI (471200) SCD30_DRIVER: 0x00 [0m
+[0;32mI (471200) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (471230) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (471230) SCD30_DRIVER: 0x70 [0m
+[0;32mI (471230) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (471230) SCD30_DRIVER: 0x00 [0m
+[0;32mI (471230) SCD30_DRIVER: 0xb4 [0m
+[0;32mI (471230) SCD30_DRIVER: 0x1d [0m
+[0;32mI (471240) SCD30_DRIVER: 0x9c [0m
+[0;32mI (471240) SCD30_DRIVER: 0x41 [0m
+[0;32mI (471250) SCD30_DRIVER: 0xbd [0m
+[0;32mI (471250) SCD30_DRIVER: 0x0f [0m
+[0;32mI (471250) SCD30_DRIVER: 0xa0 [0m
+[0;32mI (471260) SCD30_DRIVER: 0x81 [0m
+[0;32mI (471260) SCD30_DRIVER: 0x35 [0m
+[0;32mI (471260) SCD30_DRIVER: 0x42 [0m
+[0;32mI (471270) SCD30_DRIVER: 0x64 [0m
+[0;32mI (471270) SCD30_DRIVER: 0xae [0m
+[0;32mI (471280) SCD30_DRIVER: 0x60 [0m
+[0;32mI (471280) SCD30_DRIVER: 0x88 [0m
+[0;32mI (471280) SCD30_DRIVER: 0x17 [0m
+[0;32mI (471310) SCD30_DRIVER: CO2: 650.8 ppm (avg: 650.7), Temperature: 21.20°C (avg: 21.21), Humidity: 57.1% (avg: 57.0)[0m
+[0;32mI (476340) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (476340) SCD30_DRIVER: 0x5c [0m
+[0;32mI (476340) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (476340) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (476370) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (476370) SCD30_DRIVER: 0x0a [0m
+[0;32mI (476370) SCD30_DRIVER: 0x00 [0m
+[0;32mI (476370) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (476400) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (476400) SCD30_DRIVER: 0x70 [0m
+[0;32mI (476400) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (476400) SCD30_DRIVER: 0x00 [0m
+[0;32mI (476400) SCD30_DRIVER: 0x8b [0m
+[0;32mI (476400) SCD30_DRIVER: 0x7b [0m
+[0;32mI (476410) SCD30_DRIVER: 0xaa [0m
+[0;32mI (476410) SCD30_DRIVER: 0x41 [0m
+[0;32mI (476420) SCD30_DRIVER: 0xbd [0m
+[0;32mI (476420) SCD30_DRIVER: 0x0f [0m
+[0;32mI (476420) SCD30_DRIVER: 0x33 [0m
+[0;32mI (476430) SCD30_DRIVER: 0x7d [0m
+[0;32mI (476430) SCD30_DRIVER: 0xaa [0m
+[0;32mI (476430) SCD30_DRIVER: 0x42 [0m
+[0;32mI (476440) SCD30_DRIVER: 0x64 [0m
+[0;32mI (476440) SCD30_DRIVER: 0xae [0m
+[0;32mI (476450) SCD30_DRIVER: 0x2f [0m
+[0;32mI (476450) SCD30_DRIVER: 0xc6 [0m
+[0;32mI (476450) SCD30_DRIVER: 0x25 [0m
+[0;32mI (476480) SCD30_DRIVER: CO2: 650.2 ppm (avg: 650.4), Temperature: 21.15°C (avg: 21.18), Humidity: 57.0% (avg: 57.0)[0m
+[0;32mI (481510) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (481510) SCD30_DRIVER: 0x5c [0m
+[0;32mI (481510) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (481510) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (481540) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (481540) SCD30_DRIVER: 0x0a [0m
+[0;32mI (481540) SCD30_DRIVER: 0x00 [0m
+[0;32mI (481540) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (481570) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (481570) SCD30_DRIVER: 0x70 [0m
+[0;32mI (481570) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (481570) SCD30_DRIVER: 0x00 [0m
+[0;32mI (481570) SCD30_DRIVER: 0x44 [0m
+[0;32mI (481570) SCD30_DRIVER: 0x50 [0m
+[0;32mI (481580) SCD30_DRIVER: 0xf5 [0m
+[0;32mI (481580) SCD30_DRIVER: 0x41 [0m
+[0;32mI (481590) SCD30_DRIVER: 0xbd [0m
+[0;32mI (481590) SCD30_DRIVER: 0x0f [0m
+[0;32mI (481590) SCD30_DRIVER: 0xb1 [0m
+[0;32mI (481600) SCD30_DRIVER: 0xe2 [0m
+[0;32mI (481600) SCD30_DRIVER: 0x47 [0m
+[0;32mI (481600) SCD30_DRIVER: 0x42 [0m
+[0;32mI (481610) SCD30_DRIVER: 0x65 [0m
+[0;32mI (481610) SCD30_DRIVER: 0x9f [0m
+[0;32mI (481620) SCD30_DRIVER: 0x9c [0m
+[0;32mI (481620) SCD30_DRIVER: 0x8a [0m
+[0;32mI (481620) SCD30_DRIVER: 0xd9 [0m
+[0;32mI (481650) SCD30_DRIVER: CO2: 649.1 ppm (avg: 650.0), Temperature: 21.21°C (avg: 21.19), Humidity: 57.4% (avg: 57.2)[0m
+[0;32mI (486680) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (486680) SCD30_DRIVER: 0x5c [0m
+[0;32mI (486680) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (486680) SCD30_DRIVER: 0x81 [0m
+[0;32mI (487210) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (487210) SCD30_DRIVER: 0x5c [0m
+[0;32mI (487210) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (487210) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (487240) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (487240) SCD30_DRIVER: 0x0a [0m
+[0;32mI (487240) SCD30_DRIVER: 0x00 [0m
+[0;32mI (487240) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (487270) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (487270) SCD30_DRIVER: 0x70 [0m
+[0;32mI (487270) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (487270) SCD30_DRIVER: 0x00 [0m
+[0;32mI (487270) SCD30_DRIVER: 0x37 [0m
+[0;32mI (487270) SCD30_DRIVER: 0x48 [0m
+[0;32mI (487280) SCD30_DRIVER: 0x19 [0m
+[0;32mI (487280) SCD30_DRIVER: 0x41 [0m
+[0;32mI (487290) SCD30_DRIVER: 0xbd [0m
+[0;32mI (487290) SCD30_DRIVER: 0x0f [0m
+[0;32mI (487290) SCD30_DRIVER: 0xb8 [0m
+[0;32mI (487300) SCD30_DRIVER: 0x2e [0m
+[0;32mI (487300) SCD30_DRIVER: 0xbe [0m
+[0;32mI (487300) SCD30_DRIVER: 0x42 [0m
+[0;32mI (487310) SCD30_DRIVER: 0x65 [0m
+[0;32mI (487310) SCD30_DRIVER: 0x9f [0m
+[0;32mI (487320) SCD30_DRIVER: 0x2e [0m
+[0;32mI (487320) SCD30_DRIVER: 0x68 [0m
+[0;32mI (487320) SCD30_DRIVER: 0x32 [0m
+[0;32mI (487350) SCD30_DRIVER: CO2: 648.9 ppm (avg: 649.4), Temperature: 21.21°C (avg: 21.19), Humidity: 57.3% (avg: 57.2)[0m
+[0;32mI (492380) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (492380) SCD30_DRIVER: 0x5c [0m
+[0;32mI (492380) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (492380) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (492410) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (492410) SCD30_DRIVER: 0x0a [0m
+[0;32mI (492410) SCD30_DRIVER: 0x00 [0m
+[0;32mI (492410) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (492440) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (492440) SCD30_DRIVER: 0x70 [0m
+[0;32mI (492440) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (492440) SCD30_DRIVER: 0x00 [0m
+[0;32mI (492440) SCD30_DRIVER: 0x47 [0m
+[0;32mI (492440) SCD30_DRIVER: 0x8d [0m
+[0;32mI (492450) SCD30_DRIVER: 0x90 [0m
+[0;32mI (492450) SCD30_DRIVER: 0x41 [0m
+[0;32mI (492460) SCD30_DRIVER: 0xbd [0m
+[0;32mI (492460) SCD30_DRIVER: 0x0f [0m
+[0;32mI (492460) SCD30_DRIVER: 0xa3 [0m
+[0;32mI (492470) SCD30_DRIVER: 0x5e [0m
+[0;32mI (492470) SCD30_DRIVER: 0x32 [0m
+[0;32mI (492470) SCD30_DRIVER: 0x42 [0m
+[0;32mI (492480) SCD30_DRIVER: 0x65 [0m
+[0;32mI (492480) SCD30_DRIVER: 0x9f [0m
+[0;32mI (492490) SCD30_DRIVER: 0x04 [0m
+[0;32mI (492490) SCD30_DRIVER: 0xfb [0m
+[0;32mI (492490) SCD30_DRIVER: 0x6a [0m
+[0;32mI (492520) SCD30_DRIVER: CO2: 649.1 ppm (avg: 649.0), Temperature: 21.20°C (avg: 21.21), Humidity: 57.3% (avg: 57.3)[0m
+[0;32mI (497550) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (497550) SCD30_DRIVER: 0x5c [0m
+[0;32mI (497550) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (497550) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (497580) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (497580) SCD30_DRIVER: 0x0a [0m
+[0;32mI (497580) SCD30_DRIVER: 0x00 [0m
+[0;32mI (497580) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (497610) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (497610) SCD30_DRIVER: 0x70 [0m
+[0;32mI (497610) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (497610) SCD30_DRIVER: 0x00 [0m
+[0;32mI (497610) SCD30_DRIVER: 0x5f [0m
+[0;32mI (497610) SCD30_DRIVER: 0xaa [0m
+[0;32mI (497620) SCD30_DRIVER: 0xd8 [0m
+[0;32mI (497620) SCD30_DRIVER: 0x41 [0m
+[0;32mI (497630) SCD30_DRIVER: 0xbd [0m
+[0;32mI (497630) SCD30_DRIVER: 0x0f [0m
+[0;32mI (497630) SCD30_DRIVER: 0x00 [0m
+[0;32mI (497640) SCD30_DRIVER: 0x95 [0m
+[0;32mI (497640) SCD30_DRIVER: 0x4d [0m
+[0;32mI (497640) SCD30_DRIVER: 0x42 [0m
+[0;32mI (497650) SCD30_DRIVER: 0x64 [0m
+[0;32mI (497650) SCD30_DRIVER: 0xae [0m
+[0;32mI (497660) SCD30_DRIVER: 0xda [0m
+[0;32mI (497660) SCD30_DRIVER: 0x8d [0m
+[0;32mI (497660) SCD30_DRIVER: 0x9d [0m
+[0;32mI (497690) SCD30_DRIVER: CO2: 649.5 ppm (avg: 649.2), Temperature: 21.13°C (avg: 21.18), Humidity: 57.2% (avg: 57.3)[0m
+[0;32mI (502720) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (502720) SCD30_DRIVER: 0x5c [0m
+[0;32mI (502720) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (502720) SCD30_DRIVER: 0x81 [0m
+[0;32mI (503250) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (503250) SCD30_DRIVER: 0x5c [0m
+[0;32mI (503250) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (503250) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (503280) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (503280) SCD30_DRIVER: 0x0a [0m
+[0;32mI (503280) SCD30_DRIVER: 0x00 [0m
+[0;32mI (503280) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (503310) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (503310) SCD30_DRIVER: 0x70 [0m
+[0;32mI (503310) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (503310) SCD30_DRIVER: 0x00 [0m
+[0;32mI (503310) SCD30_DRIVER: 0x49 [0m
+[0;32mI (503310) SCD30_DRIVER: 0x20 [0m
+[0;32mI (503320) SCD30_DRIVER: 0x4d [0m
+[0;32mI (503320) SCD30_DRIVER: 0x41 [0m
+[0;32mI (503330) SCD30_DRIVER: 0xbd [0m
+[0;32mI (503330) SCD30_DRIVER: 0x0f [0m
+[0;32mI (503330) SCD30_DRIVER: 0x07 [0m
+[0;32mI (503340) SCD30_DRIVER: 0x91 [0m
+[0;32mI (503340) SCD30_DRIVER: 0x27 [0m
+[0;32mI (503340) SCD30_DRIVER: 0x42 [0m
+[0;32mI (503350) SCD30_DRIVER: 0x65 [0m
+[0;32mI (503350) SCD30_DRIVER: 0x9f [0m
+[0;32mI (503360) SCD30_DRIVER: 0x00 [0m
+[0;32mI (503360) SCD30_DRIVER: 0x82 [0m
+[0;32mI (503360) SCD30_DRIVER: 0x99 [0m
+[0;32mI (503390) SCD30_DRIVER: CO2: 649.1 ppm (avg: 649.3), Temperature: 21.13°C (avg: 21.15), Humidity: 57.3% (avg: 57.2)[0m
+[0;32mI (508420) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (508420) SCD30_DRIVER: 0x5c [0m
+[0;32mI (508420) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (508420) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (508450) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (508450) SCD30_DRIVER: 0x0a [0m
+[0;32mI (508450) SCD30_DRIVER: 0x00 [0m
+[0;32mI (508450) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (508480) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (508480) SCD30_DRIVER: 0x70 [0m
+[0;32mI (508480) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (508480) SCD30_DRIVER: 0x00 [0m
+[0;32mI (508480) SCD30_DRIVER: 0x35 [0m
+[0;32mI (508480) SCD30_DRIVER: 0x7e [0m
+[0;32mI (508490) SCD30_DRIVER: 0xa3 [0m
+[0;32mI (508490) SCD30_DRIVER: 0x41 [0m
+[0;32mI (508500) SCD30_DRIVER: 0xbc [0m
+[0;32mI (508500) SCD30_DRIVER: 0x3e [0m
+[0;32mI (508500) SCD30_DRIVER: 0xf3 [0m
+[0;32mI (508510) SCD30_DRIVER: 0x6f [0m
+[0;32mI (508510) SCD30_DRIVER: 0x21 [0m
+[0;32mI (508510) SCD30_DRIVER: 0x42 [0m
+[0;32mI (508520) SCD30_DRIVER: 0x65 [0m
+[0;32mI (508520) SCD30_DRIVER: 0x9f [0m
+[0;32mI (508530) SCD30_DRIVER: 0x4c [0m
+[0;32mI (508530) SCD30_DRIVER: 0x85 [0m
+[0;32mI (508530) SCD30_DRIVER: 0x33 [0m
+[0;32mI (508560) SCD30_DRIVER: CO2: 648.8 ppm (avg: 649.2), Temperature: 21.12°C (avg: 21.12), Humidity: 57.3% (avg: 57.3)[0m
+[0;32mI (513590) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (513590) SCD30_DRIVER: 0x5c [0m
+[0;32mI (513590) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (513590) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (513620) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (513620) SCD30_DRIVER: 0x0a [0m
+[0;32mI (513620) SCD30_DRIVER: 0x00 [0m
+[0;32mI (513620) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (513650) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (513650) SCD30_DRIVER: 0x70 [0m
+[0;32mI (513650) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (513650) SCD30_DRIVER: 0x00 [0m
+[0;32mI (513650) SCD30_DRIVER: 0x13 [0m
+[0;32mI (513650) SCD30_DRIVER: 0xf0 [0m
+[0;32mI (513660) SCD30_DRIVER: 0x40 [0m
+[0;32mI (513660) SCD30_DRIVER: 0x41 [0m
+[0;32mI (513670) SCD30_DRIVER: 0xbc [0m
+[0;32mI (513670) SCD30_DRIVER: 0x3e [0m
+[0;32mI (513670) SCD30_DRIVER: 0xfa [0m
+[0;32mI (513680) SCD30_DRIVER: 0xde [0m
+[0;32mI (513680) SCD30_DRIVER: 0x6c [0m
+[0;32mI (513680) SCD30_DRIVER: 0x42 [0m
+[0;32mI (513690) SCD30_DRIVER: 0x65 [0m
+[0;32mI (513690) SCD30_DRIVER: 0x9f [0m
+[0;32mI (513700) SCD30_DRIVER: 0xa7 [0m
+[0;32mI (513700) SCD30_DRIVER: 0x28 [0m
+[0;32mI (513700) SCD30_DRIVER: 0xef [0m
+[0;32mI (513730) SCD30_DRIVER: CO2: 648.3 ppm (avg: 648.8), Temperature: 21.12°C (avg: 21.12), Humidity: 57.4% (avg: 57.3)[0m
+[0;32mI (518760) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (518760) SCD30_DRIVER: 0x5c [0m
+[0;32mI (518760) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (518760) SCD30_DRIVER: 0x81 [0m
+[0;32mI (519290) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (519290) SCD30_DRIVER: 0x5c [0m
+[0;32mI (519290) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (519290) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (519320) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (519320) SCD30_DRIVER: 0x0a [0m
+[0;32mI (519320) SCD30_DRIVER: 0x00 [0m
+[0;32mI (519320) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (519350) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (519350) SCD30_DRIVER: 0x70 [0m
+[0;32mI (519350) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (519350) SCD30_DRIVER: 0x00 [0m
+[0;32mI (519350) SCD30_DRIVER: 0xdc [0m
+[0;32mI (519350) SCD30_DRIVER: 0xd7 [0m
+[0;32mI (519360) SCD30_DRIVER: 0x62 [0m
+[0;32mI (519360) SCD30_DRIVER: 0x41 [0m
+[0;32mI (519370) SCD30_DRIVER: 0xbd [0m
+[0;32mI (519370) SCD30_DRIVER: 0x0f [0m
+[0;32mI (519370) SCD30_DRIVER: 0x3e [0m
+[0;32mI (519380) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (519380) SCD30_DRIVER: 0xe1 [0m
+[0;32mI (519380) SCD30_DRIVER: 0x42 [0m
+[0;32mI (519390) SCD30_DRIVER: 0x65 [0m
+[0;32mI (519390) SCD30_DRIVER: 0x9f [0m
+[0;32mI (519400) SCD30_DRIVER: 0xa3 [0m
+[0;32mI (519400) SCD30_DRIVER: 0x2f [0m
+[0;32mI (519400) SCD30_DRIVER: 0xfb [0m
+[0;32mI (519430) SCD30_DRIVER: CO2: 647.5 ppm (avg: 648.2), Temperature: 21.16°C (avg: 21.13), Humidity: 57.4% (avg: 57.4)[0m
+[0;32mI (524460) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (524460) SCD30_DRIVER: 0x5c [0m
+[0;32mI (524460) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (524460) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (524490) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (524490) SCD30_DRIVER: 0x0a [0m
+[0;32mI (524490) SCD30_DRIVER: 0x00 [0m
+[0;32mI (524490) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (524520) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (524520) SCD30_DRIVER: 0x70 [0m
+[0;32mI (524520) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (524520) SCD30_DRIVER: 0x00 [0m
+[0;32mI (524520) SCD30_DRIVER: 0xc8 [0m
+[0;32mI (524520) SCD30_DRIVER: 0x9b [0m
+[0;32mI (524530) SCD30_DRIVER: 0xcf [0m
+[0;32mI (524530) SCD30_DRIVER: 0x41 [0m
+[0;32mI (524540) SCD30_DRIVER: 0xbd [0m
+[0;32mI (524540) SCD30_DRIVER: 0x0f [0m
+[0;32mI (524540) SCD30_DRIVER: 0x0f [0m
+[0;32mI (524550) SCD30_DRIVER: 0xdf [0m
+[0;32mI (524550) SCD30_DRIVER: 0x32 [0m
+[0;32mI (524550) SCD30_DRIVER: 0x42 [0m
+[0;32mI (524560) SCD30_DRIVER: 0x65 [0m
+[0;32mI (524560) SCD30_DRIVER: 0x9f [0m
+[0;32mI (524570) SCD30_DRIVER: 0x72 [0m
+[0;32mI (524570) SCD30_DRIVER: 0xa7 [0m
+[0;32mI (524570) SCD30_DRIVER: 0x08 [0m
+[0;32mI (524600) SCD30_DRIVER: CO2: 647.1 ppm (avg: 647.6), Temperature: 21.13°C (avg: 21.14), Humidity: 57.4% (avg: 57.4)[0m
+[0;32mI (529630) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (529630) SCD30_DRIVER: 0x5c [0m
+[0;32mI (529630) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (529630) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (529660) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (529660) SCD30_DRIVER: 0x0a [0m
+[0;32mI (529660) SCD30_DRIVER: 0x00 [0m
+[0;32mI (529660) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (529690) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (529690) SCD30_DRIVER: 0x70 [0m
+[0;32mI (529690) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (529690) SCD30_DRIVER: 0x00 [0m
+[0;32mI (529690) SCD30_DRIVER: 0xcb [0m
+[0;32mI (529690) SCD30_DRIVER: 0x9a [0m
+[0;32mI (529700) SCD30_DRIVER: 0xd3 [0m
+[0;32mI (529700) SCD30_DRIVER: 0x41 [0m
+[0;32mI (529710) SCD30_DRIVER: 0xbc [0m
+[0;32mI (529710) SCD30_DRIVER: 0x3e [0m
+[0;32mI (529710) SCD30_DRIVER: 0xfc [0m
+[0;32mI (529720) SCD30_DRIVER: 0x9c [0m
+[0;32mI (529720) SCD30_DRIVER: 0x69 [0m
+[0;32mI (529720) SCD30_DRIVER: 0x42 [0m
+[0;32mI (529730) SCD30_DRIVER: 0x65 [0m
+[0;32mI (529730) SCD30_DRIVER: 0x9f [0m
+[0;32mI (529740) SCD30_DRIVER: 0x42 [0m
+[0;32mI (529740) SCD30_DRIVER: 0xd8 [0m
+[0;32mI (529740) SCD30_DRIVER: 0x6c [0m
+[0;32mI (529770) SCD30_DRIVER: CO2: 647.2 ppm (avg: 647.3), Temperature: 21.12°C (avg: 21.14), Humidity: 57.3% (avg: 57.4)[0m
+[0;32mI (534800) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (534800) SCD30_DRIVER: 0x5c [0m
+[0;32mI (534800) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (534800) SCD30_DRIVER: 0x81 [0m
+[0;32mI (535330) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (535330) SCD30_DRIVER: 0x5c [0m
+[0;32mI (535330) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (535330) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (535360) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (535360) SCD30_DRIVER: 0x0a [0m
+[0;32mI (535360) SCD30_DRIVER: 0x00 [0m
+[0;32mI (535360) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (535390) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (535390) SCD30_DRIVER: 0x70 [0m
+[0;32mI (535390) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (535390) SCD30_DRIVER: 0x00 [0m
+[0;32mI (535390) SCD30_DRIVER: 0xc4 [0m
+[0;32mI (535390) SCD30_DRIVER: 0x55 [0m
+[0;32mI (535400) SCD30_DRIVER: 0x23 [0m
+[0;32mI (535400) SCD30_DRIVER: 0x41 [0m
+[0;32mI (535410) SCD30_DRIVER: 0xbd [0m
+[0;32mI (535410) SCD30_DRIVER: 0x0f [0m
+[0;32mI (535410) SCD30_DRIVER: 0x04 [0m
+[0;32mI (535420) SCD30_DRIVER: 0xe7 [0m
+[0;32mI (535420) SCD30_DRIVER: 0x54 [0m
+[0;32mI (535420) SCD30_DRIVER: 0x42 [0m
+[0;32mI (535430) SCD30_DRIVER: 0x65 [0m
+[0;32mI (535430) SCD30_DRIVER: 0x9f [0m
+[0;32mI (535440) SCD30_DRIVER: 0x82 [0m
+[0;32mI (535440) SCD30_DRIVER: 0x35 [0m
+[0;32mI (535440) SCD30_DRIVER: 0x4b [0m
+[0;32mI (535470) SCD30_DRIVER: CO2: 647.1 ppm (avg: 647.1), Temperature: 21.13°C (avg: 21.13), Humidity: 57.4% (avg: 57.4)[0m
+[0;32mI (540500) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (540500) SCD30_DRIVER: 0x5c [0m
+[0;32mI (540500) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (540500) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (540530) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (540530) SCD30_DRIVER: 0x0a [0m
+[0;32mI (540530) SCD30_DRIVER: 0x00 [0m
+[0;32mI (540530) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (540560) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (540560) SCD30_DRIVER: 0x70 [0m
+[0;32mI (540560) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (540560) SCD30_DRIVER: 0x00 [0m
+[0;32mI (540560) SCD30_DRIVER: 0xdf [0m
+[0;32mI (540560) SCD30_DRIVER: 0xf1 [0m
+[0;32mI (540570) SCD30_DRIVER: 0x6f [0m
+[0;32mI (540570) SCD30_DRIVER: 0x41 [0m
+[0;32mI (540580) SCD30_DRIVER: 0xbd [0m
+[0;32mI (540580) SCD30_DRIVER: 0x0f [0m
+[0;32mI (540580) SCD30_DRIVER: 0x0d [0m
+[0;32mI (540590) SCD30_DRIVER: 0x68 [0m
+[0;32mI (540590) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (540590) SCD30_DRIVER: 0x42 [0m
+[0;32mI (540600) SCD30_DRIVER: 0x65 [0m
+[0;32mI (540600) SCD30_DRIVER: 0x9f [0m
+[0;32mI (540610) SCD30_DRIVER: 0x7c [0m
+[0;32mI (540610) SCD30_DRIVER: 0x2d [0m
+[0;32mI (540610) SCD30_DRIVER: 0xc4 [0m
+[0;32mI (540640) SCD30_DRIVER: CO2: 647.5 ppm (avg: 647.2), Temperature: 21.13°C (avg: 21.13), Humidity: 57.4% (avg: 57.4)[0m
+[0;32mI (545670) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (545670) SCD30_DRIVER: 0x5c [0m
+[0;32mI (545670) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (545670) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (545700) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (545700) SCD30_DRIVER: 0x0a [0m
+[0;32mI (545700) SCD30_DRIVER: 0x00 [0m
+[0;32mI (545700) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (545730) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (545730) SCD30_DRIVER: 0x70 [0m
+[0;32mI (545730) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (545730) SCD30_DRIVER: 0x00 [0m
+[0;32mI (545730) SCD30_DRIVER: 0xdc [0m
+[0;32mI (545730) SCD30_DRIVER: 0x66 [0m
+[0;32mI (545740) SCD30_DRIVER: 0xec [0m
+[0;32mI (545740) SCD30_DRIVER: 0x41 [0m
+[0;32mI (545750) SCD30_DRIVER: 0xbd [0m
+[0;32mI (545750) SCD30_DRIVER: 0x0f [0m
+[0;32mI (545750) SCD30_DRIVER: 0x36 [0m
+[0;32mI (545760) SCD30_DRIVER: 0xed [0m
+[0;32mI (545760) SCD30_DRIVER: 0xe4 [0m
+[0;32mI (545760) SCD30_DRIVER: 0x42 [0m
+[0;32mI (545770) SCD30_DRIVER: 0x65 [0m
+[0;32mI (545770) SCD30_DRIVER: 0x9f [0m
+[0;32mI (545780) SCD30_DRIVER: 0xbb [0m
+[0;32mI (545780) SCD30_DRIVER: 0xe7 [0m
+[0;32mI (545780) SCD30_DRIVER: 0x5c [0m
+[0;32mI (545810) SCD30_DRIVER: CO2: 647.4 ppm (avg: 647.3), Temperature: 21.15°C (avg: 21.14), Humidity: 57.4% (avg: 57.4)[0m
+[0;32mI (550840) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (550840) SCD30_DRIVER: 0x5c [0m
+[0;32mI (550840) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (550840) SCD30_DRIVER: 0x81 [0m
+[0;32mI (551370) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (551370) SCD30_DRIVER: 0x5c [0m
+[0;32mI (551370) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (551370) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (551400) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (551400) SCD30_DRIVER: 0x0a [0m
+[0;32mI (551400) SCD30_DRIVER: 0x00 [0m
+[0;32mI (551400) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (551430) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (551430) SCD30_DRIVER: 0x70 [0m
+[0;32mI (551430) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (551430) SCD30_DRIVER: 0x00 [0m
+[0;32mI (551430) SCD30_DRIVER: 0x08 [0m
+[0;32mI (551430) SCD30_DRIVER: 0x5e [0m
+[0;32mI (551440) SCD30_DRIVER: 0xd7 [0m
+[0;32mI (551440) SCD30_DRIVER: 0x41 [0m
+[0;32mI (551450) SCD30_DRIVER: 0xbc [0m
+[0;32mI (551450) SCD30_DRIVER: 0x3e [0m
+[0;32mI (551450) SCD30_DRIVER: 0xcd [0m
+[0;32mI (551460) SCD30_DRIVER: 0x00 [0m
+[0;32mI (551460) SCD30_DRIVER: 0x6b [0m
+[0;32mI (551460) SCD30_DRIVER: 0x42 [0m
+[0;32mI (551470) SCD30_DRIVER: 0x66 [0m
+[0;32mI (551470) SCD30_DRIVER: 0xcc [0m
+[0;32mI (551480) SCD30_DRIVER: 0x34 [0m
+[0;32mI (551480) SCD30_DRIVER: 0x1b [0m
+[0;32mI (551480) SCD30_DRIVER: 0x19 [0m
+[0;32mI (551510) SCD30_DRIVER: CO2: 648.1 ppm (avg: 647.7), Temperature: 21.10°C (avg: 21.13), Humidity: 57.6% (avg: 57.5)[0m
+[0;32mI (556540) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (556540) SCD30_DRIVER: 0x5c [0m
+[0;32mI (556540) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (556540) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (556570) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (556570) SCD30_DRIVER: 0x0a [0m
+[0;32mI (556570) SCD30_DRIVER: 0x00 [0m
+[0;32mI (556570) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (556600) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (556600) SCD30_DRIVER: 0x70 [0m
+[0;32mI (556600) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (556600) SCD30_DRIVER: 0x00 [0m
+[0;32mI (556600) SCD30_DRIVER: 0xdb [0m
+[0;32mI (556600) SCD30_DRIVER: 0x82 [0m
+[0;32mI (556610) SCD30_DRIVER: 0x47 [0m
+[0;32mI (556610) SCD30_DRIVER: 0x41 [0m
+[0;32mI (556620) SCD30_DRIVER: 0xbc [0m
+[0;32mI (556620) SCD30_DRIVER: 0x3e [0m
+[0;32mI (556620) SCD30_DRIVER: 0x7e [0m
+[0;32mI (556630) SCD30_DRIVER: 0x9e [0m
+[0;32mI (556630) SCD30_DRIVER: 0xf1 [0m
+[0;32mI (556630) SCD30_DRIVER: 0x42 [0m
+[0;32mI (556640) SCD30_DRIVER: 0x66 [0m
+[0;32mI (556640) SCD30_DRIVER: 0xcc [0m
+[0;32mI (556650) SCD30_DRIVER: 0x41 [0m
+[0;32mI (556650) SCD30_DRIVER: 0xfe [0m
+[0;32mI (556650) SCD30_DRIVER: 0x61 [0m
+[0;32mI (556680) SCD30_DRIVER: CO2: 647.4 ppm (avg: 647.7), Temperature: 21.06°C (avg: 21.10), Humidity: 57.6% (avg: 57.5)[0m
+[0;32mI (561710) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (561710) SCD30_DRIVER: 0x5c [0m
+[0;32mI (561710) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (561710) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (561740) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (561740) SCD30_DRIVER: 0x0a [0m
+[0;32mI (561740) SCD30_DRIVER: 0x00 [0m
+[0;32mI (561740) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (561770) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (561770) SCD30_DRIVER: 0x70 [0m
+[0;32mI (561770) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (561770) SCD30_DRIVER: 0x00 [0m
+[0;32mI (561770) SCD30_DRIVER: 0xd1 [0m
+[0;32mI (561770) SCD30_DRIVER: 0x5a [0m
+[0;32mI (561780) SCD30_DRIVER: 0x14 [0m
+[0;32mI (561780) SCD30_DRIVER: 0x41 [0m
+[0;32mI (561790) SCD30_DRIVER: 0xbc [0m
+[0;32mI (561790) SCD30_DRIVER: 0x3e [0m
+[0;32mI (561790) SCD30_DRIVER: 0x8d [0m
+[0;32mI (561800) SCD30_DRIVER: 0x68 [0m
+[0;32mI (561800) SCD30_DRIVER: 0xe0 [0m
+[0;32mI (561800) SCD30_DRIVER: 0x42 [0m
+[0;32mI (561810) SCD30_DRIVER: 0x66 [0m
+[0;32mI (561810) SCD30_DRIVER: 0xcc [0m
+[0;32mI (561820) SCD30_DRIVER: 0x7f [0m
+[0;32mI (561820) SCD30_DRIVER: 0xad [0m
+[0;32mI (561820) SCD30_DRIVER: 0x93 [0m
+[0;32mI (561850) SCD30_DRIVER: CO2: 647.3 ppm (avg: 647.6), Temperature: 21.07°C (avg: 21.08), Humidity: 57.6% (avg: 57.6)[0m
+[0;32mI (566880) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (566880) SCD30_DRIVER: 0x5c [0m
+[0;32mI (566880) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (566880) SCD30_DRIVER: 0x81 [0m
+[0;32mI (567410) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (567410) SCD30_DRIVER: 0x5c [0m
+[0;32mI (567410) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (567410) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (567440) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (567440) SCD30_DRIVER: 0x0a [0m
+[0;32mI (567440) SCD30_DRIVER: 0x00 [0m
+[0;32mI (567440) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (567470) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (567470) SCD30_DRIVER: 0x70 [0m
+[0;32mI (567470) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (567470) SCD30_DRIVER: 0x00 [0m
+[0;32mI (567470) SCD30_DRIVER: 0xfb [0m
+[0;32mI (567470) SCD30_DRIVER: 0x52 [0m
+[0;32mI (567480) SCD30_DRIVER: 0x9f [0m
+[0;32mI (567480) SCD30_DRIVER: 0x41 [0m
+[0;32mI (567490) SCD30_DRIVER: 0xbc [0m
+[0;32mI (567490) SCD30_DRIVER: 0x3e [0m
+[0;32mI (567490) SCD30_DRIVER: 0x24 [0m
+[0;32mI (567500) SCD30_DRIVER: 0x10 [0m
+[0;32mI (567500) SCD30_DRIVER: 0x9d [0m
+[0;32mI (567500) SCD30_DRIVER: 0x42 [0m
+[0;32mI (567510) SCD30_DRIVER: 0x66 [0m
+[0;32mI (567510) SCD30_DRIVER: 0xcc [0m
+[0;32mI (567520) SCD30_DRIVER: 0x99 [0m
+[0;32mI (567520) SCD30_DRIVER: 0xa3 [0m
+[0;32mI (567520) SCD30_DRIVER: 0xa0 [0m
+[0;32mI (567550) SCD30_DRIVER: CO2: 647.9 ppm (avg: 647.5), Temperature: 21.02°C (avg: 21.05), Humidity: 57.7% (avg: 57.6)[0m
+[0;32mI (572580) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (572580) SCD30_DRIVER: 0x5c [0m
+[0;32mI (572580) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (572580) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (572610) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (572610) SCD30_DRIVER: 0x0a [0m
+[0;32mI (572610) SCD30_DRIVER: 0x00 [0m
+[0;32mI (572610) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (572640) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (572640) SCD30_DRIVER: 0x70 [0m
+[0;32mI (572640) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (572640) SCD30_DRIVER: 0x00 [0m
+[0;32mI (572640) SCD30_DRIVER: 0xdd [0m
+[0;32mI (572640) SCD30_DRIVER: 0x15 [0m
+[0;32mI (572650) SCD30_DRIVER: 0xb3 [0m
+[0;32mI (572650) SCD30_DRIVER: 0x41 [0m
+[0;32mI (572660) SCD30_DRIVER: 0xbb [0m
+[0;32mI (572660) SCD30_DRIVER: 0xa9 [0m
+[0;32mI (572660) SCD30_DRIVER: 0xf7 [0m
+[0;32mI (572670) SCD30_DRIVER: 0x16 [0m
+[0;32mI (572670) SCD30_DRIVER: 0xd2 [0m
+[0;32mI (572670) SCD30_DRIVER: 0x42 [0m
+[0;32mI (572680) SCD30_DRIVER: 0x66 [0m
+[0;32mI (572680) SCD30_DRIVER: 0xcc [0m
+[0;32mI (572690) SCD30_DRIVER: 0xa5 [0m
+[0;32mI (572690) SCD30_DRIVER: 0xd3 [0m
+[0;32mI (572690) SCD30_DRIVER: 0x5e [0m
+[0;32mI (572720) SCD30_DRIVER: CO2: 647.5 ppm (avg: 647.6), Temperature: 21.00°C (avg: 21.03), Humidity: 57.7% (avg: 57.6)[0m
+[0;32mI (577750) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (577750) SCD30_DRIVER: 0x5c [0m
+[0;32mI (577750) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (577750) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (577780) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (577780) SCD30_DRIVER: 0x0a [0m
+[0;32mI (577780) SCD30_DRIVER: 0x00 [0m
+[0;32mI (577780) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (577810) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (577810) SCD30_DRIVER: 0x70 [0m
+[0;32mI (577810) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (577810) SCD30_DRIVER: 0x00 [0m
+[0;32mI (577810) SCD30_DRIVER: 0xc6 [0m
+[0;32mI (577810) SCD30_DRIVER: 0x4c [0m
+[0;32mI (577820) SCD30_DRIVER: 0x31 [0m
+[0;32mI (577820) SCD30_DRIVER: 0x41 [0m
+[0;32mI (577830) SCD30_DRIVER: 0xbc [0m
+[0;32mI (577830) SCD30_DRIVER: 0x3e [0m
+[0;32mI (577830) SCD30_DRIVER: 0x00 [0m
+[0;32mI (577840) SCD30_DRIVER: 0xfe [0m
+[0;32mI (577840) SCD30_DRIVER: 0x1c [0m
+[0;32mI (577840) SCD30_DRIVER: 0x42 [0m
+[0;32mI (577850) SCD30_DRIVER: 0x67 [0m
+[0;32mI (577850) SCD30_DRIVER: 0xfd [0m
+[0;32mI (577860) SCD30_DRIVER: 0x4e [0m
+[0;32mI (577860) SCD30_DRIVER: 0x31 [0m
+[0;32mI (577860) SCD30_DRIVER: 0x91 [0m
+[0;32mI (577890) SCD30_DRIVER: CO2: 647.1 ppm (avg: 647.5), Temperature: 21.00°C (avg: 21.00), Humidity: 57.8% (avg: 57.7)[0m
+[0;32mI (582920) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (582920) SCD30_DRIVER: 0x5c [0m
+[0;32mI (582920) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (582920) SCD30_DRIVER: 0x81 [0m
+[0;32mI (583450) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (583450) SCD30_DRIVER: 0x5c [0m
+[0;32mI (583450) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (583450) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (583480) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (583480) SCD30_DRIVER: 0x0a [0m
+[0;32mI (583480) SCD30_DRIVER: 0x00 [0m
+[0;32mI (583480) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (583510) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (583510) SCD30_DRIVER: 0x70 [0m
+[0;32mI (583510) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (583510) SCD30_DRIVER: 0x00 [0m
+[0;32mI (583510) SCD30_DRIVER: 0xad [0m
+[0;32mI (583510) SCD30_DRIVER: 0x0a [0m
+[0;32mI (583520) SCD30_DRIVER: 0xe5 [0m
+[0;32mI (583520) SCD30_DRIVER: 0x41 [0m
+[0;32mI (583530) SCD30_DRIVER: 0xbb [0m
+[0;32mI (583530) SCD30_DRIVER: 0xa9 [0m
+[0;32mI (583530) SCD30_DRIVER: 0xef [0m
+[0;32mI (583540) SCD30_DRIVER: 0xc0 [0m
+[0;32mI (583540) SCD30_DRIVER: 0x29 [0m
+[0;32mI (583540) SCD30_DRIVER: 0x42 [0m
+[0;32mI (583550) SCD30_DRIVER: 0x67 [0m
+[0;32mI (583550) SCD30_DRIVER: 0xfd [0m
+[0;32mI (583560) SCD30_DRIVER: 0x00 [0m
+[0;32mI (583560) SCD30_DRIVER: 0xb6 [0m
+[0;32mI (583560) SCD30_DRIVER: 0x98 [0m
+[0;32mI (583590) SCD30_DRIVER: CO2: 646.7 ppm (avg: 647.1), Temperature: 20.99°C (avg: 21.00), Humidity: 57.8% (avg: 57.7)[0m
+[0;32mI (588620) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (588620) SCD30_DRIVER: 0x5c [0m
+[0;32mI (588620) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (588620) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (588650) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (588650) SCD30_DRIVER: 0x0a [0m
+[0;32mI (588650) SCD30_DRIVER: 0x00 [0m
+[0;32mI (588650) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (588680) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (588680) SCD30_DRIVER: 0x70 [0m
+[0;32mI (588680) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (588680) SCD30_DRIVER: 0x00 [0m
+[0;32mI (588680) SCD30_DRIVER: 0xab [0m
+[0;32mI (588680) SCD30_DRIVER: 0xbd [0m
+[0;32mI (588690) SCD30_DRIVER: 0x97 [0m
+[0;32mI (588690) SCD30_DRIVER: 0x41 [0m
+[0;32mI (588700) SCD30_DRIVER: 0xbc [0m
+[0;32mI (588700) SCD30_DRIVER: 0x3e [0m
+[0;32mI (588700) SCD30_DRIVER: 0x15 [0m
+[0;32mI (588710) SCD30_DRIVER: 0x66 [0m
+[0;32mI (588710) SCD30_DRIVER: 0x85 [0m
+[0;32mI (588710) SCD30_DRIVER: 0x42 [0m
+[0;32mI (588720) SCD30_DRIVER: 0x66 [0m
+[0;32mI (588720) SCD30_DRIVER: 0xcc [0m
+[0;32mI (588730) SCD30_DRIVER: 0xc2 [0m
+[0;32mI (588730) SCD30_DRIVER: 0xee [0m
+[0;32mI (588730) SCD30_DRIVER: 0x2c [0m
+[0;32mI (588760) SCD30_DRIVER: CO2: 646.7 ppm (avg: 646.8), Temperature: 21.01°C (avg: 21.00), Humidity: 57.7% (avg: 57.8)[0m
+[0;32mI (593790) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (593790) SCD30_DRIVER: 0x5c [0m
+[0;32mI (593790) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (593790) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (593820) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (593820) SCD30_DRIVER: 0x0a [0m
+[0;32mI (593820) SCD30_DRIVER: 0x00 [0m
+[0;32mI (593820) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (593850) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (593850) SCD30_DRIVER: 0x70 [0m
+[0;32mI (593850) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (593850) SCD30_DRIVER: 0x00 [0m
+[0;32mI (593850) SCD30_DRIVER: 0xa3 [0m
+[0;32mI (593850) SCD30_DRIVER: 0x56 [0m
+[0;32mI (593860) SCD30_DRIVER: 0x8b [0m
+[0;32mI (593860) SCD30_DRIVER: 0x41 [0m
+[0;32mI (593870) SCD30_DRIVER: 0xbc [0m
+[0;32mI (593870) SCD30_DRIVER: 0x3e [0m
+[0;32mI (593870) SCD30_DRIVER: 0x25 [0m
+[0;32mI (593880) SCD30_DRIVER: 0x57 [0m
+[0;32mI (593880) SCD30_DRIVER: 0xc3 [0m
+[0;32mI (593880) SCD30_DRIVER: 0x42 [0m
+[0;32mI (593890) SCD30_DRIVER: 0x66 [0m
+[0;32mI (593890) SCD30_DRIVER: 0xcc [0m
+[0;32mI (593900) SCD30_DRIVER: 0xe1 [0m
+[0;32mI (593900) SCD30_DRIVER: 0x40 [0m
+[0;32mI (593900) SCD30_DRIVER: 0x3e [0m
+[0;32mI (593930) SCD30_DRIVER: CO2: 646.6 ppm (avg: 646.6), Temperature: 21.02°C (avg: 21.01), Humidity: 57.7% (avg: 57.7)[0m
+[0;32mI (598960) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (598960) SCD30_DRIVER: 0x5c [0m
+[0;32mI (598960) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (598960) SCD30_DRIVER: 0x81 [0m
+[0;32mI (599490) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (599490) SCD30_DRIVER: 0x5c [0m
+[0;32mI (599490) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (599490) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (599520) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (599520) SCD30_DRIVER: 0x0a [0m
+[0;32mI (599520) SCD30_DRIVER: 0x00 [0m
+[0;32mI (599520) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (599550) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (599550) SCD30_DRIVER: 0x70 [0m
+[0;32mI (599550) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (599550) SCD30_DRIVER: 0x00 [0m
+[0;32mI (599550) SCD30_DRIVER: 0x81 [0m
+[0;32mI (599550) SCD30_DRIVER: 0x94 [0m
+[0;32mI (599560) SCD30_DRIVER: 0xab [0m
+[0;32mI (599560) SCD30_DRIVER: 0x41 [0m
+[0;32mI (599570) SCD30_DRIVER: 0xbc [0m
+[0;32mI (599570) SCD30_DRIVER: 0x3e [0m
+[0;32mI (599570) SCD30_DRIVER: 0x14 [0m
+[0;32mI (599580) SCD30_DRIVER: 0xa9 [0m
+[0;32mI (599580) SCD30_DRIVER: 0x18 [0m
+[0;32mI (599580) SCD30_DRIVER: 0x42 [0m
+[0;32mI (599590) SCD30_DRIVER: 0x66 [0m
+[0;32mI (599590) SCD30_DRIVER: 0xcc [0m
+[0;32mI (599600) SCD30_DRIVER: 0xca [0m
+[0;32mI (599600) SCD30_DRIVER: 0x28 [0m
+[0;32mI (599600) SCD30_DRIVER: 0xfa [0m
+[0;32mI (599630) SCD30_DRIVER: CO2: 646.0 ppm (avg: 646.4), Temperature: 21.01°C (avg: 21.01), Humidity: 57.7% (avg: 57.7)[0m
+[0;32mI (604660) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (604660) SCD30_DRIVER: 0x5c [0m
+[0;32mI (604660) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (604660) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (604690) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (604690) SCD30_DRIVER: 0x0a [0m
+[0;32mI (604690) SCD30_DRIVER: 0x00 [0m
+[0;32mI (604690) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (604720) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (604720) SCD30_DRIVER: 0x70 [0m
+[0;32mI (604720) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (604720) SCD30_DRIVER: 0x00 [0m
+[0;32mI (604720) SCD30_DRIVER: 0x80 [0m
+[0;32mI (604720) SCD30_DRIVER: 0xd4 [0m
+[0;32mI (604730) SCD30_DRIVER: 0x62 [0m
+[0;32mI (604730) SCD30_DRIVER: 0x41 [0m
+[0;32mI (604740) SCD30_DRIVER: 0xbc [0m
+[0;32mI (604740) SCD30_DRIVER: 0x3e [0m
+[0;32mI (604740) SCD30_DRIVER: 0x04 [0m
+[0;32mI (604750) SCD30_DRIVER: 0x29 [0m
+[0;32mI (604750) SCD30_DRIVER: 0x0c [0m
+[0;32mI (604750) SCD30_DRIVER: 0x42 [0m
+[0;32mI (604760) SCD30_DRIVER: 0x67 [0m
+[0;32mI (604760) SCD30_DRIVER: 0xfd [0m
+[0;32mI (604770) SCD30_DRIVER: 0x00 [0m
+[0;32mI (604770) SCD30_DRIVER: 0xea [0m
+[0;32mI (604770) SCD30_DRIVER: 0x9b [0m
+[0;32mI (604800) SCD30_DRIVER: CO2: 646.0 ppm (avg: 646.2), Temperature: 21.00°C (avg: 21.01), Humidity: 57.8% (avg: 57.7)[0m
+[0;32mI (609830) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (609830) SCD30_DRIVER: 0x5c [0m
+[0;32mI (609830) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (609830) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (609860) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (609860) SCD30_DRIVER: 0x0a [0m
+[0;32mI (609860) SCD30_DRIVER: 0x00 [0m
+[0;32mI (609860) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (609890) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (609890) SCD30_DRIVER: 0x70 [0m
+[0;32mI (609890) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (609890) SCD30_DRIVER: 0x00 [0m
+[0;32mI (609890) SCD30_DRIVER: 0x76 [0m
+[0;32mI (609890) SCD30_DRIVER: 0x87 [0m
+[0;32mI (609900) SCD30_DRIVER: 0x0d [0m
+[0;32mI (609900) SCD30_DRIVER: 0x41 [0m
+[0;32mI (609910) SCD30_DRIVER: 0xbc [0m
+[0;32mI (609910) SCD30_DRIVER: 0x3e [0m
+[0;32mI (609910) SCD30_DRIVER: 0x2a [0m
+[0;32mI (609920) SCD30_DRIVER: 0x88 [0m
+[0;32mI (609920) SCD30_DRIVER: 0x70 [0m
+[0;32mI (609920) SCD30_DRIVER: 0x42 [0m
+[0;32mI (609930) SCD30_DRIVER: 0x67 [0m
+[0;32mI (609930) SCD30_DRIVER: 0xfd [0m
+[0;32mI (609940) SCD30_DRIVER: 0x05 [0m
+[0;32mI (609940) SCD30_DRIVER: 0x74 [0m
+[0;32mI (609940) SCD30_DRIVER: 0xca [0m
+[0;32mI (609970) SCD30_DRIVER: CO2: 645.9 ppm (avg: 646.0), Temperature: 21.02°C (avg: 21.01), Humidity: 57.8% (avg: 57.7)[0m
+[0;32mI (615000) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (615000) SCD30_DRIVER: 0x5c [0m
+[0;32mI (615000) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (615000) SCD30_DRIVER: 0x81 [0m
+[0;32mI (615530) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (615530) SCD30_DRIVER: 0x5c [0m
+[0;32mI (615530) SCD30_DRIVER: 0xb2 [0m
+[0;32mI (615530) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (615560) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (615560) SCD30_DRIVER: 0x0a [0m
+[0;32mI (615560) SCD30_DRIVER: 0x00 [0m
+[0;32mI (615560) SCD30_DRIVER: 0xb0 [0m
+[0;32mI (615590) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (615590) SCD30_DRIVER: 0x70 [0m
+[0;32mI (615590) SCD30_DRIVER: 0xf4 [0m
+[0;32mI (615590) SCD30_DRIVER: 0x00 [0m
+[0;32mI (615590) SCD30_DRIVER: 0x42 [0m
+[0;32mI (615590) SCD30_DRIVER: 0x68 [0m
+[0;32mI (615600) SCD30_DRIVER: 0xd3 [0m
+[0;32mI (615600) SCD30_DRIVER: 0x41 [0m
+[0;32mI (615610) SCD30_DRIVER: 0xbc [0m
+[0;32mI (615610) SCD30_DRIVER: 0x3e [0m
+[0;32mI (615610) SCD30_DRIVER: 0x1a [0m
+[0;32mI (615620) SCD30_DRIVER: 0x65 [0m
+[0;32mI (615620) SCD30_DRIVER: 0x4f [0m
+[0;32mI (615620) SCD30_DRIVER: 0x42 [0m
+[0;32mI (615630) SCD30_DRIVER: 0x67 [0m
+[0;32mI (615630) SCD30_DRIVER: 0xfd [0m
+[0;32mI (615640) SCD30_DRIVER: 0x07 [0m
+[0;32mI (615640) SCD30_DRIVER: 0x72 [0m
+[0;32mI (615640) SCD30_DRIVER: 0xb5 [0m
+[0;32mI (615670) SCD30_DRIVER: CO2: 645.0 ppm (avg: 645.6), Temperature: 21.01°C (avg: 21.01), Humidity: 57.8% (avg: 57.8)[0m
+[0;32mI (620700) SCD30_DRIVER: Raw data read from sensor: [0m
+[0;32mI (620700) SCD30_DRIVER: 0x5c [0m
+[0;32mI (620700) SCD30_DRIVER: 0xb2 [0m

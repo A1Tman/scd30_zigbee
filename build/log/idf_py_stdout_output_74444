@@ -1,0 +1,128 @@
+ESP-ROM:esp32c6-20220919
+Build:Sep 19 2022
+rst:0x1 (POWERON),boot:0x6c (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x40875720,len:0x1804
+load:0x4086c110,len:0xe2c
+load:0x4086e610,len:0x2e5c
+entry 0x4086c11a
+[0;32mI (23) boot: ESP-IDF v5.3.1 2nd stage bootloader[0m
+[0;32mI (24) boot: compile time Oct 25 2024 12:27:02[0m
+[0;32mI (24) boot: chip revision: v0.0[0m
+[0;32mI (26) boot.esp32c6: SPI Speed      : 80MHz[0m
+[0;32mI (31) boot.esp32c6: SPI Mode       : DIO[0m
+[0;32mI (36) boot.esp32c6: SPI Flash Size : 16MB[0m
+[0;32mI (41) boot: Enabling RNG early entropy source...[0m
+[0;32mI (46) boot: Partition Table:[0m
+[0;32mI (50) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (57) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (65) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (72) boot:  2 factory          factory app      00 00 00010000 000e1000[0m
+[0;32mI (79) boot:  3 zb_storage       Unknown data     01 50 000f1000 00004000[0m
+[0;32mI (87) boot:  4 zb_fct           Unknown data     01 50 000f5000 00000400[0m
+[0;32mI (95) boot: End of partition table[0m
+[0;32mI (99) esp_image: segment 0: paddr=00010020 vaddr=42058020 size=1174ch ( 71500) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=00021774 vaddr=40800000 size=068a4h ( 26788) load[0m
+[0;32mI (129) esp_image: segment 2: paddr=00028020 vaddr=42000020 size=554e0h (349408) map[0m
+[0;32mI (202) esp_image: segment 3: paddr=0007d508 vaddr=408068a4 size=08d0ch ( 36108) load[0m
+[0;32mI (211) esp_image: segment 4: paddr=0008621c vaddr=4080f5b0 size=02114h (  8468) load[0m
+[0;32mI (217) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (218) boot: Disabling RNG early entropy source...[0m
+[0;32mI (232) cpu_start: Unicore app[0m
+[0;32mI (240) cpu_start: Pro cpu start user code[0m
+[0;32mI (240) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (241) app_init: Application information:[0m
+[0;32mI (243) app_init: Project name:     SCD30_ZIGBEE[0m
+[0;32mI (249) app_init: App version:      1[0m
+[0;32mI (253) app_init: Compile time:     Oct 25 2024 12:26:01[0m
+[0;32mI (259) app_init: ELF file SHA256:  fa7cefb3a...[0m
+[0;32mI (264) app_init: ESP-IDF:          v5.3.1[0m
+[0;32mI (269) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (274) efuse_init: Max chip rev:     v0.99 [0m
+[0;32mI (279) efuse_init: Chip rev:         v0.0[0m
+[0;32mI (284) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (291) heap_init: At 40815DC0 len 00066850 (410 KiB): RAM[0m
+[0;32mI (297) heap_init: At 4087C610 len 00002F54 (11 KiB): RAM[0m
+[0;32mI (303) heap_init: At 50000000 len 00003FE8 (15 KiB): RTCRAM[0m
+[0;32mI (310) spi_flash: detected chip: generic[0m
+[0;32mI (314) spi_flash: flash io: dio[0m
+[0;32mI (318) sleep: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (325) sleep: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (343) coexist: coex firmware version: 4482466[0m
+[0;32mI (359) coexist: coexist rom version 5b8dcfa[0m
+[0;32mI (360) main_task: Started on CPU0[0m
+[0;32mI (360) main_task: Calling app_main()[0m
+[0;32mI (360) pm: Frequency switching config: CPU_MAX: 160, APB_MAX: 160, APB_MIN: 160, Light sleep: DISABLED[0m
+[0;32mI (370) esp_zb_sleep: Enable ieee802154 zigbee light sleep, the wake up source is ESP timer[0m
+
+assert failed: zb_osif_nvram_init zb_esp_nvram.c:83 (zb_partition != NULL)
+Core  0 register dump:
+MEPC    : 0x408008b6  RA      : 0x408090c0  SP      : 0x4081ac50  GP      : 0x4080fdb4  
+TP      : 0x4081ae80  T0      : 0x37363534  T1      : 0x7271706f  T2      : 0x33323130  
+S0/FP   : 0x0000007d  S1      : 0x00000001  A0      : 0x4081ac8c  A1      : 0x40810659  
+A2      : 0x00000001  A3      : 0x00000029  A4      : 0x00000001  A5      : 0x40816000  
+A6      : 0x0000000c  A7      : 0x76757473  S2      : 0x00000009  S3      : 0x4081adaa  
+S4      : 0x40810658  S5      : 0x00000000  S6      : 0x00000000  S7      : 0x00000000  
+S8      : 0x00000000  S9      : 0x00000000  S10     : 0x00000000  S11     : 0x00000000  
+T3      : 0x6e6d6c6b  T4      : 0x6a696867  T5      : 0x66656463  T6      : 0x62613938  
+MSTATUS : 0x00001881  MTVEC   : 0x40800001  MCAUSE  : 0x00000007  MTVAL   : 0x00000000  
+MHARTID : 0x00000000  
+
+Stack memory:
+4081ac50: 0x00000000 0x4081ae88 0x42067924 0x4080e56a 0x40810858 0x42067924 0x40810868 0x4205ece7
+4081ac70: 0x4081086c 0x4081ac84 0x40810870 0x4205ec94 0x40810658 0x00003338 0x40816924 0x65737361
+4081ac90: 0x66207472 0x656c6961 0x7a203a64 0x736f5f62 0x6e5f6669 0x6d617276 0x696e695f 0x627a2074
+4081acb0: 0x7073655f 0x72766e5f 0x632e6d61 0x2033383a 0x5f627a28 0x74726170 0x6f697469 0x3d21206e
+800 0x00000014 0x4205ec88 0x4080dac6
+4081acf0: 0x00000000 0x00000000 0x00000000 0x40022498 0x40880000 0x40817e1c 0x40815dc0 0x400225ca
+4081ad10: 0x4205ec88 0x00000000 0x40817e1c 0x40800c02 0x00000001 0x00000014 0x4205ec88 0x4080e590
+4081ad30: 0x4205ec88 0x00000000 0x40817e1c 0x4203f5d0 0x00000001 0x00000000 0x00000000 0x4203f68a
+4081ad50: 0x4205ec88 0x00000000 0x00000000 0x42000000 0x42059000 0x408142e0 0x00000000 0x408122e0
+4081ad70: 0x42059000 0x408142e0 0x40812000 0x4203c382 0xa5a5a5a5 0xa5a5a5a5 0x40812000 0x4201b944
+4081ad90: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0x00000000 0x00000000 0x42066eb8 0x4081ae20 0x42011e2a
+4081adb0: 0xa5a5a5a5 0xa5a5a5a5 0x00000001 0x4200e656 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+4081add0: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0x4080a0de 0x00000000 0x00000000 0x4080fdb4
+4081adf0: 0x4081ae80 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x4200e616 0x00000000
+4081ae10: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000002 0x00000000 0x00000006 0x00000fa0
+4081ae30: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x4080a0ea
+4081ae50: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+4081ae70: 0x00000000 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0x00000150 0x4081a730 0x00000000
+4081ae90: 0x40811958 0x40811958 0x4081ae88 0x40811950 0x00000014 0x00000000 0x00000000 0x4081ae88
+4081aeb0: 0x00000000 0x00000005 0x40819e84 0x6267695a 0x6d5f6565 0x006e6961 0x00000000 0x4081ae80
+4081aed0: 0x00000005 0x00000000 0x00000000 0x00000000 0x00000000 0x408168bc 0x40816924 0x4081698c
+4081aef0: 0x00000000 0x00000000 0x00000001 0x00000000 0x00000000 0x00000000 0x42007ac4 0x00000000
+4081af10: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+4081af30: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+0x00000000 0x00000000 0x00000000
+4081af70: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+4081af90: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+4081afb0: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+4081afd0: 0x00000000 0x00000000 0x00003340 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+4081aff0: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+4081b010: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+4081b030: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+
+
+
+ELF file SHA256: fa7cefb3a
+
+Rebooting...
+ESP-ROM:esp32c6-20220919
+Build:Sep 19 2022
+rst:0xc (SW_CPU),boot:0x6c (SPI_FAST_FLASH_BOOT)
+Saved PC:0x4001975a
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x40875720,len:0x1804
+load:0x4086c110,len:0xe2c
+load:0x4086e610,len:0x2e5c
+entry 0x4086c11a
+[0;32mI (27) boot: ESP-IDF v5.3.1 2nd stage bootloader[0m
+[0;32mI (27) boot: compile time Oct 25 2024 12:27:02[0m
+[0;32mI (28) boot: chip revision: v0.0[0m
+[0;32mI (30) boot.esp32c6: SPI Speed      : 80MHz[0m
+[0;32mI (35) boot.esp32c6: SPI Mode       : DIO[0m
+[0;32mI (39) boot.esp32c6: SPI Flash Size : 16MB[0m
+[0;32mI (44) boot: Enabling RNG early entropy source...[0m
+[0;32mI (50) boot: Partitio

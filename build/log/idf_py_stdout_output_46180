@@ -1,0 +1,225 @@
+�ESP-ROM:esp32c6-20220919
+Build:Sep 19 2022
+rst:0x1 (POWERON),boot:0x6c (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x40875720,len:0x1804
+load:0x4086c110,len:0xe2c
+load:0x4086e610,len:0x2e58
+entry 0x4086c11a
+[0;32mI (23) boot: ESP-IDF v5.3.1 2nd stage bootloader[0m
+[0;32mI (24) boot: compile time Oct 25 2024 20:09:58[0m
+[0;32mI (24) boot: chip revision: v0.0[0m
+[0;32mI (26) boot.esp32c6: SPI Speed      : 80MHz[0m
+[0;32mI (31) boot.esp32c6: SPI Mode       : DIO[0m
+[0;32mI (36) boot.esp32c6: SPI Flash Size : 16MB[0m
+[0;32mI (41) boot: Enabling RNG early entropy source...[0m
+[0;32mI (46) boot: Partition Table:[0m
+[0;32mI (50) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (57) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (65) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (72) boot:  2 factory          factory app      00 00 00010000 000e1000[0m
+[0;32mI (79) boot:  3 zb_storage       Unknown data     01 81 000f1000 00004000[0m
+[0;32mI (87) boot:  4 zb_fct           Unknown data     01 81 000f5000 00000400[0m
+[0;32mI (95) boot: End of partition table[0m
+[0;32mI (99) esp_image: segment 0: paddr=00010020 vaddr=42090020 size=2e668h (190056) map[0m
+[0;32mI (146) esp_image: segment 1: paddr=0003e690 vaddr=40800000 size=01988h (  6536) load[0m
+[0;32mI (149) esp_image: segment 2: paddr=00040020 vaddr=42000020 size=87e8ch (556684) map[0m
+[0;32mI (267) esp_image: segment 3: paddr=000c7eb4 vaddr=40801988 size=0dbe8h ( 56296) load[0m
+[0;32mI (281) esp_image: segment 4: paddr=000d5aa4 vaddr=4080f570 size=0211ch (  8476) load[0m
+[0;32mI (287) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (288) boot: Disabling RNG early entropy source...[0m
+[0;32mI (301) cpu_start: Unicore app[0m
+[0;32mI (310) cpu_start: Pro cpu start user code[0m
+[0;32mI (310) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (311) app_init: Application information:[0m
+[0;32mI (313) app_init: Project name:     SCD30_ZIGBEE[0m
+[0;32mI (318) app_init: App version:      1[0m
+[0;32mI (323) app_init: Compile time:     Oct 26 2024 11:19:38[0m
+[0;32mI (329) app_init: ELF file SHA256:  fe669ec38...[0m
+[0;32mI (334) app_init: ESP-IDF:          v5.3.1[0m
+[0;32mI (339) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (344) efuse_init: Max chip rev:     v0.99 [0m
+[0;32mI (349) efuse_init: Chip rev:         v0.0[0m
+[0;32mI (353) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (361) heap_init: At 40815D30 len 000668E0 (410 KiB): RAM[0m
+[0;32mI (367) heap_init: At 4087C610 len 00002F54 (11 KiB): RAM[0m
+[0;32mI (373) heap_init: At 50000000 len 00003FE8 (15 KiB): RTCRAM[0m
+[0;32mI (380) spi_flash: detected chip: generic[0m
+[0;32mI (384) spi_flash: flash io: dio[0m
+[0;32mI (388) sleep: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (395) sleep: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (413) coexist: coex firmware version: 4482466[0m
+[0;32mI (429) coexist: coexist rom version 5b8dcfa[0m
+[0;32mI (430) main_task: Started on CPU0[0m
+[0;32mI (430) main_task: Calling app_main()[0m
+[0;32mI (430) MAIN: Initializing NVS...[0m
+[0;32mI (440) MAIN: NVS initialized successfully[0m
+[0;32mI (440) MAIN: Initializing system components...[0m
+[0;32mI (440) I2C_HANDLER: Starting I2C initialization...[0m
+[0;32mI (450) I2C_HANDLER: SDA Pin: 21, SCL Pin: 22[0m
+[0;33mW (450) I2C_HANDLER: Attempting I2C bus recovery...[0m
+[0;32mI (460) gpio: GPIO[21]| InputEn: 0| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (470) gpio: GPIO[22]| InputEn: 0| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (480) gpio: GPIO[22]| InputEn: 0| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (480) gpio: GPIO[21]| InputEn: 0| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (490) I2C_HANDLER: I2C bus recovery completed[0m
+[0;32mI (500) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (510) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;33mW (520) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.[0m
+[0;32mI (550) I2C_HANDLER: I2C bus initialized successfully[0m
+[0;32mI (550) I2C_HANDLER: SCD30 device added to I2C bus[0m
+[0;33mW (660) I2C_HANDLER: Device probe failed for address 0x61, but continuing anyway[0m
+[0;32mI (660) ESP_ZIGBEE_CORE: SDK Version: v1.5.1-d7b0a45-60ebec12-a9edc7b; esp32c6; 2024-10-12 03:22:09 UTC[0m
+[0;32mI (660) phy_init: phy_version 310,dde1ba9,Jun  4 2024,16:38:11[0m
+[0;33mW (670) phy_init: failed to load RF calibration data (0x1102), falling back to full calibration[0m
+[0;33mW (710) phy_init: saving new calibration data because of checksum failure, mode(2)[0m
+[0;32mI (720) phy: libbtbb version: 04952fd, Jun  4 2024, 16:38:26[0m
+ZBOSS: common/zb_init_default.c:181   ED build
+ZBOSS: common/zb_init_default.c:187   sizes: g_zb 7576 sched 224 bpool 16 nwk 912 aps 3040 addr 284 zdo 840
+ZBOSS: common/zb_init_default.c:196   sec 2
+ZBOSS: common/zb_init_default.c:198   zcl 768
+ZBOSS: common/zb_init_default.c:201   zll 960
+ZBOSS: common/zb_init_default.c:207   nvram 140
+ZBOSS: common/zb_init_default.c:210   buttons 200
+ZBOSS: common/zb_init_default.c:212   err_ind 4
+ZBOSS: common/zb_init_default.c:218   scheduler q size 80
+ZBOSS: common/zb_init_default.c:221   g_mac 816 g_imac 28
+ZBOSS: common/zb_init_default.c:225   Configurable mem build, use ZBOSS lib defaults = 0
+ZBOSS: common/zb_init_default.c:231   ZB_IOBUF_POOL_SIZE 80 ZB_NWK_IN_Q_SIZE 40 ZB_MAC_PENDING_QUEUE_SIZE 20 ZB_APS_DST_BINDING_TABLE_SIZE 16 ZB_APS_BIND_TRANS_TABLE_SIZE 20 ZB_N_APS_RETRANS_ENTRIES 27
+ZBOSS: common/zb_init_default.c:261   ZB_N_APS_KEY_PAIR_ARR_MAX_SIZE 8 ZB_IEEE_ADDR_TABLE_SIZE 64 ZB_NEIGHBOR_TABLE_SIZE 64 ZB_NWK_ROUTING_TABLE_SIZE 0 ZB_APS_DUPS_TABLE_SIZE 32
+ZBOSS: zdo/af_descriptor.c:357   ep_count 1
+[0;32mI (810) pm: Frequency switching config: CPU_MAX: 160, APB_MAX: 160, APB_MIN: 160, Light sleep: DISABLED[0m
+[0;32mI (820) SCD30_DRIVER: Initializing SCD30 sensor[0m
+[0;32mI (820) I2C_HANDLER: Successfully added device with address 0x61[0m
+[0;31mE (1860) SCD30_DRIVER: CRC check failed at position 0. Expected 0x81, got 0x00[0m
+[0;31mE (1860) SCD30_DRIVER: Failed to communicate with SCD30: ESP_ERR_INVALID_CRC[0m
+[0;33mW (1860) SCD30_DRIVER: Cannot communicate with SCD30 (attempt 1): ESP_ERR_INVALID_RESPONSE[0m
+[0;32mI (1870) SCD30_DRIVER: Retry attempt 2 of 3[0m
+[0;31mE (3900) SCD30_DRIVER: CRC check failed at position 0. Expected 0x81, got 0x00[0m
+[0;31mE (3900) SCD30_DRIVER: Failed to communicate with SCD30: ESP_ERR_INVALID_CRC[0m
+[0;33mW (3900) SCD30_DRIVER: Cannot communicate with SCD30 (attempt 2): ESP_ERR_INVALID_RESPONSE[0m
+[0;32mI (3910) SCD30_DRIVER: Retry attempt 3 of 3[0m
+[0;31mE (5940) SCD30_DRIVER: CRC check failed at position 0. Expected 0x81, got 0x00[0m
+[0;31mE (5940) SCD30_DRIVER: Failed to communicate with SCD30: ESP_ERR_INVALID_CRC[0m
+[0;33mW (5940) SCD30_DRIVER: Cannot communicate with SCD30 (attempt 3): ESP_ERR_INVALID_RESPONSE[0m
+[0;31mE (5950) SCD30_DRIVER: Failed to initialize SCD30 after 3 attempts[0m
+[0;33mW (5960) MAIN: SCD30 initialization attempt 1 failed: ESP_ERR_INVALID_RESPONSE. Retrying...[0m
+[0;32mI (6960) SCD30_DRIVER: Initializing SCD30 sensor[0m
+[0;32mI (6960) I2C_HANDLER: Successfully added device with address 0x61[0m
+[0;31mE (7990) SCD30_DRIVER: CRC check failed at position 0. Expected 0x81, got 0x00[0m
+[0;31mE (7990) SCD30_DRIVER: Failed to communicate with SCD30: ESP_ERR_INVALID_CRC[0m
+[0;33mW (7990) SCD30_DRIVER: Cannot communicate with SCD30 (attempt 1): ESP_ERR_INVALID_RESPONSE[0m
+[0;32mI (8000) SCD30_DRIVER: Retry attempt 2 of 3[0m
+[0;31mE (10030) SCD30_DRIVER: CRC check failed at position 0. Expected 0x81, got 0x00[0m
+[0;31mE (10030) SCD30_DRIVER: Failed to communicate with SCD30: ESP_ERR_INVALID_CRC[0m
+[0;33mW (10030) SCD30_DRIVER: Cannot communicate with SCD30 (attempt 2): ESP_ERR_INVALID_RESPONSE[0m
+[0;32mI (10040) SCD30_DRIVER: Retry attempt 3 of 3[0m
+[0;31mE (12070) SCD30_DRIVER: CRC check failed at position 0. Expected 0x81, got 0x00[0m
+[0;31mE (12070) SCD30_DRIVER: Failed to communicate with SCD30: ESP_ERR_INVALID_CRC[0m
+[0;33mW (12070) SCD30_DRIVER: Cannot communicate with SCD30 (attempt 3): ESP_ERR_INVALID_RESPONSE[0m
+[0;31mE (12080) SCD30_DRIVER: Failed to initialize SCD30 after 3 attempts[0m
+[0;33mW (12090) MAIN: SCD30 initialization attempt 2 failed: ESP_ERR_INVALID_RESPONSE. Retrying...[0m
+[0;32mI (13100) SCD30_DRIVER: Initializing SCD30 sensor[0m
+[0;32mI (13100) I2C_HANDLER: Successfully added device with address 0x61[0m
+[0;31mE (14130) SCD30_DRIVER: CRC check failed at position 0. Expected 0x81, got 0x00[0m
+[0;31mE (14130) SCD30_DRIVER: Failed to communicate with SCD30: ESP_ERR_INVALID_CRC[0m
+[0;33mW (14130) SCD30_DRIVER: Cannot communicate with SCD30 (attempt 1): ESP_ERR_INVALID_RESPONSE[0m
+[0;32mI (14140) SCD30_DRIVER: Retry attempt 2 of 3[0m
+[0;31mE (16170) SCD30_DRIVER: CRC check failed at position 0. Expected 0x81, got 0x00[0m
+[0;31mE (16170) SCD30_DRIVER: Failed to communicate with SCD30: ESP_ERR_INVALID_CRC[0m
+[0;33mW (16170) SCD30_DRIVER: Cannot communicate with SCD30 (attempt 2): ESP_ERR_INVALID_RESPONSE[0m
+[0;32mI (16180) SCD30_DRIVER: Retry attempt 3 of 3[0m
+[0;31mE (18210) SCD30_DRIVER: CRC check failed at position 0. Expected 0x81, got 0x00[0m
+[0;31mE (18210) SCD30_DRIVER: Failed to communicate with SCD30: ESP_ERR_INVALID_CRC[0m
+[0;33mW (18210) SCD30_DRIVER: Cannot communicate with SCD30 (attempt 3): ESP_ERR_INVALID_RESPONSE[0m
+[0;31mE (18220) SCD30_DRIVER: Failed to initialize SCD30 after 3 attempts[0m
+[0;31mE (18230) MAIN: Failed to initialize SCD30 after 3 attempts: ESP_ERR_INVALID_RESPONSE[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x108 (ESP_ERR_INVALID_RESPONSE) at 0x4200e398
+file: "./main/main.c" line 92
+func: app_main
+expression: init_system()
+
+abort() was called at PC 0x40809073 on core 0
+Core  0 register dump:
+MEPC    : 0x408008b6  RA      : 0x4080907e  SP      : 0x40818e40  GP      : 0x4080fd74  
+TP      : 0x40818f30  T0      : 0x37363534  T1      : 0x7271706f  T2      : 0x33323130  
+S0/FP   : 0x00000004  S1      : 0x40818ea4  A0      : 0x40818e6c  A1      : 0x40818ea2  
+A2      : 0x00000000  A3      : 0x40818e99  A4      : 0x00000001  A5      : 0x40816000  
+A6      : 0x00000000  A7      : 0x76757473  S2      : 0x00000000  S3      : 0x00000000  
+S4      : 0x00000000  S5      : 0x00000000  S6      : 0x00000000  S7      : 0x00000000  
+S8      : 0x00000000  S9      : 0x00000000  S10     : 0x00000000  S11     : 0x00000000  
+T3      : 0x6e6d6c6b  T4      : 0x6a696867  T5      : 0x66656463  T6      : 0x62613938  
+MSTATUS : 0x00001881  MTVEC   : 0x40800001  MCAUSE  : 0x00000007  MTVAL   : 0x00000000  
+MHARTID : 0x00000000  
+
+Stack memory:
+40818e40: 0x42093590 0x4200e39c 0x40818ea0 0x4080e3b2 0x00004722 0x40819df4 0x4081f77c 0x408107e0
+40818e60: 0x40818ea4 0x408107fc 0x40818ea0 0x726f6261 0x20292874 0x20736177 0x6c6c6163 0x61206465
+40818e80: 0x43502074 0x34783020 0x39303830 0x20333730 0x63206e6f 0x2065726f 0x00000030 0x00000000
+40818ea0: 0x42090030 0x30383034 0x33373039 0x00000000 0x00000000 0x00000000 0x42093000 0x40809076
+40818ec0: 0x00000000 0x00000000 0x42093000 0x4200e39c 0x42091d68 0x000001ae 0x42092000 0x42086b76
+40818ee0: 0x00000000 0x00001388 0x00000001 0x00000000 0x00000000 0x00000000 0x00000000 0x4080a0a8
+40818f00: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+40818f20: 0x00000000 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0x00000150
+40818f40: 0x40818d00 0x000006f2 0x408118c8 0x408118c8 0x40818f40 0x408118c0 0x00000018 0x00000000
+40818f60: 0x00000000 0x40818f40 0x00000000 0x00000001 0x40817f3c 0x6e69616d 0x00000000 0x00000000
+40818f80: 0x00000000 0x40818f30 0x00000001 0x00000000 0x00000000 0x00000000 0x00000000 0x4081682c
+40818fa0: 0x40816894 0x408168fc 0x00000000 0x00000000 0x00000001 0x00000000 0x00000000 0x00000000
+40818fc0: 0x42007ac4 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+40818fe0: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+40819000: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+40819020: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+40819040: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+40819060: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000
+40819080: 0x00000000 0x00000000 0x00000000 0x00000000 0x00000600 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+408190a0: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+408190c0: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+a5a5 0xa5a5a5a5 0xa5a5a5a5
+40819100: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+40819120: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+40819140: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+40819160: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+40819180: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+408191a0: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+408191c0: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+408191e0: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+40819200: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+40819220: 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5 0xa5a5a5a5
+
+
+
+ELF file SHA256: fe669ec38
+
+Rebooting...
+ESP-ROM:esp32c6-20220919
+Build:Sep 19 2022
+rst:0xc (SW_CPU),boot:0x6c (SPI_FAST_FLASH_BOOT)
+Saved PC:0x4001975a
+SPIWP:0xee
+mode:DIO, clock div:2
+load:0x40875720,len:0x1804
+load:0x4086c110,len:0xe2c
+load:0x4086e610,len:0x2e58
+entry 0x4086c11a
+[0;32mI (27) boot: ESP-IDF v5.3.1 2nd stage bootloader[0m
+[0;32mI (27) boot: compile time Oct 25 2024 20:09:58[0m
+[0;32mI (28) boot: chip revision: v0.0[0m
+[0;32mI (30) boot.esp32c6: SPI Speed      : 80MHz[0m
+[0;32mI (35) boot.esp32c6: SPI Mode       : DIO[0m
+[0;32mI (39) boot.esp32c6: SPI Flash Size : 16MB[0m
+[0;32mI (44) boot: Enabling RNG early entropy source...[0m
+[0;32mI (50) boot: Partition Table:[0m
+[0;32mI (53) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (60) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (68) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (75) boot:  2 factory          factory app      00 00 00010000 000e1000[0m
+[0;32mI (83) boot:  3 zb_storage       Unknown data     01 81 000f1000 00004000[0m
+[0;32mI (90) boot:  4 zb_fct           Unknown data     01 81 000f5000 00000400[0m
+[0;32mI (98) boot: End of partition table[0m
+[0;32mI (102) esp_image: segment 0: paddr=00010020 vaddr=42090020 size=2e668h (190056) map[0m
+[0;32mI (188) esp_image: segment 1: paddr=0003e690 vaddr=40800000 size=01988h (  6536) load[0m
+[0;32mI (193) esp_image: segment 2: paddr=00040020 vaddr=42000020 size=87e8ch (556684) map[0m
+[0;32mI (420) esp_image: segment 3: paddr=000c7eb4 vaddr=40801988 size=0dbe8h ( 56296) load[0m
+[0;32mI (448) esp_image: segment 4: paddr=000d5aa4 vaddr=4080f570 size=0211ch (  8476) load[0m
+[0;32mI (460) boot: 

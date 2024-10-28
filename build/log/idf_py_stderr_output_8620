@@ -1,0 +1,93 @@
+[0;33m--- Warning: GDB cannot open serial ports accessed as COMx[0m
+[0;33m--- Using \\.\COM7 instead...[0m
+[0;33m--- esp-idf-monitor 1.5.0 on \\.\COM7 115200[0m
+[0;33m--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H[0m
+[0;33m--- 0x4200e398: app_main at C:/Users/chris/SCD30_ZIGBEE/main/main.c:92 (discriminator 1)
+[0m
+[0;33m--- 0x40809073: _esp_error_check_failed at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x4080907e: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpueh38cib"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpueh38cib': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4200e398: app_main at C:/Users/chris/SCD30_ZIGBEE/main/main.c:92 (discriminator 1)
+[0m
+[0;33m--- 0x40809073: _esp_error_check_failed at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x4080907e: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmp3futeu04"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmp3futeu04': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4200e398: app_main at C:/Users/chris/SCD30_ZIGBEE/main/main.c:92 (discriminator 1)
+[0m
+[0;33m--- 0x40809073: _esp_error_check_failed at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x4080907e: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpbnr_124c"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpbnr_124c': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4200e398: app_main at C:/Users/chris/SCD30_ZIGBEE/main/main.c:92 (discriminator 1)
+[0m
+[0;33m--- 0x40809073: _esp_error_check_failed at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x4080907e: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpcmv_5_og"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpcmv_5_og': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4200e398: app_main at C:/Users/chris/SCD30_ZIGBEE/main/main.c:92 (discriminator 1)
+[0m
+[0;33m--- 0x40809073: _esp_error_check_failed at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x4080907e: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpac2_mtdm"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpac2_mtdm': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4200e398: app_main at C:/Users/chris/SCD30_ZIGBEE/main/main.c:92 (discriminator 1)
+[0m
+[0;33m--- 0x40809073: _esp_error_check_failed at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x4080907e: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table

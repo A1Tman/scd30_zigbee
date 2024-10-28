@@ -1,0 +1,422 @@
+[0;33m--- Warning: GDB cannot open serial ports accessed as COMx[0m
+[0;33m--- Using \\.\COM7 instead...[0m
+[0;33m--- esp-idf-monitor 1.5.0 on \\.\COM7 115200[0m
+[0;33m--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x42034bf6: zb_zdo_dev_start_cont at ??:?
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpg8b749zi"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpg8b749zi': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmptg_m4gso"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmptg_m4gso': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmp_n8ng720"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmp_n8ng720': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x42034bf6: zb_zdo_dev_start_cont at ??:?
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpsckxdoto"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpsckxdoto': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpobcyevcg"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpobcyevcg': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpkcynj6l_"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpkcynj6l_': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x42034bf6: zb_zdo_dev_start_cont at ??:?
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpbzp7bpdu"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpbzp7bpdu': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpq60688sn"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpq60688sn': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpbgn_g114"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpbgn_g114': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x42034bf6: zb_zdo_dev_start_cont at ??:?
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpp845di8h"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpp845di8h': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpb6xid8sw"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpb6xid8sw': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpw63onmup"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpw63onmup': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x42034bf6: zb_zdo_dev_start_cont at ??:?
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmps7q717_q"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmps7q717_q': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpzsc6xd4o"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpzsc6xd4o': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpllucfp63"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpllucfp63': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- To exit from IDF monitor please use "Ctrl+]". Alternatively, you can use Ctrl+T Ctrl+X to exit.[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- To exit from IDF monitor please use "Ctrl+]". Alternatively, you can use Ctrl+T Ctrl+X to exit.[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- To exit from IDF monitor please use "Ctrl+]". Alternatively, you can use Ctrl+T Ctrl+X to exit.[0m
+[0;33m--- To exit from IDF monitor please use "Ctrl+]". Alternatively, you can use Ctrl+T Ctrl+X to exit.[0m
+[0;33m--- To exit from IDF monitor please use "Ctrl+]". Alternatively, you can use Ctrl+T Ctrl+X to exit.[0m
+[0;33m--- To exit from IDF monitor please use "Ctrl+]". Alternatively, you can use Ctrl+T Ctrl+X to exit.[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmp3pmnf4l9"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmp3pmnf4l9': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmp12wgi4sl"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmp12wgi4sl': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x42034bf6: zb_zdo_dev_start_cont at ??:?
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpq9zpu52s"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpq9zpu52s': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpx6wp11q7"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpx6wp11q7': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmps_mpvyiw"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmps_mpvyiw': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x42034bf6: zb_zdo_dev_start_cont at ??:?
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmp6x8nmmy9"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmp6x8nmmy9': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpd7qpml8w"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpd7qpml8w': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmp393gl50_"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmp393gl50_': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x42034bf6: zb_zdo_dev_start_cont at ??:?
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpj3ymmmu9"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpj3ymmmu9': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmphhbdetg5"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmphhbdetg5': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmpxwfibac7"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmpxwfibac7': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0;33m--- 0x4201bb59: zb_assert at ??:?
+[0m
+[0;33m--- Stack dump detected[0m
+[0;33m--- 0x408008b6: panic_abort at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/panic.c:463
+0x408090c0: __ubsan_include at C:/Users/chris/esp/v5.3.1/esp-idf/components/esp_system/ubsan.c:311
+[0m
+[0;33m--- 0x42034bf6: zb_zdo_dev_start_cont at ??:?
+[0m
+[0;33m--- 0x40800001: _vector_table at C:/Users/chris/esp/v5.3.1/esp-idf/components/riscv/vectors_intc.S:54
+[0m
+[0;33m--- Warning: Failed to run gdb_panic_server.py script: Command '['riscv32-esp-elf-gdb', '--batch', '-n', 'C:\\Users\\chris\\SCD30_ZIGBEE\\build\\SCD30_ZIGBEE.elf', '-ex', 'target remote | "C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe" -m esp_idf_panic_decoder --target esp32c6 "C:\\Users\\chris\\AppData\\Local\\Temp\\tmp3m8oewr9"', '-ex', 'bt']' returned non-zero exit status 1.
+b"\r\nwarning: could not convert 'main' from the host encoding (CP1252) to UTF-32.\r\nThis normally should not happen, please file a bug report.\r\nerror starting child process 'C:\\Users\\chris\\.espressif\\python_env\\idf5.3_py3.11_env\\Scripts\\python.exe -m esp_idf_panic_decoder --target esp32c6 C:\\Users\\chris\\AppData\\Local\\Temp\\tmp3m8oewr9': CreateProcess: No such file or directory\r\nNo stack.\r\n"
+
+[0m
+[0;33m--- 0x4001975a: software_reset_cpu in ROM
+[0m
+[0m
+Traceback (most recent call last):
+  File "C:\Users\chris\esp\v5.3.1\esp-idf\tools/idf_monitor.py", line 11, in <module>
+    sys.exit(subprocess.run([sys.executable, '-m', 'esp_idf_monitor'] + sys.argv[1:]).returncode)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "subprocess.py", line 550, in run
+  File "subprocess.py", line 1199, in communicate
+  File "subprocess.py", line 1262, in wait
+  File "subprocess.py", line 1543, in _wait
+KeyboardInterrupt

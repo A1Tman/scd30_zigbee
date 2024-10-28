@@ -1,0 +1,66 @@
+[1/5] cmd.exe /C "cd /D C:\Users\chris\SCD30_ZIGBEE\build\esp-idf\esptool_py && C:\Users\chris\.espressif\python_env\idf5.3_py3.11_env\Scripts\python.exe C:/Users/chris/esp/v5.3.1/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app C:/Users/chris/SCD30_ZIGBEE/build/partition_table/partition-table.bin C:/Users/chris/SCD30_ZIGBEE/build/SCD30_ZIGBEE.bin"
+SCD30_ZIGBEE.bin binary size 0xd50e0 bytes. Smallest app partition is 0xe1000 bytes. 0xbf20 bytes (5%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] cmd.exe /C "cd /D C:\Users\chris\SCD30_ZIGBEE\build\bootloader\esp-idf\esptool_py && C:\Users\chris\.espressif\python_env\idf5.3_py3.11_env\Scripts\python.exe C:/Users/chris/esp/v5.3.1/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 C:/Users/chris/SCD30_ZIGBEE/build/bootloader/bootloader.bin"
+Bootloader binary size 0x54e0 bytes. 0x2b20 bytes (34%) free.
+[2/3] cmd.exe /C "cd /D C:\Users\chris\esp\v5.3.1\esp-idf\components\esptool_py &&esptool.py --chip esp32c6 -p COM7 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 80m --flash_size detect 0x0 bootloader/bootloader.bin 0x10000 SCD30_ZIGBEE.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.8.1
+Serial port COM7
+Connecting....
+Chip is ESP32-C6 (QFN40) (revision v0.0)
+Features: WiFi 6, BT 5, IEEE802.15.4
+Crystal is 40MHz
+MAC: 54:32:04:ff:fe:0b:62:00
+BASE MAC: 54:32:04:0b:62:00
+MAC_EXT: ff:fe
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Auto-detected Flash size: 16MB
+Flash will be erased from 0x00000000 to 0x00005fff...
+Flash will be erased from 0x00010000 to 0x000e5fff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+SHA digest in image updated
+Compressed 21728 bytes to 13104...
+Writing at 0x00000000... (100 %)
+Wrote 21728 bytes (13104 compressed) at 0x00000000 in 0.5 seconds (effective 358.1 kbit/s)...
+Hash of data verified.
+Compressed 872672 bytes to 409012...
+Writing at 0x00010000... (4 %)
+Writing at 0x0001d712... (8 %)
+Writing at 0x0002ce7e... (12 %)
+Writing at 0x0003c737... (16 %)
+Writing at 0x000441a6... (20 %)
+Writing at 0x0004a8db... (24 %)
+Writing at 0x00051b53... (28 %)
+Writing at 0x00058fc8... (32 %)
+Writing at 0x00060cfd... (36 %)
+Writing at 0x00068964... (40 %)
+Writing at 0x00070d61... (44 %)
+Writing at 0x00078ff6... (48 %)
+Writing at 0x00080dba... (52 %)
+Writing at 0x0008892d... (56 %)
+Writing at 0x00090712... (60 %)
+Writing at 0x00098846... (64 %)
+Writing at 0x000a04c0... (68 %)
+Writing at 0x000a8d00... (72 %)
+Writing at 0x000b1455... (76 %)
+Writing at 0x000b977d... (80 %)
+Writing at 0x000c194b... (84 %)
+Writing at 0x000c9800... (88 %)
+Writing at 0x000d10f4... (92 %)
+Writing at 0x000d81d5... (96 %)
+Writing at 0x000de0a2... (100 %)
+Wrote 872672 bytes (409012 compressed) at 0x00010000 in 9.5 seconds (effective 737.0 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 136...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (136 compressed) at 0x00008000 in 0.0 seconds (effective 594.9 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...
+ C:\Users\chris\.espressif\tools\cmake\3.24.0\bin\cmake.exe -D IDF_PATH=C:/Users/chris/esp/v5.3.1/esp-idf -D SERIAL_TOOL=C:/Users/chris/.espressif/python_env/idf5.3_py3.11_env/Scripts/python.exe;;C:/Users/chris/esp/v5.3.1/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32c6 -D SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args -D WORKING_DIRECTORY=C:/Users/chris/SCD30_ZIGBEE/build -P C:/Users/chris/esp/v5.3.1/esp-idf/components/esptool_py/run_serial_tool.cmake"
