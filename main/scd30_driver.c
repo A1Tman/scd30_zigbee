@@ -78,7 +78,7 @@ static esp_err_t scd30_send_command(uint16_t command, const uint16_t *data, size
     return ret;
 }
 
-/* Read data from SCD30 */
+/* Read data from SCD30 - Ready status*/
 static esp_err_t scd30_check_communication(void)
 {
     bool data_ready;
@@ -305,7 +305,7 @@ esp_err_t scd30_read_measurement(scd30_measurement_t *measurement)
         return ret;
     }
 
-    vTaskDelay(pdMS_TO_TICKS(3));  // Wait for processing
+    vTaskDelay(pdMS_TO_TICKS(5));  // Increased from 3ms to 5ms for more reliable operation
 
     // Read measurement data
     ret = scd30_read_data(data, sizeof(data));
