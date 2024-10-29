@@ -1,0 +1,4 @@
+.vscode/
+build/
+.devcontainer/
+managed_components/

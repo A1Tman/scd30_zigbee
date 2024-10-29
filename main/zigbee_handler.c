@@ -109,6 +109,8 @@ void esp_zb_task(void *pvParameters)
     }
     
     // Add clusters
+    esp_zb_basic_cluster_add_attr(esp_zb_basic_cluster, ESP_ZB_ZCL_ATTR_BASIC_MANUFACTURER_NAME_ID, ESP_MANUFACTURER_NAME); //Adding this and the line below makes the zigbee connection harder....
+    esp_zb_basic_cluster_add_attr(esp_zb_basic_cluster, ESP_ZB_ZCL_ATTR_BASIC_MODEL_IDENTIFIER_ID, ESP_MODEL_IDENTIFIER);
     esp_zb_cluster_list_add_basic_cluster(esp_zb_cluster_list, esp_zb_basic_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
     esp_zb_cluster_list_add_identify_cluster(esp_zb_cluster_list, esp_zb_identify_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
     esp_zb_cluster_list_add_carbon_dioxide_measurement_cluster(esp_zb_cluster_list, esp_zb_co2_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
@@ -437,7 +439,7 @@ esp_err_t zigbee_handler_update_measurements(float co2_ppm, float temperature, f
     // Convert values for Zigbee transmission
     uint16_t zbTemperature = (uint16_t)(temperature * 100.0);
     uint16_t zbHumidity = (uint16_t)(humidity * 100.0);
-    uint16_t zbCO2ppm = (float_t)(co2_ppm / 100000);
+    float_t zbCO2ppm = co2_ppm / 1e6; // Convert ppm to a fraction of one according to typedef
 
     // Update Zigbee attributes
     status = esp_zb_zcl_set_attribute_val(SCD30_ZB_ENDPOINT, 
