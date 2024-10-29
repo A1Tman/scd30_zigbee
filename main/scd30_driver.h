@@ -35,6 +35,7 @@
 #define SCD30_CMD_ALTI_COMP        0x5102  /*!< Set altitude compensation */
 #define SCD30_CMD_TEMP_OFFSET      0x5403  /*!< Set/Get temperature offset */
 #define SCD30_CMD_RESET            0xD304  /*!< Soft reset */
+#define SCD30_CMD_AUTO_SELF_CALIBRATION 0x5306 /*!< (De)Activate self-calibration (ASC), Format: uint16 “1”: Activate ASC, “0”: Deactivate continuous ASC*/
 
 /* Configuration Values */
 #define SCD30_MEASUREMENT_INTERVAL  5       /*!< Measurement interval in seconds */
