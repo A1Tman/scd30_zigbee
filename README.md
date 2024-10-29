@@ -7,7 +7,7 @@ An ESP32-based CO2, temperature, and humidity sensor that integrates with Zigbee
 - ESP32-C6 development board (with Zigbee support)
 - Sensirion SCD30 CO2 sensor
 - I2C connections:
-  - SDA and SCL pins (configured via I2C handler to pins 21 and 22 in this case, but GPIO 4 (SDA) and GPIO(SCL) are recommended pairs for I2C0 on ESP32-C6, alternatively GPIO 7 (SDA) and GPIO (SCL) or GPIO2 (SDA) and GPIO3 (SCL). )
+  - SDA and SCL pins. In this case it's configured via an I2C handler to pins 21 and 22. See official documentation here https://docs.espressif.com/projects/esp-idf/en/stable/esp32c6/api-reference/peripherals/gpio.html for GPIO summary. 
   - 3.3V power supplied by the ESP32
   - GND 
 
