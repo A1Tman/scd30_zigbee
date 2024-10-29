@@ -399,7 +399,7 @@ static void scd30_measurement_task(void *pvParameters)
                 scd30_reset();
                 vTaskDelay(pdMS_TO_TICKS(SCD30_RECOVERY_DELAY_MS));
                 scd30_start_continuous_measurement(SCD30_AMBIENT_PRESSURE);
-                consecutive_errors = 0;
+                consecutive_errors = 0; // Reset error counter after a successful read
             }
 
             vTaskDelay(pdMS_TO_TICKS(5000));
