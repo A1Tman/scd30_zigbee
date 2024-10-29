@@ -129,5 +129,4 @@ The device includes several error recovery mechanisms:
 Please submit issues and pull requests with any improvements or bug fixes.
 
 ## License
-
 TBD
