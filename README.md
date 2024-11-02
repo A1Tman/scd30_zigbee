@@ -131,7 +131,8 @@ Please submit issues and pull requests with any improvements or bug fixes.
 ## To-Do
 
 1. More robust network handling
-2. 
+2. Power management
+3. Add display
 
 ## License
 TBD

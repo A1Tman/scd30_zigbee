@@ -65,9 +65,9 @@ void esp_zb_task(void *pvParameters)
     }
 
     esp_zb_carbon_dioxide_measurement_cluster_cfg_t co2_cfg = {
-        .measured_value = 400,
+        .measured_value = 400/1e6, // the CO2 measurement cluster expects the value as a fraction of 1 (where 1.0 = 1,000,000 ppm) 
         .min_measured_value = 0,
-        .max_measured_value = 10000,
+        .max_measured_value = 10000/1e6,
     };
     esp_zb_attribute_list_t *esp_zb_co2_cluster = esp_zb_carbon_dioxide_measurement_cluster_create(&co2_cfg);
     if (!esp_zb_co2_cluster) {

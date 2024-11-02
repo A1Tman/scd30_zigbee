@@ -19,12 +19,6 @@ static void reset_press_count(TimerHandle_t timer);
 static void handle_button_events(void);
 static void button_events_task(void *pvParameters);
 
-// Timer callback
-static void reset_press_count(TimerHandle_t timer) {
-    boot_button_press_count = 0;
-    ESP_LOGD(TAG, "Reset press count timeout");
-}
-
 // Button event handler task
 static void handle_button_events(void) {
     if (system_events == NULL) {
@@ -178,7 +172,7 @@ esp_err_t troubleshooting_init(void) {
     BaseType_t xReturned = xTaskCreate(
         button_events_task,
         "button_events",
-        4096,
+        8192,
         NULL,
         5,
         NULL

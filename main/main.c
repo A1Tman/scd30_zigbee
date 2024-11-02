@@ -4,6 +4,7 @@
  */
 
 #include "main.h"
+#include "app_defs.h"
 #include "nvs_flash.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
@@ -12,7 +13,6 @@
 #include "i2c_handler.h"
 #include "zigbee_handler.h"
 #include "scd30_driver.h"
-#include "app_defs.h"
 #include "zcl_utility.h"
 #include "troubleshooting.h"
 

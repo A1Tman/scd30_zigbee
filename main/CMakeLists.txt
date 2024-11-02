@@ -1,11 +1,18 @@
 idf_component_register(
     SRCS 
         "main.c"
-        "i2c_handler.c"
-        "zigbee_handler.c"
-        "scd30_driver.c"
-        "troubleshooting.c"
-    INCLUDE_DIRS "."
+        "components/i2c_handler/i2c_handler.c"
+        "components/scd30_driver/scd30_driver.c"
+        "components/zigbee_handler/zigbee_handler.c"
+        "components/troubleshooting/troubleshooting.c"
+    INCLUDE_DIRS 
+        "."
+        "components"
+        "components/i2c_handler"
+        "components/scd30_driver"
+        "components/zigbee_handler"
+        "components/troubleshooting"
+        "components/common"
     REQUIRES 
         driver 
         nvs_flash
