@@ -1,9 +1,31 @@
 #pragma once
 
 #include "freertos/FreeRTOS.h"
+#include "driver/gpio.h"
+#include "esp_timer.h"
 
-/* Event Bits */
-#define ZIGBEE_CONNECTED_BIT BIT0    /*!< Event bit indicating Zigbee connection status */
+/* System Events */
+extern EventGroupHandle_t system_events;
+
+/* System Event Group Bits */
+#define ZIGBEE_CONNECTED_BIT       BIT0    /*!< Event bit indicating Zigbee connection status */
+#define FACTORY_RESET_REQUESTED_BIT BIT1    /*!< Event bit for factory reset request */
+#define REJOIN_REQUESTED_BIT       BIT2    /*!< Event bit for network rejoin request */
+#define DIAG_INFO_REQUESTED_BIT    BIT3    /*!< Event bit for diagnostic info request */
+#define DEBUG_TOGGLE_REQUESTED_BIT  BIT4    /*!< Event bit for debug mode toggle request */
+
+/* Button Configuration */
+#define BOOT_BUTTON_GPIO           GPIO_NUM_9    /*!< ESP32-C6 BOOT button GPIO number */
+
+/* Button Press Patterns */
+#define FACTORY_RESET_PRESS_COUNT  4             /*!< Number of presses for factory reset */
+#define DIAG_INFO_PRESS_COUNT      2             /*!< Number of presses for diagnostic info */
+#define DEBUG_TOGGLE_PRESS_COUNT   8             /*!< Number of presses for debug toggle */
+
+/* Button Timing Configuration */
+#define FACTORY_RESET_TIMEOUT_MS   3000          /*!< Time window for multiple presses (3 seconds) */
+#define LONG_PRESS_TIME_MS         3000          /*!< Duration for long press detection (3 seconds) */
+#define DEBOUNCE_TIME_MS          100             /*!< Button debounce time (100ms) */
 
 /*
  * Task Priority Structure

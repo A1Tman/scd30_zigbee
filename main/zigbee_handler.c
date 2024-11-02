@@ -259,15 +259,17 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
         if (err_status == ESP_OK) {
             ESP_LOGI(TAG, "Rejoin procedure successful");
             is_connected = true;
+            xEventGroupSetBits(system_events, ZIGBEE_CONNECTED_BIT);  // Added this
         } else {
             ESP_LOGW(TAG, "Rejoin procedure failed: %s", esp_err_to_name(err_status));
             is_connected = false;
-            // Attempt to rejoin after a delay
-            vTaskDelay(pdMS_TO_TICKS(5000));
+            xEventGroupClearBits(system_events, ZIGBEE_CONNECTED_BIT);  // Added this
+            // Force a new commissioning attempt
+            commissioning_in_progress = false;  // Added this
             esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
         }
         break;
-
+    
     case ESP_ZB_COMMON_SIGNAL_CAN_SLEEP:
         signal_struct->esp_err_status = ESP_FAIL;  // Prevent sleep
         ESP_LOGD(TAG, "Sleep prevented - device busy");

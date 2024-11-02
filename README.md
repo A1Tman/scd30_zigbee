@@ -128,5 +128,10 @@ The device includes several error recovery mechanisms:
 
 Please submit issues and pull requests with any improvements or bug fixes.
 
+## To-Do
+
+1. More robust network handling
+2. 
+
 ## License
 TBD

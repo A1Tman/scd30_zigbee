@@ -14,8 +14,10 @@
 #include "scd30_driver.h"
 #include "app_defs.h"
 #include "zcl_utility.h"
+#include "troubleshooting.h"
 
 static const char *TAG = "MAIN";
+EventGroupHandle_t system_events = NULL;
 
 // Event group to signal when Zigbee is ready
 EventGroupHandle_t system_events;
@@ -98,6 +100,9 @@ void app_main(void)
         return;
     }
 
+    // Initialize factory reset button handler before anything else
+    ESP_ERROR_CHECK(troubleshooting_init());
+
     // Initialize NVS
     ESP_LOGI(TAG, "Initializing NVS...");
     ESP_ERROR_CHECK(init_nvs());
@@ -123,16 +128,26 @@ void app_main(void)
 
     ESP_ERROR_CHECK(zigbee_handler_start());
 
-    // Wait for Zigbee connection
-    EventBits_t bits = xEventGroupWaitBits(system_events,
-                                          ZIGBEE_CONNECTED_BIT,
-                                          pdFALSE,
-                                          pdTRUE,
-                                          pdMS_TO_TICKS(120000));
+    // Wait for Zigbee connection with factory reset check
+    bool connected = false;
+    while (!connected) {
+        EventBits_t bits = xEventGroupWaitBits(system_events,
+                                              ZIGBEE_CONNECTED_BIT | FACTORY_RESET_REQUESTED_BIT,
+                                              pdFALSE,
+                                              pdFALSE,  // Wait for either bit
+                                              pdMS_TO_TICKS(120000));
 
-    if ((bits & ZIGBEE_CONNECTED_BIT) == 0) {
-        ESP_LOGE(TAG, "Failed to connect to Zigbee network within timeout");
-        return;
+        if (bits & FACTORY_RESET_REQUESTED_BIT) {
+            ESP_LOGI(TAG, "Factory reset requested, restarting...");
+            esp_restart();  // Device will restart and try fresh connection
+        }
+
+        if (bits & ZIGBEE_CONNECTED_BIT) {
+            connected = true;
+        } else {
+            ESP_LOGE(TAG, "Failed to connect to Zigbee network within timeout");
+            return;
+        }
     }
 
     ESP_LOGI(TAG, "Zigbee connected, initializing sensor system");
@@ -149,4 +164,23 @@ void app_main(void)
     ESP_LOGI(TAG, "SCD30 task started");
 
     ESP_LOGI(TAG, "Application startup complete");
+
+    // Main loop to handle factory reset after initialization
+    while (1) {
+        EventBits_t bits = xEventGroupWaitBits(system_events,
+                                              FACTORY_RESET_REQUESTED_BIT,
+                                              pdTRUE,  // Clear on exit
+                                              pdFALSE,
+                                              portMAX_DELAY);
+                                              
+        if (bits & FACTORY_RESET_REQUESTED_BIT) {
+            ESP_LOGI(TAG, "Factory reset requested, performing reset...");
+            // Perform factory reset
+            esp_zb_factory_reset();
+            // Clear NVS
+            nvs_flash_erase();
+            // Restart the device
+            esp_restart();
+        }
+    }
 }

@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.yaml": "home-assistant",
+			"esp_zigbee_zcl_temperature_meas.h": "c",
+			"esp_timer.h": "c"
+		}
+	}
+}
