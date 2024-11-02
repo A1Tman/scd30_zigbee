@@ -7,6 +7,9 @@
 /* System Events */
 extern EventGroupHandle_t system_events;
 
+/* SCD30 Configuration */
+#define SCD30_WARMUP_TIME_MS    5000    // 5 second warmup after connection
+
 /* System Event Group Bits */
 #define ZIGBEE_CONNECTED_BIT       BIT0    /*!< Event bit indicating Zigbee connection status */
 #define FACTORY_RESET_REQUESTED_BIT BIT1    /*!< Event bit for factory reset request */
@@ -20,7 +23,7 @@ extern EventGroupHandle_t system_events;
 /* Button Press Patterns */
 #define FACTORY_RESET_PRESS_COUNT  4             /*!< Number of presses for factory reset */
 #define DIAG_INFO_PRESS_COUNT      2             /*!< Number of presses for diagnostic info */
-#define DEBUG_TOGGLE_PRESS_COUNT   8             /*!< Number of presses for debug toggle */
+#define DEBUG_TOGGLE_PRESS_COUNT   3             /*!< Number of presses for debug toggle */
 
 /* Button Timing Configuration */
 #define FACTORY_RESET_TIMEOUT_MS   3000          /*!< Time window for multiple presses (3 seconds) */

@@ -438,6 +438,14 @@ void status_management (esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_
 /* Public API functions */
 esp_err_t zigbee_handler_update_measurements(float co2_ppm, float temperature, float humidity)
 {
+    static bool first_measurement = true;
+    
+    if (first_measurement) {
+        ESP_LOGI(TAG, "First measurement after connection, waiting for warmup...");
+        vTaskDelay(pdMS_TO_TICKS(SCD30_WARMUP_TIME_MS));
+        first_measurement = false;
+    }
+    
     esp_zb_zcl_status_t status;
     
     // Convert values for Zigbee transmission
