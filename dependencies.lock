@@ -1,6 +1,6 @@
 dependencies:
   espressif/esp-zboss-lib:
-    component_hash: 5a97b85339c49541c70332de19a210b86abd72f2614f3e8e521e72a358697cac
+    component_hash: fad683f7e04366398b61c0eea6e6517d4fe7ec4112407e26743dc80bafc0dcdc
     dependencies:
     - name: idf
       require: private
@@ -8,9 +8,9 @@ dependencies:
     source:
       registry_url: https://components.espressif.com/
       type: service
-    version: 1.5.1
+    version: 1.6.0
   espressif/esp-zigbee-lib:
-    component_hash: 1c50543fc947ba8a6c58bb27b485b8ae0f4133965eafd445dd7cec9a674fcab0
+    component_hash: 0026979f590d7f2b07f433bb0fd031a12b0c2cc0eec8584b59cb6e567d5afd82
     dependencies:
     - name: idf
       require: private
@@ -18,7 +18,7 @@ dependencies:
     source:
       registry_url: https://components.espressif.com/
       type: service
-    version: 1.5.1
+    version: 1.6.0
   idf:
     source:
       type: idf

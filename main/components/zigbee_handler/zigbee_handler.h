@@ -31,6 +31,15 @@
 /* Basic manufacturer information */
 #define ESP_MANUFACTURER_NAME "\x09""ESPRESSIF"      /*!< Customized manufacturer name */
 #define ESP_MODEL_IDENTIFIER "\x07"CONFIG_IDF_TARGET /*!< Customized model identifier */
+#define ESP_ZB_ZCL_VERSION                 0x08    // ZCL version 8
+#define ESP_ZB_POWER_SOURCE                0x04     /*!< DC-source */
+                                                    // Available options:
+                                                    // 0x01 = Mains (single phase)
+                                                    // 0x02 = Mains (3 phase)
+                                                    // 0x03 = Battery
+                                                    // 0x04 = DC source
+                                                    // 0x05 = Emergency mains constantly powered
+                                                    // 0x06 = Emergency mains and transfer switch */
 
 /* Connection callback type */
 typedef void (*zigbee_connection_callback_t)(bool connected);
