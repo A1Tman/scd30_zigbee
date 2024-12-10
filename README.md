@@ -97,6 +97,31 @@ The SCD30 sensor is configured with:
    - Begin taking measurements
    - Report values to the Zigbee coordinator
    - Handle any configuration commands from the network
+### Button Controls
+
+The boot button is linked to GPIO 9 and has multiple functions:
+
+#### Quick Press Patterns
+All quick press sequences must be completed within 3 seconds:
+
+* **Two quick presses**
+  * Displays diagnostic information about the device
+
+* **Three quick presses**
+  * Toggles debug mode for advanced logging
+
+* **Four quick presses**
+  * Resets device to factory settings
+  * Use with caution - will clear all settings
+
+#### Long Press
+* **Network Rejoin**
+  * Hold button for 3 seconds continuously
+  * Forces device to leave current network and attempt to rejoin
+  * Useful when device loses connection or needs to join a different network
+
+> **Note:** All button presses include 100ms debounce protection to prevent false triggers.
+
 
 ## Error Handling
 
