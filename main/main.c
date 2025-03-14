@@ -17,10 +17,9 @@
 #include "troubleshooting.h"
 
 static const char *TAG = "MAIN";
+// Event group to signal when Zigbee is ready
 EventGroupHandle_t system_events = NULL;
 
-// Event group to signal when Zigbee is ready
-EventGroupHandle_t system_events;
 #define ZIGBEE_CONNECTED_BIT BIT0
 
 #if !defined ZB_ED_ROLE

@@ -131,8 +131,10 @@ void zigbee_handler_set_connection_callback(void (*callback)(bool connected));
 void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct);
 esp_err_t zb_action_handler(esp_zb_core_action_callback_id_t callback_id, const void *message);
 esp_err_t zb_attribute_handler(const esp_zb_zcl_set_attr_value_message_t *message);
+esp_err_t zigbee_handler_configure_reporting(void);
 
 // Task-related functions that need to be accessible
 esp_err_t deferred_driver_init(void);
 void SCD30_task(void *pvParameters);
 void status_management(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id);
+
