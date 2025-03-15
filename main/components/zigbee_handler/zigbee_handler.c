@@ -65,7 +65,7 @@ void esp_zb_task(void *pvParameters)
     }
 
     esp_zb_carbon_dioxide_measurement_cluster_cfg_t co2_cfg = {
-        .measured_value = 400.0f / 1e6f,
+        .measured_value = 399.0f / 1e6f,
         .min_measured_value = 0.0f,
         .max_measured_value = 10000.0f / 1e6f,
     };
@@ -188,68 +188,57 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
         esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_INITIALIZATION);
         break;
 
-    case ESP_ZB_SE_SIGNAL_APS_KEY_READY:
-        ESP_LOGI(TAG, "Configuration ready, starting network steering");
-        if (err_status == ESP_OK){
-            esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
-        }
-        break;
-
-case ESP_ZB_BDB_SIGNAL_DEVICE_FIRST_START:
-case ESP_ZB_BDB_SIGNAL_DEVICE_REBOOT:
+    case ESP_ZB_BDB_SIGNAL_DEVICE_FIRST_START:
+    case ESP_ZB_BDB_SIGNAL_DEVICE_REBOOT:
     ESP_LOGI(TAG, "Device startup signal received");
     // Always attempt commissioning on startup after flash erase
-    if (!commissioning_in_progress) {
-        ESP_LOGI(TAG, "Starting commissioning sequence...");
-        commissioning_in_progress = true;
-        esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb, 
-                             ESP_ZB_BDB_MODE_NETWORK_STEERING, 
-                             STEERING_RETRY_DELAY_MS);
-    } else {
-        ESP_LOGI(TAG, "Commissioning already in progress");
-    }
-    break;
+        if (!commissioning_in_progress) {
+            ESP_LOGI(TAG, "Starting commissioning sequence...");
+            commissioning_in_progress = true;
+            esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb, 
+                                ESP_ZB_BDB_MODE_NETWORK_STEERING, 
+                                STEERING_RETRY_DELAY_MS);
+        } else {
+            ESP_LOGI(TAG, "Commissioning already in progress");
+        }
+        break;
         
     case ESP_ZB_BDB_SIGNAL_STEERING:
-    if (err_status == ESP_OK) {
-        is_connected = true;
-        steering_attempts = 0;
-        ESP_LOGI(TAG, "Successfully joined network:");
-        ESP_LOGI(TAG, "  Channel: %d", esp_zb_get_current_channel());
-        ESP_LOGI(TAG, "  PAN ID: 0x%04x", esp_zb_get_pan_id());
-        ESP_LOGI(TAG, "  Short addr: 0x%04x", esp_zb_get_short_address());
-        
-        esp_zb_ieee_addr_t extended_pan_id;
-        esp_zb_get_extended_pan_id(extended_pan_id);
-        ESP_LOGI(TAG, "  Extended PAN ID: %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
-                extended_pan_id[7], extended_pan_id[6], extended_pan_id[5], extended_pan_id[4],
-                extended_pan_id[3], extended_pan_id[2], extended_pan_id[1], extended_pan_id[0]);
-        
-        // Set the connected bit to unblock app_main()
-        xEventGroupSetBits(system_events, ZIGBEE_CONNECTED_BIT);
-
-        // Configure attribute reporting
-        ESP_LOGI(TAG, "Configuring attribute reporting...");
-        zigbee_handler_configure_reporting();
-
-        // Notify through callback if registered
-        if (connection_callback) {
-            connection_callback(true);
+        if (err_status == ESP_OK) {
+            is_connected = true;
+            steering_attempts = 0;
+            ESP_LOGI(TAG, "Successfully joined network:");
+            ESP_LOGI(TAG, "  Channel: %d", esp_zb_get_current_channel());
+            ESP_LOGI(TAG, "  PAN ID: 0x%04x", esp_zb_get_pan_id());
+            ESP_LOGI(TAG, "  Short addr: 0x%04x", esp_zb_get_short_address());
+            
+            esp_zb_ieee_addr_t extended_pan_id;
+            esp_zb_get_extended_pan_id(extended_pan_id);
+            ESP_LOGI(TAG, "  Extended PAN ID: %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
+                    extended_pan_id[7], extended_pan_id[6], extended_pan_id[5], extended_pan_id[4],
+                    extended_pan_id[3], extended_pan_id[2], extended_pan_id[1], extended_pan_id[0]);
+            
+            // Set the connected bit to unblock app_main()
+            xEventGroupSetBits(system_events, ZIGBEE_CONNECTED_BIT);
+            
+            // Notify through callback if registered
+            if (connection_callback) {
+                connection_callback(true);
+            }
+        } else {
+            ESP_LOGW(TAG, "Network steering failed (status: %s), retrying...", 
+                    esp_err_to_name(err_status));
+            esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,
+                                 ESP_ZB_BDB_MODE_NETWORK_STEERING,
+                                 STEERING_RETRY_DELAY_MS);
         }
-    } else {
-        ESP_LOGW(TAG, "Network steering failed (status: %s), retrying...", 
-                esp_err_to_name(err_status));
-        esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,
-                             ESP_ZB_BDB_MODE_NETWORK_STEERING,
-                             STEERING_RETRY_DELAY_MS);
-    }
-    break;
+        break;
     
     case ESP_ZB_ZDO_SIGNAL_DEVICE_ANNCE:
         ESP_LOGI(TAG, "Device announcement signal received");
-            if (is_connected) {
-                // Additional confirmation of successful join
-                xEventGroupSetBits(system_events, ZIGBEE_CONNECTED_BIT);
+        if (is_connected) {
+            // Additional confirmation of successful join
+            xEventGroupSetBits(system_events, ZIGBEE_CONNECTED_BIT);
         }
         break;
 
@@ -262,19 +251,20 @@ case ESP_ZB_BDB_SIGNAL_DEVICE_REBOOT:
         ESP_LOGI(TAG, "Production configuration ready");
         break;
 
-    case ESP_ZB_SE_SIGNAL_REJOIN:
-        if (err_status == ESP_OK) {
-            ESP_LOGI(TAG, "Rejoin procedure successful");
-            is_connected = true;
-            xEventGroupSetBits(system_events, ZIGBEE_CONNECTED_BIT);  // Added this
-        } else {
-            ESP_LOGW(TAG, "Rejoin procedure failed: %s", esp_err_to_name(err_status));
-            is_connected = false;
-            xEventGroupClearBits(system_events, ZIGBEE_CONNECTED_BIT);  // Added this
-            // Force a new commissioning attempt
-            commissioning_in_progress = false;  // Added this
-            esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
+    // Replaced ESP_ZB_SE_SIGNAL_REJOIN with a more generic handler
+    case ESP_ZB_ZDO_SIGNAL_LEAVE:
+        ESP_LOGW(TAG, "Device left the network");
+        is_connected = false;
+        xEventGroupClearBits(system_events, ZIGBEE_CONNECTED_BIT);
+        
+        // Notify through callback if registered
+        if (connection_callback) {
+            connection_callback(false);
         }
+        
+        // Try to reconnect
+        commissioning_in_progress = false;
+        esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
         break;
     
     case ESP_ZB_COMMON_SIGNAL_CAN_SLEEP:
@@ -458,9 +448,13 @@ esp_err_t zigbee_handler_update_measurements(float co2_ppm, float temperature, f
     // Convert values for Zigbee transmission
     uint16_t zbTemperature = (uint16_t)(temperature * 100.0);
     uint16_t zbHumidity = (uint16_t)(humidity * 100.0);
-    float_t zbCO2ppm = co2_ppm / 1e6; // Convert ppm to a fraction of one according to typedef
+    float_t zbCO2ppm = co2_ppm / 1e6; // Keep original conversion
+    
+    // Add debug logging to see what values we're sending
+    ESP_LOGI(TAG, "Sending measurements - CO2: %.1f ppm (%.8f), Temp: %.2f°C (%u), Humidity: %.1f%% (%u)",
+             co2_ppm, zbCO2ppm, temperature, zbTemperature, humidity, zbHumidity);
 
-    // Update Zigbee attributes
+    // Use reportable flag as FALSE to avoid crashes
     status = esp_zb_zcl_set_attribute_val(SCD30_ZB_ENDPOINT, 
         ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT, 
         ESP_ZB_ZCL_CLUSTER_SERVER_ROLE, 
