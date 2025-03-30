@@ -16,6 +16,8 @@
 #include "i2c_handler.h"
 #include "scd30_driver.h"
 #include "string.h"
+#include "esp_partition.h"
+#include <inttypes.h>
 
 static const char *TAG = "ZIGBEE_HANDLER";
 static const char *TAG_DEFERRED = "DEFERRED_DRIVER";
@@ -29,15 +31,16 @@ static bool is_connected = false;
 extern EventGroupHandle_t system_events;
 
 /* Forward declarations */
-esp_err_t  handle_read_attr_response(const esp_zb_zcl_cmd_read_attr_resp_message_t *message);
-esp_err_t  handle_write_attr_response(const esp_zb_zcl_cmd_write_attr_resp_message_t *message);
-esp_err_t  handle_attr_report(const esp_zb_zcl_report_attr_message_t *message);
-esp_err_t  handle_default_response(const esp_zb_zcl_cmd_default_resp_message_t *message);
-void  handle_status(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id);
-void bdb_start_top_level_commissioning_cb(uint8_t mode_mask);
+esp_err_t handle_read_attr_response(const esp_zb_zcl_cmd_read_attr_resp_message_t *message);
+esp_err_t handle_write_attr_response(const esp_zb_zcl_cmd_write_attr_resp_message_t *message);
+esp_err_t handle_attr_report(const esp_zb_zcl_report_attr_message_t *message);
+esp_err_t handle_default_response(const esp_zb_zcl_cmd_default_resp_message_t *message);
+void handle_status(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id);
+static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask);
 static zigbee_connection_callback_t connection_callback = NULL;
+static void configure_reporting_alarm_handler(uint8_t param);
 
-/* Core Zigbee functions*/
+/* Core Zigbee functions */
 void esp_zb_task(void *pvParameters)
 {
     ESP_LOGI(TAG, "Initializing Zigbee stack as End Device");
@@ -64,8 +67,11 @@ void esp_zb_task(void *pvParameters)
         return;
     }
 
+    // --- UPDATED CO₂ CLUSTER CONFIGURATION ---
+    // The cluster is defined as a scaled float value.
+    // Here the default is 400 ppm scaled down (i.e. 400/1e6) and the maximum is 10000 ppm scaled down.
     esp_zb_carbon_dioxide_measurement_cluster_cfg_t co2_cfg = {
-        .measured_value = 399.0f / 1e6f,
+        .measured_value = 400.0f / 1e6f,
         .min_measured_value = 0.0f,
         .max_measured_value = 10000.0f / 1e6f,
     };
@@ -110,10 +116,10 @@ void esp_zb_task(void *pvParameters)
     }
     
     /* Add clusters */
-    //Basic clusters
+    // Basic clusters
     esp_zb_basic_cluster_add_attr(esp_zb_basic_cluster, ESP_ZB_ZCL_ATTR_BASIC_MANUFACTURER_NAME_ID, ESP_MANUFACTURER_NAME);
     esp_zb_basic_cluster_add_attr(esp_zb_basic_cluster, ESP_ZB_ZCL_ATTR_BASIC_MODEL_IDENTIFIER_ID, ESP_MODEL_IDENTIFIER);
-    //Configuration clusters
+    // Configuration clusters
     esp_zb_cluster_list_add_basic_cluster(esp_zb_cluster_list, esp_zb_basic_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
     esp_zb_cluster_list_add_identify_cluster(esp_zb_cluster_list, esp_zb_identify_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
     esp_zb_cluster_list_add_carbon_dioxide_measurement_cluster(esp_zb_cluster_list, esp_zb_co2_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
@@ -130,9 +136,9 @@ void esp_zb_task(void *pvParameters)
 
     /* Set endpoint config */
     esp_zb_endpoint_config_t endpoint_config = {
-        .endpoint = SCD30_ZB_ENDPOINT,
-        .app_profile_id = ESP_ZB_AF_HA_PROFILE_ID,
-        .app_device_id = ESP_ZB_HA_TEMPERATURE_SENSOR_DEVICE_ID,
+        .endpoint = HA_CUSTOM_CO2_ENDPOINT,   // Use your custom CO₂ endpoint (12)
+        .app_profile_id = ESP_ZB_AF_HA_PROFILE_ID,             // Home Automation profile
+        .app_device_id = ESP_ZB_HA_CUSTOM_ATTR_DEVICE_ID,       // Custom CO₂ sensor device type (make sure this is defined properly)
         .app_device_version = 0
     };
 
@@ -140,7 +146,7 @@ void esp_zb_task(void *pvParameters)
     esp_zb_ep_list_add_ep(esp_zb_ep_list, esp_zb_cluster_list, endpoint_config);
     esp_zb_device_register(esp_zb_ep_list);
     
-    /* Register Zigbee action handler*/
+    /* Register Zigbee action handler */
     esp_zb_core_action_handler_register(zb_action_handler);
     
     /* Set channel mask and log it */
@@ -148,9 +154,12 @@ void esp_zb_task(void *pvParameters)
     esp_zb_set_primary_network_channel_set(channel_mask);
     ESP_LOGI(TAG, "Setting channel mask: 0x%08lx", channel_mask);
 
+    uint32_t channel_15_mask = (1 << 15);
+    esp_zb_set_primary_network_channel_set(channel_15_mask);
+    ESP_LOGI(TAG, "Overriding with specific channel 15 mask: 0x%08lx", channel_15_mask);
+    
     ESP_LOGI(TAG, "All Zigbee clusters created and registered");
-    ESP_LOGI(TAG, "Device configured as: Temperature Sensor (Device ID: 0x%04x)", 
-             ESP_ZB_HA_TEMPERATURE_SENSOR_DEVICE_ID);
+    ESP_LOGI(TAG, "Device configured as: Custom CO2 Sensor (Device ID: 0x%04x)", endpoint_config.app_device_id);
     
     // Task main loop
     while (1) {
@@ -175,6 +184,61 @@ esp_err_t zigbee_handler_start(void)
     return ESP_OK;
 }
 
+static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask)
+{
+    static uint8_t steering_attempts = 0;
+    
+    if (mode_mask == ESP_ZB_BDB_MODE_NETWORK_STEERING) {
+        // First check if we're already connected
+        if (zigbee_handler_is_connected()) {
+            ESP_LOGI(TAG, "Already connected to network, stopping commissioning attempts");
+            steering_attempts = 0;  // Reset for future use if needed
+            return;  // Don't proceed with channel changing or scheduling
+        }
+
+        uint8_t channels[] = {15, 25, 20, 11, 16, 21, 26};
+        uint8_t channel;
+        uint32_t delay_ms = STEERING_RETRY_DELAY_MS; // base delay
+
+        // If it's our first attempt or we are on channel 15, linger longer.
+        if (steering_attempts == 0) {
+            channel = 15;
+            delay_ms = 15000; // e.g., linger 15 sec on channel 15
+        } else if (steering_attempts < 4) {
+            channel = channels[steering_attempts % 3];
+            // Optionally, if the channel is 15, extend the delay.
+            if (channel == 15) {
+                delay_ms = 15000;
+            }
+        } else {
+            channel = channels[steering_attempts % 7];
+        }
+        
+        uint32_t channel_mask = (1 << channel);
+        
+        // Fixed format string with explicit casting:
+        ESP_LOGI(TAG, "Setting channel mask for attempt %d: 0x%08x (channel %d), delay %d ms", 
+                 (int)(steering_attempts + 1), (unsigned int)channel_mask, (int)channel, (int)delay_ms);
+                 
+        esp_zb_set_primary_network_channel_set(channel_mask);
+        steering_attempts++;
+        
+        // Schedule the next commissioning attempt using the calculated delay
+        // Only if we're still not connected
+        esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,
+                               ESP_ZB_BDB_MODE_NETWORK_STEERING, delay_ms);
+        return;  // Exit so we don't immediately start commissioning again.
+    }
+
+    // Start commissioning if mode is not network steering
+    esp_err_t err = esp_zb_bdb_start_top_level_commissioning(mode_mask);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "Commissioning failed to start (status: %s)", esp_err_to_name(err));
+    } else {
+        ESP_LOGI(TAG, "Started commissioning mode: 0x%x", mode_mask);
+    }
+}
+
 void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
 {
     uint32_t *p_sg_p = signal_struct->p_app_signal;
@@ -185,24 +249,26 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
     switch (sig_type) {
     case ESP_ZB_ZDO_SIGNAL_SKIP_STARTUP:
         ESP_LOGI(TAG, "Zigbee stack initialization signal received");
-        esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_INITIALIZATION);
+        esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_INITIALIZATION | 
+                                                 ESP_ZB_BDB_MODE_NETWORK_FORMATION | 
+                                                 ESP_ZB_BDB_MODE_NETWORK_STEERING);
         break;
 
     case ESP_ZB_BDB_SIGNAL_DEVICE_FIRST_START:
     case ESP_ZB_BDB_SIGNAL_DEVICE_REBOOT:
-    ESP_LOGI(TAG, "Device startup signal received");
-    // Always attempt commissioning on startup after flash erase
+        ESP_LOGI(TAG, "Device startup signal received");
         if (!commissioning_in_progress) {
             ESP_LOGI(TAG, "Starting commissioning sequence...");
             commissioning_in_progress = true;
+            // Start network steering without forcing the trust center address.
             esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb, 
-                                ESP_ZB_BDB_MODE_NETWORK_STEERING, 
-                                STEERING_RETRY_DELAY_MS);
+                                    ESP_ZB_BDB_MODE_NETWORK_STEERING, 
+                                    STEERING_RETRY_DELAY_MS);
         } else {
             ESP_LOGI(TAG, "Commissioning already in progress");
         }
         break;
-        
+            
     case ESP_ZB_BDB_SIGNAL_STEERING:
         if (err_status == ESP_OK) {
             is_connected = true;
@@ -215,54 +281,56 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
             esp_zb_ieee_addr_t extended_pan_id;
             esp_zb_get_extended_pan_id(extended_pan_id);
             ESP_LOGI(TAG, "  Extended PAN ID: %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
-                    extended_pan_id[7], extended_pan_id[6], extended_pan_id[5], extended_pan_id[4],
-                    extended_pan_id[3], extended_pan_id[2], extended_pan_id[1], extended_pan_id[0]);
+                     extended_pan_id[7], extended_pan_id[6], extended_pan_id[5], extended_pan_id[4],
+                     extended_pan_id[3], extended_pan_id[2], extended_pan_id[1], extended_pan_id[0]);
             
-            // Set the connected bit to unblock app_main()
             xEventGroupSetBits(system_events, ZIGBEE_CONNECTED_BIT);
             
-            // Notify through callback if registered
             if (connection_callback) {
                 connection_callback(true);
             }
+            
+            ESP_LOGI(TAG, "Scheduling attribute reporting configuration for later...");
+            esp_zb_scheduler_alarm(configure_reporting_alarm_handler, 0, 5000);
         } else {
-            ESP_LOGW(TAG, "Network steering failed (status: %s), retrying...", 
-                    esp_err_to_name(err_status));
-            esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,
-                                 ESP_ZB_BDB_MODE_NETWORK_STEERING,
-                                 STEERING_RETRY_DELAY_MS);
+            ESP_LOGW(TAG, "Network steering failed (status: %s, attempt: %d)", 
+                     esp_err_to_name(err_status), steering_attempts);
+            uint8_t current_channel = esp_zb_get_current_channel();
+            ESP_LOGW(TAG, "Last attempted channel: %d", current_channel);
+            if (steering_attempts >= 8) {
+                ESP_LOGW(TAG, "Multiple steering failures, taking a longer cooldown...");
+                steering_attempts = 0;
+                esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,
+                                       ESP_ZB_BDB_MODE_NETWORK_STEERING, 30000);
+            } else {
+                esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,
+                                       ESP_ZB_BDB_MODE_NETWORK_STEERING, STEERING_RETRY_DELAY_MS);
+            }
         }
         break;
     
     case ESP_ZB_ZDO_SIGNAL_DEVICE_ANNCE:
         ESP_LOGI(TAG, "Device announcement signal received");
         if (is_connected) {
-            // Additional confirmation of successful join
             xEventGroupSetBits(system_events, ZIGBEE_CONNECTED_BIT);
         }
         break;
 
     case ESP_ZB_NWK_SIGNAL_PERMIT_JOIN_STATUS:
-        ESP_LOGI(TAG, "Network join permit status: %s", 
-                 err_status == ESP_OK ? "Permitted" : "Not Permitted");
+        ESP_LOGI(TAG, "Network join permit status: %s", err_status == ESP_OK ? "Permitted" : "Not Permitted");
         break;
 
     case ESP_ZB_ZDO_SIGNAL_PRODUCTION_CONFIG_READY:
         ESP_LOGI(TAG, "Production configuration ready");
         break;
 
-    // Replaced ESP_ZB_SE_SIGNAL_REJOIN with a more generic handler
     case ESP_ZB_ZDO_SIGNAL_LEAVE:
         ESP_LOGW(TAG, "Device left the network");
         is_connected = false;
         xEventGroupClearBits(system_events, ZIGBEE_CONNECTED_BIT);
-        
-        // Notify through callback if registered
         if (connection_callback) {
             connection_callback(false);
         }
-        
-        // Try to reconnect
         commissioning_in_progress = false;
         esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
         break;
@@ -274,22 +342,20 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
 
     default:
         ESP_LOGI(TAG, "Unhandled signal: %s (0x%x), status: %s", 
-                 esp_zb_zdo_signal_to_string(sig_type), sig_type, 
-                 esp_err_to_name(err_status));
+                 esp_zb_zdo_signal_to_string(sig_type), sig_type, esp_err_to_name(err_status));
         break;
     }
 }
 
-/* Primary handlers*/
+/* Primary handlers */
 /**
  * @brief Handler for Zigbee core actions
  * @param callback_id Type of callback received
  * @param message Pointer to callback-specific message data
  * @return ESP_OK if successful, otherwise error code
  */
-esp_err_t zb_action_handler(esp_zb_core_action_callback_id_t callback_id, const void *message) // Implementation
+esp_err_t zb_action_handler(esp_zb_core_action_callback_id_t callback_id, const void *message)
 {
-
     esp_err_t ret = ESP_OK;
     switch (callback_id) {
     case ESP_ZB_CORE_SET_ATTR_VALUE_CB_ID:
@@ -302,34 +368,48 @@ esp_err_t zb_action_handler(esp_zb_core_action_callback_id_t callback_id, const 
     return ret;
 }
 
-void bdb_start_top_level_commissioning_cb(uint8_t mode_mask)
+/**
+ * @brief Wrapper function for delayed attribute reporting configuration
+ */
+static void configure_reporting_alarm_handler(uint8_t param)
 {
-    esp_err_t err = esp_zb_bdb_start_top_level_commissioning(mode_mask);
-    if (err != ESP_OK) {
-        ESP_LOGW(TAG, "Commissioning failed to start (status: %s), scheduling retry...", 
-                 esp_err_to_name(err));
+    ESP_LOGI(TAG, "Executing delayed attribute reporting configuration");
+    
+    // Keeping it simple, just calling the configuration function
+    esp_err_t ret = zigbee_handler_configure_reporting();
+    
+    if (ret != ESP_OK) {
+        ESP_LOGW(TAG, "Reporting configuration failed: %s", esp_err_to_name(ret));
+        
+        // Using a simple retry mechanism to avoid stack issues
+        static uint8_t retry_count = 0;
+        if (retry_count < 3) {  // Limit to 3 retries to be safe            
+            ESP_LOGI(TAG, "Scheduling retry %d in 10 seconds", retry_count + 1);
+            esp_zb_scheduler_alarm(&configure_reporting_alarm_handler, 0, 650);
+            retry_count++;
+        } else {
+            ESP_LOGW(TAG, "Max retries reached, giving up on reporting configuration.");
+            retry_count = 0;
+        }
     } else {
-        ESP_LOGI(TAG, "Started commissioning mode: 0x%x", mode_mask);
+        ESP_LOGI(TAG, "Attribute reporting configured successfully");
     }
 }
 
 /**
  * @brief Handle attribute operations
  */
-esp_err_t zb_attribute_handler(const esp_zb_zcl_set_attr_value_message_t *message) // Implementation
+esp_err_t zb_attribute_handler(const esp_zb_zcl_set_attr_value_message_t *message)
 {
     esp_err_t ret = ESP_OK;
-
     ESP_RETURN_ON_FALSE(message, ESP_FAIL, TAG, "Empty message");
-    ESP_RETURN_ON_FALSE(message->info.status == ESP_ZB_ZCL_STATUS_SUCCESS, ESP_ERR_INVALID_ARG, TAG, "Received message: error status(%d)",
-                        message->info.status);
-    ESP_LOGI(TAG, "Received message: endpoint(%d), cluster(0x%x), attribute(0x%x), data size(%d)", message->info.dst_endpoint, message->info.cluster,
-             message->attribute.id, message->attribute.data.size);
-    if (message->info.dst_endpoint == SCD30_ZB_ENDPOINT) {
-        switch (message->info.cluster) 
-        {
+    ESP_RETURN_ON_FALSE(message->info.status == ESP_ZB_ZCL_STATUS_SUCCESS, ESP_ERR_INVALID_ARG, TAG, "Received message: error status(%d)", message->info.status);
+    ESP_LOGI(TAG, "Received message: endpoint(%d), cluster(0x%x), attribute(0x%x), data size(%d)",
+             message->info.dst_endpoint, message->info.cluster, message->attribute.id, message->attribute.data.size);
+    if (message->info.dst_endpoint == HA_CUSTOM_CO2_ENDPOINT) {
+        switch (message->info.cluster) {
         default:
-            ESP_LOGI(TAG, "Message data: cluster(0x%x), attribute(0x%x)  ", message->info.cluster, message->attribute.id);
+            ESP_LOGI(TAG, "Message data: cluster(0x%x), attribute(0x%x)", message->info.cluster, message->attribute.id);
         }
     }
     return ret;
@@ -339,92 +419,73 @@ esp_err_t zb_attribute_handler(const esp_zb_zcl_set_attr_value_message_t *messag
 /**
  * @brief Handle read attribute responses
  */
-esp_err_t  handle_read_attr_response(const esp_zb_zcl_cmd_read_attr_resp_message_t *message)
+esp_err_t handle_read_attr_response(const esp_zb_zcl_cmd_read_attr_resp_message_t *message)
 {
     ESP_RETURN_ON_FALSE(message, ESP_ERR_INVALID_ARG, TAG, "Empty read response message");
-
-    if (message->info.dst_endpoint == SCD30_ZB_ENDPOINT) {
+    if (message->info.dst_endpoint == HA_CUSTOM_CO2_ENDPOINT) {
         esp_zb_zcl_read_attr_resp_variable_t *variable = message->variables;
-
         while (variable != NULL) {
-            handle_status(variable->status,
-                         message->info.cluster,
-                         variable->attribute.id);
-
+            handle_status(variable->status, message->info.cluster, variable->attribute.id);
             variable = variable->next;
         }
     } else {
         ESP_LOGW(TAG, "Read response for unexpected endpoint: %d", message->info.dst_endpoint);
     }
-
     return ESP_OK;
 }
 
 /**
  * @brief Handle write attribute responses
  */
-esp_err_t  handle_write_attr_response(const esp_zb_zcl_cmd_write_attr_resp_message_t *message)
+esp_err_t handle_write_attr_response(const esp_zb_zcl_cmd_write_attr_resp_message_t *message)
 {
     ESP_RETURN_ON_FALSE(message, ESP_ERR_INVALID_ARG, TAG, "Empty write response message");
-
-    if (message->info.dst_endpoint == SCD30_ZB_ENDPOINT) {
-        handle_status(message->info.status,
-                     message->info.cluster,
-                     0);  // Write responses don't include attr_id
+    if (message->info.dst_endpoint == HA_CUSTOM_CO2_ENDPOINT) {
+        handle_status(message->info.status, message->info.cluster, 0);
     } else {
         ESP_LOGW(TAG, "Write response for unexpected endpoint: %d", message->info.dst_endpoint);
     }
-
     return ESP_OK;
 }
 
 /**
  * @brief Handle Zigbee status codes
  */
-void  handle_status(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id)
+void handle_status(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id)
 {
     switch (status) {
         case ESP_ZB_ZCL_STATUS_SUCCESS:
-            ESP_LOGI(TAG, "Attribute 0x%04x in cluster 0x%04x updated successfully", 
-                     attr_id, cluster_id);
+            ESP_LOGI(TAG, "Attribute 0x%04x in cluster 0x%04x updated successfully", attr_id, cluster_id);
             break;
         case ESP_ZB_ZCL_STATUS_INVALID_VALUE:
-            ESP_LOGW(TAG, "Invalid value for attribute 0x%04x in cluster 0x%04x", 
-                     attr_id, cluster_id);
+            ESP_LOGW(TAG, "Invalid value for attribute 0x%04x in cluster 0x%04x", attr_id, cluster_id);
             break;
         case ESP_ZB_ZCL_STATUS_READ_ONLY:
-            ESP_LOGW(TAG, "Attempted to write read-only attribute 0x%04x in cluster 0x%04x", 
-                     attr_id, cluster_id);
+            ESP_LOGW(TAG, "Attempted to write read-only attribute 0x%04x in cluster 0x%04x", attr_id, cluster_id);
             break;
         case ESP_ZB_ZDP_STATUS_INSUFFICIENT_SPACE:
-            ESP_LOGW(TAG, "Insufficient space for attribute 0x%04x in cluster 0x%04x", 
-                     attr_id, cluster_id);
+            ESP_LOGW(TAG, "Insufficient space for attribute 0x%04x in cluster 0x%04x", attr_id, cluster_id);
             break;
         case ESP_ZB_ZCL_STATUS_NOT_FOUND:
-            ESP_LOGW(TAG, "Attribute 0x%04x not found in cluster 0x%04x", 
-                     attr_id, cluster_id);
+            ESP_LOGW(TAG, "Attribute 0x%04x not found in cluster 0x%04x", attr_id, cluster_id);
             break;
         case ESP_ZB_ZCL_STATUS_UNREPORTABLE_ATTRIB:
-            ESP_LOGW(TAG, "Attribute 0x%04x in cluster 0x%04x cannot be reported", 
-                     attr_id, cluster_id);
+            ESP_LOGW(TAG, "Attribute 0x%04x in cluster 0x%04x cannot be reported", attr_id, cluster_id);
             break;
         case ESP_ZB_ZCL_STATUS_INVALID_TYPE:
-            ESP_LOGW(TAG, "Invalid data type for attribute 0x%04x in cluster 0x%04x", 
-                     attr_id, cluster_id);
+            ESP_LOGW(TAG, "Invalid data type for attribute 0x%04x in cluster 0x%04x", attr_id, cluster_id);
             break;
         default:
-            ESP_LOGW(TAG, "Unknown status (0x%02x) for attribute 0x%04x in cluster 0x%04x", 
-                     status, attr_id, cluster_id);
+            ESP_LOGW(TAG, "Unknown status (0x%02x) for attribute 0x%04x in cluster 0x%04x", status, attr_id, cluster_id);
             break;
     }
 }
 
-void status_management (esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id)
+void status_management(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id)
 {
-    switch(status)
-    {
+    switch(status) {
         case 0:
-            ESP_LOGI(TAG, "Set attribute %i in cluster %i succeded", attr_id, cluster_id);
+            ESP_LOGI(TAG, "Set attribute %i in cluster %i succeeded", attr_id, cluster_id);
             break;
         default:
             ESP_LOGW(TAG, "Set attribute %i in cluster %i failed", attr_id, cluster_id);
@@ -436,7 +497,6 @@ void status_management (esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_
 esp_err_t zigbee_handler_update_measurements(float co2_ppm, float temperature, float humidity)
 {
     static bool first_measurement = true;
-    
     if (first_measurement) {
         ESP_LOGI(TAG, "First measurement after connection, waiting for warmup...");
         vTaskDelay(pdMS_TO_TICKS(SCD30_WARMUP_TIME_MS));
@@ -445,41 +505,231 @@ esp_err_t zigbee_handler_update_measurements(float co2_ppm, float temperature, f
     
     esp_zb_zcl_status_t status;
     
-    // Convert values for Zigbee transmission
-    uint16_t zbTemperature = (uint16_t)(temperature * 100.0);
-    uint16_t zbHumidity = (uint16_t)(humidity * 100.0);
-    float_t zbCO2ppm = co2_ppm / 1e6; // Keep original conversion
+    // Convert values for Zigbee transmission:
+    float zbCO2 = co2_ppm / 1e6f;  // According to official spec, CO2 is a float value scaled by 1e6
+    int16_t zbTemperature = (int16_t)(temperature * 100.0);  // Temperature in 0.01°C units
+    uint16_t zbHumidity = (uint16_t)(humidity * 100.0);      // Humidity in 0.01% units
     
-    // Add debug logging to see what values we're sending
-    ESP_LOGI(TAG, "Sending measurements - CO2: %.1f ppm (%.8f), Temp: %.2f°C (%u), Humidity: %.1f%% (%u)",
-             co2_ppm, zbCO2ppm, temperature, zbTemperature, humidity, zbHumidity);
+    // Validation and logging of the CO2 float value
+    if (zbCO2 <= 0.0f || zbCO2 > 0.1f) {  // Sanity check: 0 to 100,000 ppm range
+        ESP_LOGW(TAG, "CO2 value outside expected range: %f (raw: %f ppm)", 
+                (double)zbCO2, (double)co2_ppm);
+        // Still proceed with the value - this is just a warning
+    }
+    
+    // Log the sensor readings with more decimal places for the scaled value:
+    ESP_LOGI(TAG, "Sending measurements - CO2: %.1f ppm (scaled: %.10f), Temp: %.2f°C (%d), Humidity: %.1f%% (%u)",
+             (double)co2_ppm, (double)zbCO2, (double)temperature, zbTemperature, (double)humidity, zbHumidity);
 
-    // Use reportable flag as FALSE to avoid crashes
-    status = esp_zb_zcl_set_attribute_val(SCD30_ZB_ENDPOINT, 
-        ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT, 
-        ESP_ZB_ZCL_CLUSTER_SERVER_ROLE, 
-        ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MEASURED_VALUE_ID, 
-        &zbCO2ppm, false);
-    status_management(status, ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT, 
+    // Set attribute values with delays and process events in between
+    
+    // CO2 attribute
+    vTaskDelay(pdMS_TO_TICKS(200));
+    status = esp_zb_zcl_set_attribute_val(HA_CUSTOM_CO2_ENDPOINT,
+        ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT,
+        ESP_ZB_ZCL_CLUSTER_SERVER_ROLE,
+        ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MEASURED_VALUE_ID,
+        &zbCO2, false);
+    status_management(status, ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT,
         ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MEASURED_VALUE_ID);
+    
+    // Process any pending events
+    esp_zb_cli_main_loop_iteration();
+    vTaskDelay(pdMS_TO_TICKS(200));
 
-    status = esp_zb_zcl_set_attribute_val(SCD30_ZB_ENDPOINT, 
-        ESP_ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT, 
-        ESP_ZB_ZCL_CLUSTER_SERVER_ROLE, 
-        ESP_ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID, 
+    // Temperature attribute
+    status = esp_zb_zcl_set_attribute_val(HA_CUSTOM_CO2_ENDPOINT,
+        ESP_ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
+        ESP_ZB_ZCL_CLUSTER_SERVER_ROLE,
+        ESP_ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,
         &zbTemperature, false);
-    status_management(status, ESP_ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT, 
+    status_management(status, ESP_ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
         ESP_ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID);
+    
+    // Process any pending events
+    esp_zb_cli_main_loop_iteration();
+    vTaskDelay(pdMS_TO_TICKS(200));
 
-    status = esp_zb_zcl_set_attribute_val(SCD30_ZB_ENDPOINT, 
-        ESP_ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT, 
-        ESP_ZB_ZCL_CLUSTER_SERVER_ROLE, 
-        ESP_ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID, 
+    // Humidity attribute
+    status = esp_zb_zcl_set_attribute_val(HA_CUSTOM_CO2_ENDPOINT,
+        ESP_ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
+        ESP_ZB_ZCL_CLUSTER_SERVER_ROLE,
+        ESP_ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID,
         &zbHumidity, false);
-    status_management(status, ESP_ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT, 
+    status_management(status, ESP_ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
         ESP_ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID);
+    
+    // Process any pending events
+    esp_zb_cli_main_loop_iteration();
+    vTaskDelay(pdMS_TO_TICKS(200));
+   
+    // Final processing of any pending events
+    esp_zb_cli_main_loop_iteration();
 
     return ESP_OK;
+}
+
+esp_err_t zigbee_handler_configure_reporting(void)
+{
+    ESP_LOGI(TAG, "Configuring attribute reporting");
+
+    // Reporting intervals (in seconds)
+    const uint16_t min_interval = 30;    // Minimum reporting interval: 30 sec
+    const uint16_t max_interval = 300;   // Maximum reporting interval: 300 sec
+    esp_err_t ret = ESP_OK;
+    esp_err_t final_ret = ESP_OK;  // Track overall success/failure
+    
+    // According to the official header, the CO₂ measured value is a float in the range [0.0, 1.0]
+    // where the value is scaled (ppm/1e6). A reportable change threshold should be defined accordingly.
+    static float co2_change = 0.0001f;  // This corresponds to ~100ppm change
+    esp_zb_zcl_config_report_record_t co2_record = {
+        .attributeID = ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MEASURED_VALUE_ID,
+        .attrType = 0x39, // float type (single precision)
+        .min_interval = min_interval,
+        .max_interval = max_interval,
+        .reportable_change = &co2_change
+    };
+
+    esp_zb_zcl_config_report_cmd_t co2_report_cmd = {
+        .zcl_basic_cmd = {
+            .dst_addr_u.addr_short = 0x0000, // Coordinator address
+            .dst_endpoint = HA_CUSTOM_CO2_ENDPOINT,
+            .src_endpoint = HA_CUSTOM_CO2_ENDPOINT
+        },
+        .clusterID = ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT,
+        .direction = ESP_ZB_ZCL_CMD_DIRECTION_TO_SRV, // Try server direction first
+        .record_field = &co2_record,
+        .record_number = 1
+    };
+
+    // Add error handling with direction flag flexibility
+    ret = esp_zb_zcl_config_report_cmd_req(&co2_report_cmd);
+    if (ret != ESP_OK) {
+        ESP_LOGW(TAG, "CO2 reporting config failed with TO_SRV direction, trying TO_CLI: %s", esp_err_to_name(ret));
+        final_ret = ret;  // Save error but continue
+        
+        // Try with client direction
+        co2_report_cmd.direction = ESP_ZB_ZCL_CMD_DIRECTION_TO_CLI;
+        ret = esp_zb_zcl_config_report_cmd_req(&co2_report_cmd);
+        if (ret != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to configure CO₂ reporting: %s (error code: %d)", esp_err_to_name(ret), ret);
+            final_ret = ret;
+        } else {
+            ESP_LOGI(TAG, "CO₂ reporting configured successfully with TO_CLI direction");
+        }
+    } else {
+        ESP_LOGI(TAG, "CO₂ reporting configured successfully with TO_SRV direction");
+    }
+
+    // Process any pending events before continuing
+    esp_zb_cli_main_loop_iteration();
+    vTaskDelay(pdMS_TO_TICKS(1000));
+
+    // REMOVED: Force immediate report section - this was causing crashes
+
+    // ------------------------------
+    // Temperature reporting configuration
+    // ------------------------------
+    // Temperature is represented as a signed 16-bit value in hundredths of °C
+    static int16_t temp_change = 25;  // Report if change exceeds 0.25°C
+    esp_zb_zcl_config_report_record_t temp_record = {
+        .attributeID = ESP_ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,
+        .attrType = ESP_ZB_ZCL_ATTR_TYPE_S16,
+        .min_interval = min_interval,
+        .max_interval = max_interval,
+        .reportable_change = &temp_change
+    };
+
+    esp_zb_zcl_config_report_cmd_t temp_report_cmd = {
+        .zcl_basic_cmd = {
+            .dst_addr_u.addr_short = 0x0000,
+            .dst_endpoint = HA_CUSTOM_CO2_ENDPOINT,
+            .src_endpoint = HA_CUSTOM_CO2_ENDPOINT
+        },
+        .clusterID = ESP_ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
+        .direction = ESP_ZB_ZCL_CMD_DIRECTION_TO_SRV, // Try server direction first
+        .record_field = &temp_record,
+        .record_number = 1
+    };
+
+    // Try with server direction first, then client if needed
+    ret = esp_zb_zcl_config_report_cmd_req(&temp_report_cmd);
+    if (ret != ESP_OK) {
+        ESP_LOGW(TAG, "Temperature reporting config failed with TO_SRV direction, trying TO_CLI: %s", esp_err_to_name(ret));
+        if (final_ret == ESP_OK) final_ret = ret;  // Only update if still OK
+        
+        // Try with client direction
+        temp_report_cmd.direction = ESP_ZB_ZCL_CMD_DIRECTION_TO_CLI;
+        ret = esp_zb_zcl_config_report_cmd_req(&temp_report_cmd);
+        if (ret != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to configure temperature reporting: %s (error code: %d)", esp_err_to_name(ret), ret);
+            if (final_ret == ESP_OK) final_ret = ret;
+        } else {
+            ESP_LOGI(TAG, "Temperature reporting configured successfully with TO_CLI direction");
+        }
+    } else {
+        ESP_LOGI(TAG, "Temperature reporting configured successfully with TO_SRV direction");
+    }
+
+    // Process any pending events
+    esp_zb_cli_main_loop_iteration();
+    vTaskDelay(pdMS_TO_TICKS(500));
+
+    // REMOVED: Force immediate report section - this was causing crashes
+
+    // ------------------------------
+    // Humidity reporting configuration
+    // ------------------------------
+    // Humidity is represented as an unsigned 16-bit value in hundredths of percent.
+    static uint16_t humidity_change = 100;  // Report if change exceeds 1.0% (100 hundredths)
+    esp_zb_zcl_config_report_record_t humidity_record = {
+        .attributeID = ESP_ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID,
+        .attrType = ESP_ZB_ZCL_ATTR_TYPE_U16,
+        .min_interval = min_interval,
+        .max_interval = max_interval,
+        .reportable_change = &humidity_change
+    };
+
+    esp_zb_zcl_config_report_cmd_t humidity_report_cmd = {
+        .zcl_basic_cmd = {
+            .dst_addr_u.addr_short = 0x0000,
+            .dst_endpoint = HA_CUSTOM_CO2_ENDPOINT,
+            .src_endpoint = HA_CUSTOM_CO2_ENDPOINT
+        },
+        .clusterID = ESP_ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
+        .direction = ESP_ZB_ZCL_CMD_DIRECTION_TO_SRV, // Try server direction first
+        .record_field = &humidity_record,
+        .record_number = 1
+    };
+
+    // Try with server direction first, then client if needed
+    ret = esp_zb_zcl_config_report_cmd_req(&humidity_report_cmd);
+    if (ret != ESP_OK) {
+        ESP_LOGW(TAG, "Humidity reporting config failed with TO_SRV direction, trying TO_CLI: %s", esp_err_to_name(ret));
+        if (final_ret == ESP_OK) final_ret = ret;
+        
+        // Try with client direction
+        humidity_report_cmd.direction = ESP_ZB_ZCL_CMD_DIRECTION_TO_CLI;
+        ret = esp_zb_zcl_config_report_cmd_req(&humidity_report_cmd);
+        if (ret != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to configure humidity reporting: %s (error code: %d)", esp_err_to_name(ret), ret);
+            if (final_ret == ESP_OK) final_ret = ret;
+        } else {
+            ESP_LOGI(TAG, "Humidity reporting configured successfully with TO_CLI direction");
+        }
+    } else {
+        ESP_LOGI(TAG, "Humidity reporting configured successfully with TO_SRV direction");
+    }
+
+    // REMOVED: Force immediate report section - this was causing crashes
+
+    // Final processing to ensure all commands are handled
+    esp_zb_cli_main_loop_iteration();
+    
+    ESP_LOGI(TAG, "Attribute reporting configuration completed with status: %s", 
+             final_ret == ESP_OK ? "Success" : "Some configurations failed");
+
+    return final_ret;
 }
 
 bool zigbee_handler_is_connected(void)
@@ -513,37 +763,107 @@ esp_err_t zigbee_handler_power_save_init(void)
     return rc;
 }
 
-esp_err_t zigbee_handler_configure_reporting(void)
-{
-    ESP_LOGI(TAG, "Configuring attribute reporting");
-    // This tells the device to report values when they change
-    // Set values to be reportable when updating them
-    esp_err_t ret = ESP_OK;
-    
-    // For future attribute updates, use the "reportable" flag
-    // by modifying zigbee_handler_update_measurements to use this flag
-    ESP_LOGI(TAG, "Attribute reporting configured via reportable flag");
-    
-    return ret;
-}
-
 /* Task and driver functions */
 esp_err_t deferred_driver_init(void)
 {
     esp_err_t ret;
-
-    // Initialize the I2C bus using i2c_handler_init() function from i2c_handler
-    ret = i2c_handler_init();     
-    if(ret != ESP_OK) {
+    ret = i2c_handler_init();
+    if (ret != ESP_OK) {
         ESP_LOGW(TAG_DEFERRED, "FAILED to initialize I2C");
         return ret;
     }
-
-    // I2C Initialization was successful, start the SCD30 task
     ret = scd30_start_task(SCD30_TASK_PRIORITY);
     if (ret != ESP_OK) {
         ESP_LOGW(TAG_DEFERRED, "FAILED to start SCD30 task");
     }
-
     return ret;
+}
+
+esp_err_t zigbee_handler_clean_start(void)
+{
+    ESP_LOGI(TAG, "Performing clean start for Zigbee stack");
+    
+    const esp_partition_t *zb_storage = esp_partition_find_first(
+        ESP_PARTITION_TYPE_DATA, 0x81, "zb_storage");
+    
+    if (zb_storage) {
+        ESP_LOGI(TAG, "Erasing Zigbee storage partition at 0x%" PRIx32 ", size %" PRIu32,
+                 zb_storage->address, zb_storage->size);
+        esp_err_t err = esp_partition_erase_range(zb_storage, 0, zb_storage->size);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to erase Zigbee storage: %s", esp_err_to_name(err));
+            return err;
+        }
+        ESP_LOGI(TAG, "Zigbee storage erased successfully");
+    } else {
+        ESP_LOGW(TAG, "Zigbee storage partition not found");
+    }
+    
+    const esp_partition_t *zb_fct = esp_partition_find_first(
+        ESP_PARTITION_TYPE_DATA, 0x81, "zb_fct");
+    
+    if (zb_fct) {
+        ESP_LOGI(TAG, "Erasing Zigbee factory test partition");
+        esp_partition_erase_range(zb_fct, 0, zb_fct->size);
+    }
+    
+    return zigbee_handler_start();
+}
+
+/**
+ * @brief Cleanup Zigbee resources before shutdown
+ * @return ESP_OK if successful, otherwise error code
+ */
+esp_err_t zigbee_handler_cleanup(void)
+{
+    ESP_LOGI(TAG, "Cleaning up Zigbee resources");
+    
+    // Reset connection state
+    is_connected = false;
+    
+    // Stop the Zigbee stack if it's running
+    if (esp_zb_is_started()) {
+        ESP_LOGI(TAG, "Stopping Zigbee scheduler");
+        
+        // Cancel specific alarms we know about
+        esp_zb_scheduler_alarm_cancel(configure_reporting_alarm_handler, 0);
+        esp_zb_scheduler_alarm_cancel((esp_zb_callback_t)bdb_start_top_level_commissioning_cb, 
+                                     ESP_ZB_BDB_MODE_NETWORK_STEERING);
+    }
+    
+    ESP_LOGI(TAG, "Zigbee resources cleaned up successfully");
+    return ESP_OK;
+}
+
+/**
+ * @brief Attempt to reconnect to the Zigbee network
+ * @return ESP_OK if reconnection procedure started, error code otherwise
+ */
+esp_err_t zigbee_handler_reconnect(void)
+{
+    ESP_LOGI(TAG, "Initiating Zigbee reconnection");
+    
+    // Reset steering attempts counter
+    steering_attempts = 0;
+    
+    if (!esp_zb_is_started()) {
+        ESP_LOGE(TAG, "Zigbee stack not started");
+        return ESP_ERR_INVALID_STATE;
+    }
+    
+    // Initiate network steering (reconnection)
+    ESP_LOGI(TAG, "Starting network steering to reconnect");
+    
+    // Use channel 15 for first reconnection attempt
+    uint32_t channel_mask = (1 << 15);
+    esp_zb_set_primary_network_channel_set(channel_mask);
+    ESP_LOGI(TAG, "Setting initial reconnection channel mask: 0x%08lx (channel 15)", channel_mask);
+    
+    esp_err_t err = esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to start network steering: %s", esp_err_to_name(err));
+        return err;
+    }
+    
+    return ESP_OK;
 }

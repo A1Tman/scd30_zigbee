@@ -7,19 +7,20 @@
 
 #pragma once
 
-#include "esp_zigbee_core.h"
 #include "esp_err.h"
 #include "esp_log.h"
 #include "ha/esp_zigbee_ha_standard.h"
 #include "zcl_utility.h"
 #include "esp_zigbee_cluster.h"
+#include "zb_vendor.h"
+#include "esp_zigbee_core.h"
 
 /* Zigbee Network Configuration */
 #define MAX_CHILDREN                   1     /*!< Maximum number of connected devices */
 #define INSTALLCODE_POLICY_ENABLE      false  /*!< Install code policy for security */
 #define ED_AGING_TIMEOUT               ESP_ZB_ED_AGING_TIMEOUT_64MIN /*!< End device aging timeout */
 #define ED_KEEP_ALIVE                  3000   /*!< Keep alive time in milliseconds */
-#define SCD30_ZB_ENDPOINT              12     /*!< Zigbee endpoint for SCD30 sensor */
+#define HA_CUSTOM_CO2_ENDPOINT         12     /*!< Zigbee endpoint for SCD30 sensor */
 #define ESP_ZB_PRIMARY_CHANNEL_MASK    ESP_ZB_TRANSCEIVER_ALL_CHANNELS_MASK /*!< Primary channel mask */
 
 /* Network Steering & Initializing Configuration */
@@ -138,3 +139,20 @@ esp_err_t deferred_driver_init(void);
 void SCD30_task(void *pvParameters);
 void status_management(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id);
 
+/**
+ * @brief Perform a clean start of the Zigbee stack (erases storage)
+ * @return ESP_OK on success, or error code
+ */
+esp_err_t zigbee_handler_clean_start(void);
+
+/**
+ * @brief Cleanup Zigbee resources before shutdown
+ * @return ESP_OK if successful, otherwise error code
+ */
+esp_err_t zigbee_handler_cleanup(void);
+
+/**
+ * @brief Attempt to reconnect to the Zigbee network
+ * @return ESP_OK if reconnection procedure started, error code otherwise
+ */
+esp_err_t zigbee_handler_reconnect(void);
