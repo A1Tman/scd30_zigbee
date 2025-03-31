@@ -1,7 +1,5 @@
-## IDF Component Manager Manifest File
 dependencies:
-  espressif/esp-zboss-lib: "^1.6.1"  
-  espressif/esp-zigbee-lib: "^1.6.1" 
-  ## Required IDF version
-  idf:
-    version: ">=5.0.0"
+  espressif/esp-zboss-lib: 
+    version: "^1.6.4"
+  espressif/esp-zigbee-lib: 
+    version: "^1.6.4"

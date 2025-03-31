@@ -42,7 +42,6 @@ static uint8_t scd30_crc8(const uint8_t *data, size_t len)
     return crc;
 }
 
-
 /* Send command to SCD30 */
 static esp_err_t scd30_send_command(uint16_t command, const uint16_t *data, size_t words)
 {
@@ -64,15 +63,13 @@ static esp_err_t scd30_send_command(uint16_t command, const uint16_t *data, size
         }
     }
 
-    // Add delay before sending command
     vTaskDelay(pdMS_TO_TICKS(10));
-    
+   
     esp_err_t ret = i2c_handler_write(buf, idx);
     if (ret != ESP_OK) {
         ESP_LOGW(TAG, "Failed to send command 0x%04x: %s", command, esp_err_to_name(ret));
-    }
-    
-    // Add delay after command
+    }   
+
     vTaskDelay(pdMS_TO_TICKS(20));
     
     return ret;
@@ -314,11 +311,22 @@ esp_err_t scd30_read_measurement(scd30_measurement_t *measurement)
     }
 
     // Convert data to float values
-    uint32_t co2_raw = ((uint32_t)data[0] << 24) |
-                       ((uint32_t)data[1] << 16) |
-                       ((uint32_t)data[3] << 8) |
-                       data[4];
-    measurement->co2_ppm = *(float*)&co2_raw;
+    uint8_t be[4];
+    be[0] = data[0];
+    be[1] = data[1];
+    be[2] = data[3];
+    be[3] = data[4];
+
+    // Swap from big-endian to little-endian:
+    uint8_t le[4];
+    le[0] = be[3];
+    le[1] = be[2];
+    le[2] = be[1];
+    le[3] = be[0];
+
+    float co2;
+    memcpy(&co2, le, sizeof(co2));
+    measurement->co2_ppm = co2;
 
     uint32_t temp_raw = ((uint32_t)data[6] << 24) |
                         ((uint32_t)data[7] << 16) |
@@ -329,7 +337,7 @@ esp_err_t scd30_read_measurement(scd30_measurement_t *measurement)
     // Software temperature compensation
     // Note: Using software compensation instead of SCD30's built-in offset
     // due to I2C transaction queue limitations in the current setup
-    measurement->temperature = raw_temp - SCD30_SW_TEMP_OFFSET;  // Subtract 2.5°C to match reference
+    measurement->temperature = raw_temp - SCD30_SW_TEMP_OFFSET; 
 
     uint32_t hum_raw = ((uint32_t)data[12] << 24) |
                        ((uint32_t)data[13] << 16) |

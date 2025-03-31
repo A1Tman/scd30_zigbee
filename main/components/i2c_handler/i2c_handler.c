@@ -59,7 +59,7 @@ esp_err_t i2c_handler_init(void)
     ESP_LOGI(TAG, "Starting I2C initialization...");
     ESP_LOGI(TAG, "SDA Pin: %d, SCL Pin: %d", I2C_MASTER_SDA_IO, I2C_MASTER_SCL_IO);
 
-    // First, attempt to recover the bus in case it's stuck
+    // Attempting to recover the bus in case it's stuck
     i2c_handler_recover_bus();
 
     esp_err_t ret;
@@ -74,7 +74,7 @@ esp_err_t i2c_handler_init(void)
         .flags.enable_internal_pullup = true,
     };
 
-    // Initialize the I2C bus
+    // Initializing the I2C bus
     ret = i2c_new_master_bus(&bus_config, &i2c_bus_handle);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "I2C bus initialization failed: %s", esp_err_to_name(ret));
@@ -83,14 +83,14 @@ esp_err_t i2c_handler_init(void)
 
     ESP_LOGI(TAG, "I2C bus initialized successfully");
 
-    // Configure the SCD30 device
+    // Configuring the SCD30 device
     i2c_device_config_t dev_config = {
         .dev_addr_length = I2C_ADDR_BIT_LEN_7,
         .device_address = SCD30_SENSOR_ADDR,
         .scl_speed_hz = I2C_MASTER_FREQ_HZ,
     };
 
-    // Add the SCD30 device to the bus
+    // Adding the SCD30 device to the bus
     ret = i2c_master_bus_add_device(i2c_bus_handle, &dev_config, &i2c_dev_handle);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Failed to add SCD30 device: %s", esp_err_to_name(ret));
@@ -99,11 +99,10 @@ esp_err_t i2c_handler_init(void)
         return ret;
     }
     ESP_LOGI(TAG, "SCD30 device added to I2C bus");
-
-    // Add delay after adding the device
+  
     vTaskDelay(pdMS_TO_TICKS(100));
 
-    // Attempt to probe the SCD30 device
+    // Attempting to probe the SCD30 device
     ret = i2c_handler_probe_device(SCD30_SENSOR_ADDR);  // <-- Provide the address as an argument
     if (ret != ESP_OK) {
         ESP_LOGW(TAG, "Device probe failed for address 0x%02x, but continuing anyway", SCD30_SENSOR_ADDR);

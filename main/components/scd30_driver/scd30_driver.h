@@ -42,7 +42,7 @@
 #define SCD30_AMBIENT_PRESSURE     1013    /*!< Default ambient pressure in mbar */
 #define SCD30_DEFAULT_ALTITUDE     500     /*!< Default altitude in meters */
 #define SCD30_HW_TEMP_OFFSET      2.5f    /*!< Hardware temperature offset in °C */
-#define SCD30_SW_TEMP_OFFSET      2.0f   /*!< Software temperature offset in °C */
+#define SCD30_SW_TEMP_OFFSET      4.0f   /*!< Software temperature offset in °C */
 
 // Measurement ranges
 #define SCD30_CO2_MIN 400

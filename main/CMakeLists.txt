@@ -13,8 +13,12 @@ idf_component_register(
         "components/zigbee_handler"
         "components/troubleshooting"
         "components/common"
+        "${CMAKE_SOURCE_DIR}/managed_components/espressif__esp-zboss-lib/include"
+        "${CMAKE_SOURCE_DIR}/managed_components/espressif__esp-zigbee-lib/include"
     REQUIRES 
         driver 
         nvs_flash
         esp_timer 
+        espressif__esp-zboss-lib
+        espressif__esp-zigbee-lib
 )
