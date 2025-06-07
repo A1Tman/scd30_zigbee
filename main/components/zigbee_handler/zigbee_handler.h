@@ -136,7 +136,6 @@ esp_err_t zigbee_handler_configure_reporting(void);
 
 // Task-related functions that need to be accessible
 esp_err_t deferred_driver_init(void);
-void SCD30_task(void *pvParameters);
 void status_management(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id);
 
 /**
