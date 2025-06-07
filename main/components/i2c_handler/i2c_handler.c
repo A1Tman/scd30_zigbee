@@ -102,13 +102,15 @@ esp_err_t i2c_handler_init(void)
   
     vTaskDelay(pdMS_TO_TICKS(100));
 
+    // Set the initialization flag before probing so the probe can run
+    is_initialized = true;
+
     // Attempting to probe the SCD30 device
     ret = i2c_handler_probe_device(SCD30_SENSOR_ADDR);  // <-- Provide the address as an argument
     if (ret != ESP_OK) {
         ESP_LOGW(TAG, "Device probe failed for address 0x%02x, but continuing anyway", SCD30_SENSOR_ADDR);
     }
 
-    is_initialized = true;
     return ESP_OK;
 }
 
