@@ -106,7 +106,7 @@ esp_err_t i2c_handler_init(void)
     is_initialized = true;
 
     // Attempting to probe the SCD30 device
-    ret = i2c_handler_probe_device(SCD30_SENSOR_ADDR);  // <-- Provide the address as an argument
+    ret = i2c_handler_probe_device(SCD30_SENSOR_ADDR);
     if (ret != ESP_OK) {
         ESP_LOGW(TAG, "Device probe failed for address 0x%02x, but continuing anyway", SCD30_SENSOR_ADDR);
     }
