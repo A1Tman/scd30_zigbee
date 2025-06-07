@@ -23,7 +23,6 @@ static esp_err_t init_nvs(void);
  * @brief Initialize all system components
  * @return ESP_OK if successful, otherwise error code
  */
-static esp_err_t init_nvs(void);
 static esp_err_t init_sensor_system(void);
 
 // Function declarations
