@@ -20,7 +20,7 @@
 static esp_err_t init_nvs(void);
 
 /**
- * @brief Initialize all system components
+ * @brief Initialize sensor system (I2C bus and SCD30 sensor)
  * @return ESP_OK if successful, otherwise error code
  */
 static esp_err_t init_sensor_system(void);
