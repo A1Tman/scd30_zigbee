@@ -160,4 +160,4 @@ Please submit issues and pull requests with any improvements or bug fixes.
 3. Add display
 
 ## License
-TBD
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
