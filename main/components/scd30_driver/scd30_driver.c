@@ -98,11 +98,8 @@ static esp_err_t scd30_read_data(uint8_t *data, size_t len)
         return ret;
     }
 
-    // Log the raw data read from the sensor if enabled
-    ESP_LOGI(TAG, "Raw data read from sensor: ");
-        for (size_t i = 0; i < len; i++) {
-        ESP_LOGI(TAG, "0x%02x ", data[i]);
-        }
+    // Log the raw data read from the sensor as a hex buffer
+    ESP_LOG_BUFFER_HEX_LEVEL(TAG, data, len, ESP_LOG_INFO);
 
     // Verify CRC for each word (each word is 2 data bytes followed by 1 CRC byte)
     for (size_t i = 0; i < len; i += 3) {
