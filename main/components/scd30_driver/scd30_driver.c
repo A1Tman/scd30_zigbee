@@ -86,11 +86,12 @@
      cmd[0] = command >> 8;
      cmd[1] = command & 0xFF;
  
-     esp_err_t ret = i2c_handler_write(cmd, sizeof(cmd));
-     if (ret != ESP_OK) {
-         ESP_LOGW(TAG, "Failed to send command 0x%04x: %s", command, esp_err_to_name(ret));
-         return ret;
-     }
+    esp_err_t ret = i2c_handler_write(cmd, sizeof(cmd));
+    if (ret != ESP_OK) {
+        ESP_LOGW(TAG, "Failed to send command 0x%04x: %s", command, esp_err_to_name(ret));
+        i2c_handler_recover();
+        return ret;
+    }
  
      // Datasheet specifies 4ms delay between write and read
      // Exception: data ready command needs > 3ms
@@ -100,21 +101,24 @@
          vTaskDelay(pdMS_TO_TICKS(SCD30_READ_DELAY_MS));
      }
  
-     ret = i2c_handler_read(data, len);
-     if (ret != ESP_OK) {
-         ESP_LOGW(TAG, "Failed to read response for 0x%04x: %s", command, esp_err_to_name(ret));
-         return ret;
-     }
+    ret = i2c_handler_read(data, len);
+    if (ret != ESP_OK) {
+        ESP_LOGW(TAG, "Failed to read response for 0x%04x: %s", command, esp_err_to_name(ret));
+        i2c_handler_recover();
+        return ret;
+    }
  
-     // Verify CRC for each 3-byte group (2 data bytes + 1 CRC byte)
-     for (size_t i = 0; i < len; i += 3) {
-         uint8_t expected_crc = scd30_crc8(&data[i], 2);
-         if (expected_crc != data[i + 2]) {
-             ESP_LOGE(TAG, "CRC check failed at position %d. Expected 0x%02x, got 0x%02x", 
-                      i, expected_crc, data[i + 2]);
-             return ESP_ERR_INVALID_CRC;
-         }
-     }
+    // Verify CRC for each 3-byte group (2 data bytes + 1 CRC byte)
+    for (size_t i = 0; i < len; i += 3) {
+        uint8_t expected_crc = scd30_crc8(&data[i], 2);
+        if (expected_crc != data[i + 2]) {
+            ESP_LOGE(TAG, "CRC check failed at position %d. Expected 0x%02x, got 0x%02x",
+                     i, expected_crc, data[i + 2]);
+            ESP_LOG_BUFFER_HEX_LEVEL(TAG, data, len, ESP_LOG_DEBUG);
+            i2c_handler_recover();
+            return ESP_ERR_INVALID_CRC;
+        }
+    }
  
      return ESP_OK;
  }
@@ -254,22 +258,24 @@
          return ret;
      }
  
-     // Convert data to float values using consistent method
-     // Data format: MMSB, MLSB, CRC, LMSB, LLSB, CRC (for each value)
+    // Convert data to IEEE-754 floats as described in the SCD30 datasheet.
+    // The sensor transmits each 32‑bit value in big-endian order with a
+    // CRC appended after every 16‑bit word: MSB, LSB, CRC, MSB, LSB, CRC.
      
      // CO2: bytes 0,1,3,4 (skip bytes 2,5 - CRC)
-     uint32_t co2_raw = ((uint32_t)data[0] << 24) | 
-                        ((uint32_t)data[1] << 16) | 
-                        ((uint32_t)data[3] << 8) | 
-                        ((uint32_t)data[4]);
-     measurement->co2_ppm = *(float*)&co2_raw;
+    uint32_t co2_raw = ((uint32_t)data[0] << 24) |
+                       ((uint32_t)data[1] << 16) |
+                       ((uint32_t)data[3] << 8) |
+                       ((uint32_t)data[4]);
+    memcpy(&measurement->co2_ppm, &co2_raw, sizeof(float));
  
      // Temperature: bytes 6,7,9,10 (skip bytes 8,11 - CRC)
-     uint32_t temp_raw = ((uint32_t)data[6] << 24) | 
-                         ((uint32_t)data[7] << 16) | 
-                         ((uint32_t)data[9] << 8) | 
-                         ((uint32_t)data[10]);
-     float temperature = *(float*)&temp_raw;
+    uint32_t temp_raw = ((uint32_t)data[6] << 24) |
+                        ((uint32_t)data[7] << 16) |
+                        ((uint32_t)data[9] << 8) |
+                        ((uint32_t)data[10]);
+    float temperature;
+    memcpy(&temperature, &temp_raw, sizeof(float));
      
      // Apply software temperature compensation
      // Note: Using software compensation instead of SCD30's built-in offset
@@ -277,11 +283,11 @@
      measurement->temperature = temperature - SCD30_SW_TEMP_OFFSET;
  
      // Humidity: bytes 12,13,15,16 (skip bytes 14,17 - CRC)
-     uint32_t hum_raw = ((uint32_t)data[12] << 24) | 
-                        ((uint32_t)data[13] << 16) | 
-                        ((uint32_t)data[15] << 8) | 
-                        ((uint32_t)data[16]);
-     measurement->humidity = *(float*)&hum_raw;
+    uint32_t hum_raw = ((uint32_t)data[12] << 24) |
+                       ((uint32_t)data[13] << 16) |
+                       ((uint32_t)data[15] << 8) |
+                       ((uint32_t)data[16]);
+    memcpy(&measurement->humidity, &hum_raw, sizeof(float));
  
      return ESP_OK;
  }
