@@ -99,7 +99,22 @@ esp_err_t scd30_get_data_ready_status(bool *data_ready);
  * @param measurement Pointer to measurement structure
  * @return ESP_OK if successful, otherwise error code
  */
-esp_err_t scd30_read_measurement(scd30_measurement_t *measurement);
+/**
+ * @brief Read measurement data from sensor
+ *
+ * This function can optionally skip the internal check for the sensor's
+ * data-ready status when the caller has already verified that new data is
+ * available.
+ *
+ * @param measurement       Pointer to measurement structure to fill
+ * @param skip_ready_check  If true, do not query the sensor for the data
+ *                          ready status before reading the measurement.
+ *                          When false, the function will perform the check
+ *                          internally.
+ * @return ESP_OK if successful, otherwise error code
+ */
+esp_err_t scd30_read_measurement(scd30_measurement_t *measurement,
+                                 bool skip_ready_check);
 
 /**
  * @brief Soft reset the sensor

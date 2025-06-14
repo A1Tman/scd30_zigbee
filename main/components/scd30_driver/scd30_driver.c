@@ -272,24 +272,28 @@ esp_err_t scd30_get_data_ready_status(bool *data_ready)
     return ret;
 }
 
-esp_err_t scd30_read_measurement(scd30_measurement_t *measurement)
+esp_err_t scd30_read_measurement(scd30_measurement_t *measurement,
+                                 bool skip_ready_check)
 {
     if (measurement == NULL) {
-        return ESP_ERR_INVALID_ARG; 
+        return ESP_ERR_INVALID_ARG;
     }
 
     esp_err_t ret;
-    bool data_ready = false;
+    bool data_ready = true;
 
-    // Check if data is ready
-    ret = scd30_get_data_ready_status(&data_ready);
-    if (ret != ESP_OK) {
-        return ret;
-    }
+    if (!skip_ready_check) {
+        data_ready = false;
+        // Check if data is ready
+        ret = scd30_get_data_ready_status(&data_ready);
+        if (ret != ESP_OK) {
+            return ret;
+        }
 
-    if (!data_ready) {
-        ESP_LOGW(TAG, "Measurement data not ready yet.");
-        return ESP_ERR_INVALID_STATE;
+        if (!data_ready) {
+            ESP_LOGW(TAG, "Measurement data not ready yet.");
+            return ESP_ERR_INVALID_STATE;
+        }
     }
 
     uint8_t data[18];  // 6 bytes per value (including CRC)
@@ -357,7 +361,6 @@ esp_err_t scd30_reset(void)
 static void scd30_measurement_task(void *pvParameters)
 {
     scd30_measurement_t measurement;
-    bool data_ready;
     esp_err_t ret;
     uint8_t consecutive_errors = 0;
 
@@ -370,15 +373,11 @@ static void scd30_measurement_task(void *pvParameters)
     }
 
     while (task_running) {
-        // Check if new data is available
-        ret = scd30_get_data_ready_status(&data_ready);
-        if (ret == ESP_OK && data_ready) {
-            // Read measurement
-            ret = scd30_read_measurement(&measurement);
-            if (ret == ESP_OK) {
-                // Validate measurements are within reasonable ranges
-                if (measurement.co2_ppm >= SCD30_CO2_MIN && measurement.co2_ppm <= SCD30_CO2_MAX &&
-                    measurement.temperature >= SCD30_TEMP_MIN && measurement.temperature <= SCD30_TEMP_MAX &&
+        ret = scd30_read_measurement(&measurement, false);
+        if (ret == ESP_OK) {
+            // Validate measurements are within reasonable ranges
+            if (measurement.co2_ppm >= SCD30_CO2_MIN && measurement.co2_ppm <= SCD30_CO2_MAX &&
+                measurement.temperature >= SCD30_TEMP_MIN && measurement.temperature <= SCD30_TEMP_MAX &&
                     measurement.humidity >= SCD30_HUM_MIN && measurement.humidity <= SCD30_HUM_MAX) {
                     
                     ESP_LOGI(TAG, "CO2: %.1f ppm, Temperature: %.2f°C, Humidity: %.1f%%",
@@ -394,26 +393,19 @@ static void scd30_measurement_task(void *pvParameters)
                     ESP_LOGW(TAG, "Measurements out of valid range");
                     consecutive_errors++;
                 }
-            } else {
-                ESP_LOGW(TAG, "Failed to read measurements: %s", esp_err_to_name(ret));
-                consecutive_errors++;
-            }
-
-            // Check if we need to reset the sensor
+        } else if (ret == ESP_ERR_INVALID_STATE) {
+            /* Data not ready yet */
+            vTaskDelay(pdMS_TO_TICKS(500));
+        } else {
+            ESP_LOGW(TAG, "Failed to read measurements: %s", esp_err_to_name(ret));
+            consecutive_errors++;
             if (consecutive_errors >= SCD30_MAX_CONSECUTIVE_ERRORS) {
                 ESP_LOGE(TAG, "Too many consecutive errors, attempting sensor reset");
                 scd30_reset();
                 vTaskDelay(pdMS_TO_TICKS(SCD30_RECOVERY_DELAY_MS));
                 scd30_start_continuous_measurement(SCD30_AMBIENT_PRESSURE);
-                consecutive_errors = 0; // Reset error counter after a successful read
+                consecutive_errors = 0;
             }
-
-            vTaskDelay(pdMS_TO_TICKS(5000));
-        } else if (ret != ESP_OK) {
-            ESP_LOGW(TAG, "Failed to check data ready status: %s", esp_err_to_name(ret));
-            consecutive_errors++;
-            vTaskDelay(pdMS_TO_TICKS(500));
-        } else {
             vTaskDelay(pdMS_TO_TICKS(500));
         }
     }
