@@ -113,123 +113,49 @@ static esp_err_t scd30_read_data(uint8_t *data, size_t len)
     return ret;
 }
 
+
 esp_err_t scd30_init(void)
 {
     ESP_LOGI(TAG, "Initializing SCD30 sensor");
     esp_err_t ret;
-    int retry_count = 0;
 
-    /*
-     * The SCD30 device is already added to the bus in i2c_handler_init().
-     * Retrieve the handle here so we can verify initialization.
-     */
+    /* The SCD30 device is already added to the bus in i2c_handler_init(). */
     i2c_master_dev_handle_t dev_handle = i2c_handler_get_device();
     if (dev_handle == NULL) {
         ESP_LOGE(TAG, "I2C device handle is not available");
         return ESP_ERR_INVALID_STATE;
     }
 
-    while (retry_count < SCD30_INIT_RETRY_COUNT) {
-        if (retry_count > 0) {
-            ESP_LOGI(TAG, "Retry attempt %d of %d", retry_count + 1, SCD30_INIT_RETRY_COUNT);
-            vTaskDelay(pdMS_TO_TICKS(SCD30_INIT_RETRY_DELAY_MS));
-        }
+    /* Soft reset the sensor and wait ~30 ms */
+    ret = scd30_reset();
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to reset sensor: %s", esp_err_to_name(ret));
+        return ret;
+    }
+    vTaskDelay(pdMS_TO_TICKS(30));
 
-        // Add initial delay after power-up
-        vTaskDelay(pdMS_TO_TICKS(1000));
-        
-        // Check if we can communicate with the sensor
-        ret = scd30_check_communication();
-        if (ret != ESP_OK) {
-            ESP_LOGW(TAG, "Cannot communicate with SCD30 (attempt %d): %s", 
-                     retry_count + 1, esp_err_to_name(ret));
-            retry_count++;
-            continue;
-        }
-        
-        // Perform soft reset first
-        ret = scd30_reset();
-        if (ret != ESP_OK) {
-            ESP_LOGW(TAG, "Failed to reset sensor: %s", esp_err_to_name(ret));
-            // Continue anyway as this might fail on first boot
-        }
-        
-        // Wait for sensor to initialize after reset
-        vTaskDelay(pdMS_TO_TICKS(SCD30_INIT_RETRY_DELAY_MS));
-        
-        // Stop any ongoing measurement
-        ret = scd30_stop_measurement();
-        if (ret != ESP_OK) {
-            ESP_LOGW(TAG, "Failed to stop measurements: %s", esp_err_to_name(ret));
-            // Continue as this might fail if no measurements are running
-        }
-        vTaskDelay(pdMS_TO_TICKS(500));
-                
-        // Set temperature offset
-        ESP_LOGI(TAG, "Attempting to set temperature offset to %.2f°C", SCD30_SW_TEMP_OFFSET);
-        ret = scd30_set_temperature_offset(SCD30_SW_TEMP_OFFSET);
-        if (ret != ESP_OK) {
-            ESP_LOGW(TAG, "Failed to set temperature offset (attempt %d): %s", 
-                     retry_count + 1, esp_err_to_name(ret));
-            retry_count++;
-            continue;
-        }
-
-        // Verify the offset
-        float current_offset;
-        ret = scd30_get_temperature_offset(&current_offset);
-        if (ret == ESP_OK) {
-            ESP_LOGI(TAG, "Verified temperature offset is set to %.2f°C", current_offset);
-        } else {
-            ESP_LOGW(TAG, "Failed to verify temperature offset");
-            retry_count++;
-            continue;
-        }
-
+    /* Start continuous measurement. Retry once if it fails */
+    ret = scd30_start_continuous_measurement(SCD30_AMBIENT_PRESSURE);
+    if (ret != ESP_OK) {
+        ESP_LOGW(TAG, "Failed to start measurements, retrying: %s", esp_err_to_name(ret));
         vTaskDelay(pdMS_TO_TICKS(100));
-        
-        // Apply compensation based on configuration
-        #if SCD30_USE_PRESSURE_COMP
-        ret = scd30_set_pressure_compensation(DEFAULT_PRESSURE_MBAR);
+        ret = scd30_start_continuous_measurement(SCD30_AMBIENT_PRESSURE);
         if (ret != ESP_OK) {
-            ESP_LOGW(TAG, "Failed to set pressure compensation: %s", esp_err_to_name(ret));
-            // Continue anyway as this is not critical
-        } else {
-            ESP_LOGI(TAG, "Pressure compensation enabled at %u mbar", DEFAULT_PRESSURE_MBAR);
+            ESP_LOGE(TAG, "Unable to start measurements: %s", esp_err_to_name(ret));
+            return ret;
         }
-        #else
-        ret = scd30_set_altitude_compensation(SCD30_DEFAULT_ALTITUDE);
-        if (ret != ESP_OK) {
-            ESP_LOGW(TAG, "Failed to set altitude compensation: %s", esp_err_to_name(ret));
-            // Continue anyway as this is not critical
-        } else {
-            ESP_LOGI(TAG, "Altitude compensation enabled at %u meters", SCD30_DEFAULT_ALTITUDE);
-        }
-        #endif
-
-        // Set measurement interval
-        ret = scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL);
-        if (ret != ESP_OK) {
-            ESP_LOGW(TAG, "Failed to set measurement interval (attempt %d): %s", 
-                     retry_count + 1, esp_err_to_name(ret));
-            retry_count++;
-            continue;
-        }
-
-        // If we got here, initialization was successful
-        ESP_LOGI(TAG, "SCD30 initialized successfully after %d attempt(s)", retry_count + 1);
-        
-        // Adding delay to allow sensor stabilization
-        vTaskDelay(pdMS_TO_TICKS(2000)); // 2 seconds delay to stabilize the sensor before probing
-
-        return ESP_OK;
     }
 
-    // If we got here, all retry attempts failed
-    ESP_LOGE(TAG, "Failed to initialize SCD30 after %d attempts", SCD30_INIT_RETRY_COUNT);
-    return ESP_ERR_INVALID_RESPONSE;
-}
+    /* Set measurement interval to 2 seconds */
+    ret = scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set measurement interval: %s", esp_err_to_name(ret));
+        return ret;
+    }
 
+    ESP_LOGI(TAG, "SCD30 initialization complete");
+    return ESP_OK;
+}
 
 esp_err_t scd30_start_continuous_measurement(uint16_t ambient_pressure_mbar)
 {
