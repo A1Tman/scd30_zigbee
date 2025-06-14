@@ -196,38 +196,39 @@ static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask)
             return;  // Don't proceed with channel changing or scheduling
         }
 
-        uint8_t channels[] = {15, 25, 20, 11, 16, 21, 26};
+        // Simplified channel selection - only use common Zigbee channels
+        uint8_t channels[] = {15, 11, 20, 25};  // Most common Zigbee channels
         uint8_t channel;
-        uint32_t delay_ms = STEERING_RETRY_DELAY_MS; // base delay
+        uint32_t delay_ms;
 
-        // If it's our first attempt or we are on channel 15, linger longer.
-        if (steering_attempts == 0) {
-            channel = 15;
-            delay_ms = 15000; // e.g., linger 15 sec on channel 15
-        } else if (steering_attempts < 4) {
-            channel = channels[steering_attempts % 3];
-            // Optionally, if the channel is 15, extend the delay.
-            if (channel == 15) {
-                delay_ms = 15000;
-            }
+        // Use a simpler channel selection strategy
+        if (steering_attempts < 4) {
+            channel = channels[steering_attempts];
+            // Give more time on channel 15 (most common)
+            delay_ms = (channel == 15) ? 20000 : 10000;
         } else {
-            channel = channels[steering_attempts % 7];
+            // After trying all channels once, cycle through them again
+            channel = channels[steering_attempts % 4];
+            delay_ms = 15000;  // Standard delay for subsequent attempts
         }
         
         uint32_t channel_mask = (1 << channel);
         
-        // Fixed format string with explicit casting:
-        ESP_LOGI(TAG, "Setting channel mask for attempt %d: 0x%08x (channel %d), delay %d ms", 
-                 (int)(steering_attempts + 1), (unsigned int)channel_mask, (int)channel, (int)delay_ms);
+        ESP_LOGI(TAG, "Commissioning attempt %d: Trying channel %d (mask: 0x%08x), next attempt in %" PRIu32 " ms", 
+                 steering_attempts + 1, channel, (unsigned int)channel_mask, delay_ms);
                  
         esp_zb_set_primary_network_channel_set(channel_mask);
         steering_attempts++;
         
-        // Schedule the next commissioning attempt using the calculated delay
-        // Only if we're still not connected
-        esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,
-                               ESP_ZB_BDB_MODE_NETWORK_STEERING, delay_ms);
-        return;  // Exit so we don't immediately start commissioning again.
+        // Limit total attempts to prevent infinite retries
+        if (steering_attempts < 12) {  // Max 3 cycles through all channels
+            esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,
+                                   ESP_ZB_BDB_MODE_NETWORK_STEERING, delay_ms);
+        } else {
+            ESP_LOGW(TAG, "Maximum commissioning attempts reached");
+            steering_attempts = 0;  // Reset for potential manual retry
+        }
+        return;
     }
 
     // Start commissioning if mode is not network steering
@@ -290,8 +291,8 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
                 connection_callback(true);
             }
             
-            ESP_LOGI(TAG, "Scheduling attribute reporting configuration for later...");
-            esp_zb_scheduler_alarm(configure_reporting_alarm_handler, 0, 5000);
+            // Reporting configuration disabled - let coordinator poll instead
+            ESP_LOGI(TAG, "Attribute reporting disabled - coordinator will poll for updates");
         } else {
             ESP_LOGW(TAG, "Network steering failed (status: %s, attempt: %d)", 
                      esp_err_to_name(err_status), steering_attempts);
@@ -370,9 +371,13 @@ esp_err_t zb_action_handler(esp_zb_core_action_callback_id_t callback_id, const 
 
 /**
  * @brief Wrapper function for delayed attribute reporting configuration
+ * NOTE: This function is disabled as we're letting the coordinator poll instead
  */
 static void configure_reporting_alarm_handler(uint8_t param)
 {
+    ESP_LOGI(TAG, "Attribute reporting configuration disabled - coordinator will poll");
+    // Function body commented out to disable automatic reporting
+    /*
     ESP_LOGI(TAG, "Executing delayed attribute reporting configuration");
     
     // Keeping it simple, just calling the configuration function
@@ -394,6 +399,7 @@ static void configure_reporting_alarm_handler(uint8_t param)
     } else {
         ESP_LOGI(TAG, "Attribute reporting configured successfully");
     }
+    */
 }
 
 /**
