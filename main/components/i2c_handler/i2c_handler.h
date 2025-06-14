@@ -96,3 +96,14 @@ esp_err_t i2c_handler_probe_device(uint8_t address);
  * @brief Scan the I2C bus for connected devices and log their addresses
  */
 void i2c_scan(void);
+
+/**
+ * @brief Attempt to recover the I2C bus
+ *
+ * This will toggle the clock line and generate a STOP condition in
+ * order to release any stuck devices. It can be called after a
+ * communication error has occurred.
+ *
+ * @return ESP_OK if the recovery sequence ran, otherwise error code
+ */
+esp_err_t i2c_handler_recover(void);

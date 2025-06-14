@@ -20,8 +20,8 @@
  /* Function prototypes */
  static esp_err_t i2c_handler_recover_bus(void);
  
- static esp_err_t i2c_handler_recover_bus(void)
- {
+static esp_err_t i2c_handler_recover_bus(void)
+{
      ESP_LOGW(TAG, "Attempting I2C bus recovery...");
      
      // Configure SCL and SDA as GPIO
@@ -54,9 +54,17 @@
      gpio_reset_pin(I2C_MASTER_SCL_IO);
      gpio_reset_pin(I2C_MASTER_SDA_IO);
  
-     ESP_LOGI(TAG, "I2C bus recovery completed");
-     return ESP_OK;
- }
+    ESP_LOGI(TAG, "I2C bus recovery completed");
+    return ESP_OK;
+}
+
+esp_err_t i2c_handler_recover(void)
+{
+    if (!is_initialized) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    return i2c_handler_recover_bus();
+}
  
  esp_err_t i2c_handler_init(void)
  {
