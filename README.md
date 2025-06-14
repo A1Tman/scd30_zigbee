@@ -77,6 +77,8 @@ The SCD30 sensor is configured with:
 - Temperature offset compensation
 - Optional altitude/pressure compensation
 - Automatic error recovery and sensor reset capabilities
+- Requires a warm-up delay (`SCD30_WARMUP_TIME_MS`) after starting continuous
+  measurement before valid readings are available
 
 ## Project Structure
 

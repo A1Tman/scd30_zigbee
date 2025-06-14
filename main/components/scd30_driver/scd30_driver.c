@@ -301,6 +301,9 @@ static void scd30_measurement_task(void *pvParameters)
         return;
     }
 
+    // Give the sensor time to warm up before reading data
+    vTaskDelay(pdMS_TO_TICKS(SCD30_WARMUP_TIME_MS));
+
     while (task_running) {
         ret = scd30_read_measurement(&measurement, false);
         if (ret == ESP_OK) {
