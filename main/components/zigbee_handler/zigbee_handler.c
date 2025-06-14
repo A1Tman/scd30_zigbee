@@ -153,10 +153,6 @@ void esp_zb_task(void *pvParameters)
     uint32_t channel_mask = ESP_ZB_PRIMARY_CHANNEL_MASK;
     esp_zb_set_primary_network_channel_set(channel_mask);
     ESP_LOGI(TAG, "Setting channel mask: 0x%08lx", channel_mask);
-
-    uint32_t channel_15_mask = (1 << 15);
-    esp_zb_set_primary_network_channel_set(channel_15_mask);
-    ESP_LOGI(TAG, "Overriding with specific channel 15 mask: 0x%08lx", channel_15_mask);
     
     ESP_LOGI(TAG, "All Zigbee clusters created and registered");
     ESP_LOGI(TAG, "Device configured as: Custom CO2 Sensor (Device ID: 0x%04x)", endpoint_config.app_device_id);

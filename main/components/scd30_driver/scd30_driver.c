@@ -80,48 +80,62 @@
  }
  
  /* Write a command and then read data from the sensor */
- static esp_err_t scd30_write_then_read(uint16_t command, uint8_t *data, size_t len)
- {
-     uint8_t cmd[2];
-     cmd[0] = command >> 8;
-     cmd[1] = command & 0xFF;
- 
+static esp_err_t scd30_write_then_read(uint16_t command, uint8_t *data, size_t len)
+{
+    uint8_t cmd[2];
+    cmd[0] = command >> 8;
+    cmd[1] = command & 0xFF;
+
     esp_err_t ret = i2c_handler_write(cmd, sizeof(cmd));
     if (ret != ESP_OK) {
         ESP_LOGW(TAG, "Failed to send command 0x%04x: %s", command, esp_err_to_name(ret));
         i2c_handler_recover();
         return ret;
     }
- 
-     // Datasheet specifies 4ms delay between write and read
-     // Exception: data ready command needs > 3ms
-     if (command == SCD30_CMD_GET_DATA_READY) {
-         vTaskDelay(pdMS_TO_TICKS(SCD30_DATA_READY_DELAY_MS + 1));
-     } else {
-         vTaskDelay(pdMS_TO_TICKS(SCD30_READ_DELAY_MS));
-     }
- 
-    ret = i2c_handler_read(data, len);
-    if (ret != ESP_OK) {
-        ESP_LOGW(TAG, "Failed to read response for 0x%04x: %s", command, esp_err_to_name(ret));
-        i2c_handler_recover();
-        return ret;
+
+    // Datasheet specifies ~4ms delay between write and read
+    if (command == SCD30_CMD_GET_DATA_READY) {
+        vTaskDelay(pdMS_TO_TICKS(SCD30_DATA_READY_DELAY_MS + 2));
+    } else {
+        vTaskDelay(pdMS_TO_TICKS(SCD30_READ_DELAY_MS + 1));
     }
- 
-    // Verify CRC for each 3-byte group (2 data bytes + 1 CRC byte)
-    for (size_t i = 0; i < len; i += 3) {
-        uint8_t expected_crc = scd30_crc8(&data[i], 2);
-        if (expected_crc != data[i + 2]) {
-            ESP_LOGE(TAG, "CRC check failed at position %d. Expected 0x%02x, got 0x%02x",
-                     i, expected_crc, data[i + 2]);
-            ESP_LOG_BUFFER_HEX_LEVEL(TAG, data, len, ESP_LOG_DEBUG);
+
+    for (int attempt = 0; attempt < 2; attempt++) {
+        ret = i2c_handler_read(data, len);
+        if (ret != ESP_OK) {
+            ESP_LOGW(TAG, "Failed to read response for 0x%04x: %s", command, esp_err_to_name(ret));
             i2c_handler_recover();
-            return ESP_ERR_INVALID_CRC;
+            if (attempt == 0) {
+                vTaskDelay(pdMS_TO_TICKS(10));
+                continue;
+            }
+            return ret;
+        }
+
+        bool crc_ok = true;
+        for (size_t i = 0; i < len; i += 3) {
+            uint8_t expected_crc = scd30_crc8(&data[i], 2);
+            if (expected_crc != data[i + 2]) {
+                crc_ok = false;
+                ESP_LOGE(TAG, "CRC check failed at position %d. Expected 0x%02x, got 0x%02x",
+                         i, expected_crc, data[i + 2]);
+                ESP_LOG_BUFFER_HEX_LEVEL(TAG, data, len, ESP_LOG_DEBUG);
+                i2c_handler_recover();
+                break;
+            }
+        }
+
+        if (crc_ok) {
+            return ESP_OK;
+        }
+
+        if (attempt == 0) {
+            vTaskDelay(pdMS_TO_TICKS(10));
         }
     }
- 
-     return ESP_OK;
- }
+
+    return ESP_ERR_INVALID_CRC;
+}
  
  /* Check communication with SCD30 */
  static esp_err_t scd30_check_communication(void)
