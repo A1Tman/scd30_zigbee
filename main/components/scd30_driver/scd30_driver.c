@@ -75,6 +75,23 @@ static esp_err_t scd30_send_command(uint16_t command, const uint16_t *data, size
     return ret;
 }
 
+/* Send command and read response in a single I2C transaction */
+static esp_err_t scd30_send_command_read(uint16_t command, uint8_t *data, size_t len)
+{
+    uint8_t cmd[2];
+    cmd[0] = command >> 8;
+    cmd[1] = command & 0xFF;
+
+    vTaskDelay(pdMS_TO_TICKS(10));
+
+    esp_err_t ret = i2c_handler_write_read(cmd, sizeof(cmd), data, len);
+    if (ret != ESP_OK) {
+        ESP_LOGW(TAG, "Failed to send/read command 0x%04x: %s", command, esp_err_to_name(ret));
+    }
+
+    return ret;
+}
+
 /* Read data from SCD30 - Ready status*/
 static esp_err_t scd30_check_communication(void)
 {
@@ -255,16 +272,9 @@ esp_err_t scd30_set_measurement_interval(uint16_t interval_sec)
 esp_err_t scd30_get_data_ready_status(bool *data_ready)
 {
     uint8_t ready_buf[3];
-    esp_err_t ret;
 
-    ret = scd30_send_command(SCD30_CMD_GET_DATA_READY, NULL, 0);
-    if (ret != ESP_OK) {
-        return ret;
-    }
-
-    vTaskDelay(pdMS_TO_TICKS(3));  // Wait for processing
-
-    ret = scd30_read_data(ready_buf, sizeof(ready_buf));
+    esp_err_t ret = scd30_send_command_read(SCD30_CMD_GET_DATA_READY,
+                                            ready_buf, sizeof(ready_buf));
     if (ret == ESP_OK) {
         *data_ready = (ready_buf[0] << 8 | ready_buf[1]) == 1;
     }
@@ -298,16 +308,9 @@ esp_err_t scd30_read_measurement(scd30_measurement_t *measurement,
 
     uint8_t data[18];  // 6 bytes per value (including CRC)
 
-    // Send read measurement command
-    ret = scd30_send_command(SCD30_CMD_READ_MEASUREMENT, NULL, 0);
-    if (ret != ESP_OK) {
-        return ret;
-    }
-
-    vTaskDelay(pdMS_TO_TICKS(5));  // Increased from 3ms to 5ms for more reliable operation
-
-    // Read measurement data
-    ret = scd30_read_data(data, sizeof(data));
+    // Send command and read measurement data in one transaction
+    ret = scd30_send_command_read(SCD30_CMD_READ_MEASUREMENT,
+                                  data, sizeof(data));
     if (ret != ESP_OK) {
         return ret;
     }
@@ -474,16 +477,9 @@ esp_err_t scd30_get_temperature_offset(float *offset_celsius)
     }
 
     uint8_t data[3];
-    esp_err_t ret;
 
-    ret = scd30_send_command(SCD30_CMD_TEMP_OFFSET, NULL, 0);
-    if (ret != ESP_OK) {
-        return ret;
-    }
-
-    vTaskDelay(pdMS_TO_TICKS(3));
-
-    ret = scd30_read_data(data, sizeof(data));
+    esp_err_t ret = scd30_send_command_read(SCD30_CMD_TEMP_OFFSET,
+                                            data, sizeof(data));
     if (ret != ESP_OK) {
         return ret;
     }
