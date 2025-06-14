@@ -63,15 +63,11 @@ static esp_err_t scd30_send_command(uint16_t command, const uint16_t *data, size
         }
     }
 
-    vTaskDelay(pdMS_TO_TICKS(10));
-   
     esp_err_t ret = i2c_handler_write(buf, idx);
     if (ret != ESP_OK) {
         ESP_LOGW(TAG, "Failed to send command 0x%04x: %s", command, esp_err_to_name(ret));
-    }   
+    }
 
-    vTaskDelay(pdMS_TO_TICKS(20));
-    
     return ret;
 }
 
@@ -262,7 +258,7 @@ esp_err_t scd30_get_data_ready_status(bool *data_ready)
         return ret;
     }
 
-    vTaskDelay(pdMS_TO_TICKS(3));  // Wait for processing
+    vTaskDelay(pdMS_TO_TICKS(4));  // Datasheet specifies ~4ms between write and read
 
     ret = scd30_read_data(ready_buf, sizeof(ready_buf));
     if (ret == ESP_OK) {
@@ -304,7 +300,7 @@ esp_err_t scd30_read_measurement(scd30_measurement_t *measurement,
         return ret;
     }
 
-    vTaskDelay(pdMS_TO_TICKS(5));  // Increased from 3ms to 5ms for more reliable operation
+    vTaskDelay(pdMS_TO_TICKS(4));  // Minimal delay before reading
 
     // Read measurement data
     ret = scd30_read_data(data, sizeof(data));
@@ -481,7 +477,7 @@ esp_err_t scd30_get_temperature_offset(float *offset_celsius)
         return ret;
     }
 
-    vTaskDelay(pdMS_TO_TICKS(3));
+    vTaskDelay(pdMS_TO_TICKS(4));
 
     ret = scd30_read_data(data, sizeof(data));
     if (ret != ESP_OK) {
