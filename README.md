@@ -7,27 +7,62 @@
 
 An ESP32-based CO2, temperature, and humidity sensor that integrates with Zigbee networks using the SCD30 sensor module.
 
+## Table of Contents
+
+- [Hardware Requirements](#hardware-requirements)
+- [Features](#features)
+- [Software Dependencies](#software-dependencies)
+- [Building and Flashing](#building-and-flashing)
+- [Zigbee Configuration](#zigbee-configuration)
+- [Sensor Configuration](#sensor-configuration)
+- [Project Structure](#project-structure)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Hardware Requirements
 
 - ESP32-C6 development board (with Zigbee support)
-- Sensirion SCD30 CO2 sensor
-- I2C connections:
-  - SDA and SCL pins. In this case it's configured via an I2C handler to pins 21 and 22. See official documentation here https://docs.espressif.com/projects/esp-idf/en/stable/esp32c6/api-reference/peripherals/gpio.html for GPIO summary. 
-  - 3.3V power supplied by the ESP32
-  - GND 
+- Sensirion SCD30 CO₂ sensor
+
+### Wiring Diagram
+
+```
+ESP32-C6                    SCD30 Sensor
+------------------------------------
+GPIO 21 (SDA) ------------- SDA
+GPIO 22 (SCL) ------------- SCL  
+3.3V          ------------- VIN
+GND           ------------- GND
+```
+
+### I2C Configuration
+- **SDA**: GPIO 21
+- **SCL**: GPIO 22  
+- **Power**: 3.3V supplied by ESP32
+- **I2C Address**: 0x61 (SCD30 default)
+
+For complete ESP32-C6 GPIO information, see the [official documentation](https://docs.espressif.com/projects/esp-idf/en/stable/esp32c6/api-reference/peripherals/gpio.html).
 
 ## Features
 
-- Measures:
-  - CO2 concentration (400-10000 ppm)
-  - Temperature (-40°C to 70°C)
-  - Relative Humidity (0-100%)
-- Zigbee 3.0 compatibility
-- Automatic network joining
-- Configurable measurement intervals
-- Temperature offset compensation
-- Altitude/pressure compensation
-- Error recovery and device reset capabilities
+- **SCD30 Sensor Integration**
+  - Uses Sensirion SCD30 sensor for CO2, temperature, and humidity measurements
+  - Integrates with Zigbee protocol for network communication
+  - Configurable temperature offset and altitude compensation
+  - Automatic measurement intervals
+
+- **User Controls**
+  - Boot button interface for debugging and troubleshooting
+  - Factory reset and network rejoin capabilities
+  - Diagnostic information display
+  - Debug mode toggle
+
+- **Reliability Features**
+  - Automatic device reset on persistent errors
+  - I2C bus recovery mechanisms
+  - Measurement validation and retry logic
+  - Comprehensive error logging
 
 ## Software Dependencies
 
@@ -43,6 +78,7 @@ An ESP32-based CO2, temperature, and humidity sensor that integrates with Zigbee
 ## Building and Flashing
 
 1. Install ESP-IDF and set up the development environment
+
 2. Configure the project:
    ```bash
    idf.py menuconfig
@@ -51,120 +87,133 @@ An ESP32-based CO2, temperature, and humidity sensor that integrates with Zigbee
    - Configure any necessary GPIO pins
    - Set up any additional project configurations
 
-3. Build the project:
+3. Build and flash the project:
    ```bash
+   # One-step build, erase, and flash
+   idf.py build erase-flash flash --port COM[X]
+   
+   # Or separately:
    idf.py build
+   idf.py -p COM[X] flash
    ```
 
-4. Flash to your ESP32-C6:
-   ```bash
-   idf.py -p PORT flash
-   ```
+Replace `COM[X]` with your actual port (e.g., `COM3` on Windows, `/dev/ttyUSB0` on Linux).
 
 ## Zigbee Configuration
 
 The device operates as a Zigbee End Device (ZED) with the following clusters:
 - Basic Cluster
-- Identify Cluster
+- Identify Cluster  
 - Carbon Dioxide Measurement Cluster
 - Temperature Measurement Cluster
 - Humidity Measurement Cluster
 
 Device specifications:
 - Profile ID: Home Automation (0x0104)
-- Device ID: Temperature Sensor (0x0302)
-- Endpoint: Configurable (default in app_defs.h)
+- Device ID: Custom CO2 Sensor (`ESP_ZB_HA_CUSTOM_ATTR_DEVICE_ID`)
+- Endpoint: 12 (`HA_CUSTOM_CO2_ENDPOINT`)
+- Manufacturer: ESPRESSIF
+- Model: ESP32-C6
+
+Network configuration:
+- Role: Zigbee End Device (ZED)
+- Primary channels: All Zigbee channels (11-26)
+- Keep alive: 3000ms
+- End device aging timeout: 64 minutes
 
 ## Sensor Configuration
 
 The SCD30 sensor is configured with:
-- Default measurement interval: Configurable (typical 5 seconds)
-- Temperature offset compensation
-- Optional altitude/pressure compensation
-- Automatic error recovery and sensor reset capabilities
-- Requires a warm-up delay (`SCD30_WARMUP_TIME_MS`) after starting continuous
-  measurement before valid readings are available
+
+**Measurement Settings:**
+- Measurement interval: Configurable (`SCD30_MEASUREMENT_INTERVAL` seconds)
+- Reading frequency: Every 5 seconds when data is available
+- Warm-up delay: 5 seconds (`SCD30_WARMUP_TIME_MS`) after starting continuous measurement
+
+**Compensation:**
+- Temperature offset: Configurable (`SCD30_SW_TEMP_OFFSET`) with both hardware and software compensation
+- Environmental compensation: Choose between:
+  - Pressure compensation (`DEFAULT_PRESSURE_MBAR`) when `SCD30_USE_PRESSURE_COMP` is enabled
+  - Altitude compensation (`SCD30_DEFAULT_ALTITUDE` meters) when pressure compensation is disabled
+
+**Error Handling & Validation:**
+- Automatic sensor initialization with up to 3 retry attempts
+- Measurement validation against defined ranges:
+  - CO2: `SCD30_CO2_MIN` to `SCD30_CO2_MAX` ppm
+  - Temperature: `SCD30_TEMP_MIN` to `SCD30_TEMP_MAX` °C  
+  - Humidity: `SCD30_HUM_MIN` to `SCD30_HUM_MAX` %
+- Automatic sensor reset after consecutive errors (`SCD30_MAX_CONSECUTIVE_ERRORS`)
+- CRC validation for all I2C communication
+- Recovery delay (`SCD30_RECOVERY_DELAY_MS`) after sensor reset
 
 ## Project Structure
 
 ```
 ├── main/
-│   ├── app_defs.h           # Application definitions and constants
-│   ├── i2c_handler.c/h      # I2C communication handling
-│   ├── main.c              # Main application entry point
-│   ├── scd30_driver.c/h    # SCD30 sensor driver
-│   └── zigbee_handler.c/h  # Zigbee communication handling
+│   └── components/
+│       ├── common/              # Shared definitions and utilities
+│       ├── i2c_handler/         # I2C communication component
+│       ├── scd30_driver/        # SCD30 sensor driver component
+│       ├── troubleshooting/     # Diagnostic and debugging utilities
+│       └── zigbee_handler/      # Zigbee communication component
+├── CMakeLists.txt              # CMake build configuration
+├── dependencies.lock           # ESP-IDF component dependencies
+├── partitions.csv              # Flash partition table
+├── sdkconfig                   # ESP-IDF project configuration
+├── LICENSE                     # MIT License
+├── NOTICE                      # Third-party notices
+└── Sensirion_CO2_Sensors_SCD30_Interface_Descr... # Sensor documentation
 ```
 
 ## Usage
 
-1. Power up the device
-2. The device will automatically attempt to join available Zigbee networks
-3. Once connected, the device will:
-   - Begin taking measurements
-   - Report values to the Zigbee coordinator
-   - Handle any configuration commands from the network
+### Initial Startup
+1. **Power up the device** - The ESP32 will boot and initialize
+2. **Sensor initialization** - SCD30 will be configured with temperature offset and environmental compensation
+3. **Network joining** - Device automatically attempts to join available Zigbee networks across channels 11-26
+4. **Warm-up period** - After Zigbee connection, wait 5 seconds for sensor stabilization
+
+### Normal Operation
+Once connected and warmed up, the device will:
+- **Take measurements every 5 seconds** when data is available
+- **Log readings to console**:
+```bash
+CO₂: 450.0 ppm, Temperature: 23.45°C, Humidity: 45.2%
+```
+- **Update Zigbee attributes** automatically for coordinator polling
+- **Validate readings** against configured ranges and retry on errors
+- **Auto-recover** from sensor communication issues
+
+### Expected Readings
+- **CO₂**: 400-10,000 ppm (typical indoor: 400-1000 ppm)
+- **Temperature**: Ambient temperature minus configured offset
+- **Humidity**: 0-100% relative humidity
+
+### Network Behavior
+- **Connection indicators**: Watch console logs for "Successfully joined network" messages
+- **Coordinator polling**: Values available to Zigbee coordinator on-demand (no automatic reporting)
+- **Auto-reconnection**: Device attempts to rejoin if connection is lost
+
 ### Button Controls
 
-The boot button is linked to GPIO 9 and has multiple functions:
+The boot button (GPIO 9) provides diagnostic and control functions:
 
 #### Quick Press Patterns
-All quick press sequences must be completed within 3 seconds:
+Complete within 3 seconds:
 
-* **Two quick presses**
-  * Displays diagnostic information about the device
-
-* **Three quick presses**
-  * Toggles debug mode for advanced logging
-
-* **Four quick presses**
-  * Resets device to factory settings
-  * Use with caution - will clear all settings
+* **Two quick presses** - Display diagnostic information
+* **Three quick presses** - Toggle debug mode for detailed logging  
+* **Four quick presses** - Factory reset (**WARNING**: Erases all Zigbee settings)
 
 #### Long Press
-* **Network Rejoin**
-  * Hold button for 3 seconds continuously
-  * Forces device to leave current network and attempt to rejoin
-  * Useful when device loses connection or needs to join a different network
+* **Hold for 3 seconds** - Force network rejoin
+  * Use when device can't connect or needs to join different network
 
-> **Note:** All button presses include 100ms debounce protection to prevent false triggers.
-
-
-## Error Handling
-
-The device includes several error recovery mechanisms:
-- I2C bus recovery
-- Sensor initialization retries
-- Measurement validation
-- Automatic sensor reset on consecutive errors
-- Network reconnection handling
-
-## Troubleshooting
-
-1. Device not joining network:
-   - Verify Zigbee coordinator is operating
-   - Check if network is permitting new devices
-   - Monitor device logs for join attempts
-
-2. Invalid sensor readings:
-   - Check I2C connections
-   - Verify sensor power supply
-   - Monitor logs for sensor initialization errors
-
-3. Communication issues:
-   - Verify I2C pin configurations
-   - Check for proper sensor addressing
-   - Monitor for I2C bus errors in logs
+> **Note:** All button presses include 100ms debounce protection.
 
 ## Contributing
 
 Please submit issues and pull requests with any improvements or bug fixes.
-
-## To-Do
-
-1. More robust network handling
-2. Power management
-3. Add display
 
 ## License
 This project is licensed under the MIT License. See [LICENSE](LICENSE).
