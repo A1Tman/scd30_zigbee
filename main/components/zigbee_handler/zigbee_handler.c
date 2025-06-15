@@ -13,6 +13,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
 #include "app_defs.h"
+#include "main.h"
 #include "i2c_handler.h"
 #include "scd30_driver.h"
 #include "string.h"
@@ -868,4 +869,48 @@ esp_err_t zigbee_handler_reconnect(void)
     }
     
     return ESP_OK;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Compatibility wrappers matching the Q_sensor API                            */
+/* -------------------------------------------------------------------------- */
+
+void zigbee_setup(void)
+{
+    ESP_LOGI(TAG, "zigbee_setup() wrapper called");
+    zigbee_handler_start();
+}
+
+void update_attributes(attribute_t attribute)
+{
+    if (attribute == ATTRIBUTE_ALL || attribute == ATTRIBUTE_SCD) {
+        scd30_measurement_t m;
+        if (scd30_read_measurement(&m, false) == ESP_OK) {
+            zigbee_handler_update_measurements(m.co2_ppm, m.temperature, m.humidity);
+        } else {
+            ESP_LOGW(TAG, "update_attributes: failed to read measurement");
+        }
+    }
+}
+
+void send_bin_cfg_option(int endpoint, bool value) {
+    ESP_LOGI(TAG, "send_bin_cfg_option stub called (endpoint %d, value %d)", endpoint, value);
+}
+
+void send_zone_1_state(uint8_t bit_index, uint8_t value) {
+    ESP_LOGI(TAG, "send_zone_1_state stub called (bit %d, value %d)", bit_index, value);
+}
+
+void force_update_task(void) {
+    ESP_LOGI(TAG, "force_update_task stub executed");
+    update_attributes(ATTRIBUTE_ALL);
+}
+
+void force_update(void) {
+    ESP_LOGI(TAG, "force_update stub executed");
+    update_attributes(ATTRIBUTE_ALL);
+}
+
+void read_server_time(void) {
+    ESP_LOGI(TAG, "read_server_time stub called");
 }

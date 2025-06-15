@@ -14,6 +14,15 @@
 #include "stdbool.h"
 
 /**
+ * @brief Enumeration used by the Q_sensor project to select which attributes
+ *        to update when sending measurements over Zigbee.
+ */
+typedef enum {
+    ATTRIBUTE_ALL,  /*!< Update all available attributes */
+    ATTRIBUTE_SCD,  /*!< Update SCD30 related attributes only */
+} attribute_t;
+
+/**
  * @brief Initialize non-volatile storage
  * @return ESP_OK if successful, otherwise error code
  */
