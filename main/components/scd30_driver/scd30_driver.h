@@ -45,7 +45,7 @@
  #define SCD30_SW_TEMP_OFFSET      2.0f   /*!< Software temperature offset in °C */
  
  // Measurement ranges
- #define SCD30_CO2_MIN 400
+ #define SCD30_CO2_MIN 200
  #define SCD30_CO2_MAX 10000
  #define SCD30_TEMP_MIN -40
  #define SCD30_TEMP_MAX 125
