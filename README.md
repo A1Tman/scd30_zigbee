@@ -66,14 +66,20 @@ For complete ESP32-C6 GPIO information, see the [official documentation](https:/
 
 ## Software Dependencies
 
-- ESP-IDF (Espressif IoT Development Framework)
-- FreeRTOS
-- ESP Zigbee SDK
-- Required ESP-IDF components:
-  - `driver`
-  - `esp_timer`
-  - `nvs_flash`
-  - `esp_pm`
+**Required Framework:**
+- **ESP-IDF v5.1 or later** (required for ESP32-C6 Zigbee support)
+- **ESP Zigbee SDK** (included with ESP-IDF v5.1+)
+
+**Installation:**
+- Follow the [ESP-IDF Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32c6/get-started/)
+- Ensure Zigbee components are enabled in ESP-IDF installation
+
+**Included Components:**
+- FreeRTOS (built into ESP-IDF)
+- Required ESP-IDF components: `driver`, `esp_timer`, `nvs_flash`, `esp_pm`
+
+**Supported Platforms:**
+- Windows, Linux, macOS
 
 ## Building and Flashing
 
