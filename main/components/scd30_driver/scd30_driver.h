@@ -166,7 +166,14 @@
  * @return ESP_OK on success, ESP_ERR_INVALID_ARG for invalid pressure
  * @note Alternative to altitude compensation - do not use both simultaneously
  */
- esp_err_t scd30_set_pressure_compensation(uint16_t pressure_mbar);
- 
- #endif /* SCD30_DRIVER_H */
+esp_err_t scd30_set_pressure_compensation(uint16_t pressure_mbar);
+
+/**
+ * @brief Enable or disable the sensor's automatic self calibration feature
+ * @param enable Set to true to enable, false to disable
+ * @return ESP_OK on success, otherwise error code
+ */
+esp_err_t scd30_set_auto_calibration(bool enable);
+
+#endif /* SCD30_DRIVER_H */
  

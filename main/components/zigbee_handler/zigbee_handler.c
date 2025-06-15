@@ -107,6 +107,20 @@ void esp_zb_task(void *pvParameters)
         return;
     }
 
+    /* Manufacturer specific CO2 control cluster */
+    bool auto_calibrate = false;
+    esp_zb_attribute_list_t *esp_zb_co2_ctrl_cluster = esp_zb_zcl_attr_list_create(CO2_CONTROL_CLUSTER_ID);
+    if (!esp_zb_co2_ctrl_cluster) {
+        ESP_LOGE(TAG, "Failed to create CO2 control cluster");
+        vTaskDelete(NULL);
+        return;
+    }
+    esp_zb_custom_cluster_add_custom_attr(esp_zb_co2_ctrl_cluster,
+                                          CO2_CONTROL_ATTR_AUTO_CALIBRATE_ID,
+                                          ESP_ZB_ZCL_ATTR_TYPE_BOOL,
+                                          ESP_ZB_ZCL_ATTR_ACCESS_READ_WRITE,
+                                          &auto_calibrate);
+
     /* Create cluster list and add clusters */
     esp_zb_cluster_list_t *esp_zb_cluster_list = esp_zb_zcl_cluster_list_create();
     if (!esp_zb_cluster_list) {
@@ -125,6 +139,7 @@ void esp_zb_task(void *pvParameters)
     esp_zb_cluster_list_add_carbon_dioxide_measurement_cluster(esp_zb_cluster_list, esp_zb_co2_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
     esp_zb_cluster_list_add_temperature_meas_cluster(esp_zb_cluster_list, esp_zb_temp_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
     esp_zb_cluster_list_add_humidity_meas_cluster(esp_zb_cluster_list, esp_zb_humidity_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+    esp_zb_cluster_list_add_custom_cluster(esp_zb_cluster_list, esp_zb_co2_ctrl_cluster, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
 
     /* Create endpoint list */
     esp_zb_ep_list_t *esp_zb_ep_list = esp_zb_ep_list_create();
@@ -410,6 +425,14 @@ esp_err_t zb_attribute_handler(const esp_zb_zcl_set_attr_value_message_t *messag
              message->info.dst_endpoint, message->info.cluster, message->attribute.id, message->attribute.data.size);
     if (message->info.dst_endpoint == HA_CUSTOM_CO2_ENDPOINT) {
         switch (message->info.cluster) {
+        case CO2_CONTROL_CLUSTER_ID:
+            if (message->attribute.id == CO2_CONTROL_ATTR_AUTO_CALIBRATE_ID &&
+                message->attribute.data.size > 0) {
+                bool enable = *((uint8_t *)message->attribute.data.value) ? true : false;
+                scd30_set_auto_calibration(enable);
+                ESP_LOGI(TAG, "AUTO_CALIBRATE set to %d", enable);
+            }
+            break;
         default:
             ESP_LOGI(TAG, "Message data: cluster(0x%x), attribute(0x%x)", message->info.cluster, message->attribute.id);
         }
