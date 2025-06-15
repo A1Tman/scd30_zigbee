@@ -1,3 +1,8 @@
+![Release](https://img.shields.io/github/v/release/A1Tman/scd30_zigbee)
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![Hardware Tested](https://img.shields.io/badge/hardware-tested-brightgreen)
+![ESP32](https://img.shields.io/badge/platform-ESP32-blue)
+
 # ESP32 Zigbee CO2 Sensor
 
 An ESP32-based CO2, temperature, and humidity sensor that integrates with Zigbee networks using the SCD30 sensor module.
