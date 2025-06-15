@@ -113,6 +113,7 @@ The device operates as a Zigbee End Device (ZED) with the following clusters:
 - Carbon Dioxide Measurement Cluster
 - Temperature Measurement Cluster
 - Humidity Measurement Cluster
+- CO2 Control Cluster (0xFC00) with `AUTO_CALIBRATE` attribute
 
 Device specifications:
 - Profile ID: Home Automation (0x0104)
@@ -189,6 +190,10 @@ CO₂: 450.0 ppm, Temperature: 23.45°C, Humidity: 45.2%
 - **Update Zigbee attributes** automatically for coordinator polling
 - **Validate readings** against configured ranges and retry on errors
 - **Auto-recover** from sensor communication issues
+- **Control auto calibration** via the `AUTO_CALIBRATE` attribute in the CO2 Control cluster
+
+Home Assistant users can toggle this attribute from the device page to start or stop
+the SCD30's automatic self calibration routine.
 
 ### Expected Readings
 - **CO₂**: 400-10,000 ppm (typical indoor: 400-1000 ppm)

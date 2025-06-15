@@ -28,6 +28,10 @@ typedef enum {
 #define HA_CUSTOM_CO2_ENDPOINT         12     /*!< Zigbee endpoint for SCD30 sensor */
 #define ESP_ZB_PRIMARY_CHANNEL_MASK    ESP_ZB_TRANSCEIVER_ALL_CHANNELS_MASK /*!< Primary channel mask */
 
+/* Manufacturer specific CO2 control cluster */
+#define CO2_CONTROL_CLUSTER_ID         0xFC00
+#define CO2_CONTROL_ATTR_AUTO_CALIBRATE_ID 0x0000
+
 /* Network Steering & Initializing Configuration */
 #define ESP_ZB_NETWORK_INIT_TIMEOUT    90000  /*!< Timeout for Zigbee network initialization in ms */
 #define STEERING_MAX_ATTEMPTS          100    /*!< Maximum number of steering attempts */

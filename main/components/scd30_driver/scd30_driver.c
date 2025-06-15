@@ -527,8 +527,8 @@
      return scd30_send_command(SCD30_CMD_ALTI_COMP, &altitude_meters, 1);
  }
  
- esp_err_t scd30_set_pressure_compensation(uint16_t pressure_mbar)
- {
+esp_err_t scd30_set_pressure_compensation(uint16_t pressure_mbar)
+{
      // Static variable to track the last set pressure value
      static uint16_t prev_pressure = 0xFFFF; // Initialized to an invalid value to ensure it's logged the first time
  
@@ -538,6 +538,13 @@
          prev_pressure = pressure_mbar;
      }
  
-     // Send command to set pressure compensation
-     return scd30_send_command(SCD30_CMD_SET_PRESSURE, &pressure_mbar, 1);
- }
+    // Send command to set pressure compensation
+    return scd30_send_command(SCD30_CMD_SET_PRESSURE, &pressure_mbar, 1);
+}
+
+esp_err_t scd30_set_auto_calibration(bool enable)
+{
+    uint16_t value = enable ? 1 : 0;
+    ESP_LOGI(TAG, "Setting auto calibration to %s", enable ? "ENABLED" : "DISABLED");
+    return scd30_send_command(SCD30_CMD_AUTO_SELF_CALIBRATION, &value, 1);
+}
