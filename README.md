@@ -1,7 +1,9 @@
-![Release](https://img.shields.io/github/v/release/A1Tman/scd30_zigbee)
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![Hardware Tested](https://img.shields.io/badge/hardware-tested-brightgreen)
-![ESP32](https://img.shields.io/badge/platform-ESP32-blue)
+![Version](https://img.shields.io/github/v/release/A1Tman/scd30_zigbee?style=flat-square&color=blue)
+![License](https://img.shields.io/github/license/A1Tman/scd30_zigbee?style=flat-square&color=green)
+![ESP32](https://img.shields.io/badge/Platform-ESP32--C6-red?style=flat-square&logo=espressif)
+![Zigbee](https://img.shields.io/badge/Protocol-Zigbee%203.0-blue?style=flat-square)
+![Home Assistant](https://img.shields.io/badge/Integration-Home%20Assistant-41BDF5?style=flat-square&logo=home-assistant)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=flat-square)
 
 # ESP32 Zigbee CO2 Sensor
 
