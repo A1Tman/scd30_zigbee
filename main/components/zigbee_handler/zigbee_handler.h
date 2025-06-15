@@ -15,6 +15,11 @@
 #include "zb_vendor.h"
 #include "esp_zigbee_core.h"
 
+typedef enum {
+    ATTRIBUTE_ALL,  /*!< Update all available attributes */
+    ATTRIBUTE_SCD,  /*!< Update SCD30 related attributes only */
+} attribute_t;
+
 /* Zigbee Network Configuration */
 #define MAX_CHILDREN                   1     /*!< Maximum number of connected devices */
 #define INSTALLCODE_POLICY_ENABLE      false  /*!< Install code policy for security */
@@ -156,22 +161,19 @@ esp_err_t zigbee_handler_cleanup(void);
  */
 esp_err_t zigbee_handler_reconnect(void);
 
-/* -------------------------------------------------------------------------- */
-/* Compatibility wrappers matching the Q_sensor API                            */
-/* -------------------------------------------------------------------------- */
 
 /**
- * @brief Wrapper matching Q_sensor's zigbee_setup() function.
+ * @brief Zigbee setup wrapper function.
  */
 void zigbee_setup(void);
 
 /**
- * @brief Wrapper matching Q_sensor's update_attributes() function.
+ * @brief Zigbee update wrapper for measurements.
  *        Currently only updates the SCD30 measurements.
  */
 void update_attributes(attribute_t attribute);
 
-/** Compatibility stubs for functions used in Q_sensor but not implemented. */
+/** Stubs for functions that are currently not implemented. */
 void send_bin_cfg_option(int endpoint, bool value);
 void send_zone_1_state(uint8_t bit_index, uint8_t value);
 void force_update_task(void);

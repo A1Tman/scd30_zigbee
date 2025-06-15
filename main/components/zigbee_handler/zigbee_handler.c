@@ -13,7 +13,6 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
 #include "app_defs.h"
-#include "main.h"
 #include "i2c_handler.h"
 #include "scd30_driver.h"
 #include "string.h"
@@ -137,7 +136,7 @@ void esp_zb_task(void *pvParameters)
 
     /* Set endpoint config */
     esp_zb_endpoint_config_t endpoint_config = {
-        .endpoint = HA_CUSTOM_CO2_ENDPOINT,   // Use your custom CO₂ endpoint (12)
+        .endpoint = HA_CUSTOM_CO2_ENDPOINT,   // Use custom CO₂ endpoint (12)
         .app_profile_id = ESP_ZB_AF_HA_PROFILE_ID,             // Home Automation profile
         .app_device_id = ESP_ZB_HA_CUSTOM_ATTR_DEVICE_ID,       // Custom CO₂ sensor device type (make sure this is defined properly)
         .app_device_version = 0
@@ -870,10 +869,6 @@ esp_err_t zigbee_handler_reconnect(void)
     
     return ESP_OK;
 }
-
-/* -------------------------------------------------------------------------- */
-/* Compatibility wrappers matching the Q_sensor API                            */
-/* -------------------------------------------------------------------------- */
 
 void zigbee_setup(void)
 {
