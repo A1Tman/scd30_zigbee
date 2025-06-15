@@ -145,10 +145,27 @@
   */
  esp_err_t scd30_set_temperature_offset(float offset_celsius);
  
+ /**
+ * @brief Get current temperature offset compensation value
+ * @param offset_celsius Pointer to store current offset in degrees Celsius
+ * @return ESP_OK on success, ESP_ERR_INVALID_ARG if pointer is NULL
+ */
  esp_err_t scd30_get_temperature_offset(float *offset_celsius);
  
+ /**
+ * @brief Set altitude compensation for CO2 measurements
+ * @param altitude_meters Altitude in meters above sea level (0-65535)
+ * @return ESP_OK on success, ESP_ERR_INVALID_ARG for invalid altitude
+ * @note Alternative to pressure compensation - do not use both simultaneously
+ */
  esp_err_t scd30_set_altitude_compensation(uint16_t altitude_meters);
  
+ /**
+ * @brief Set pressure compensation for CO2 measurements  
+ * @param pressure_mbar Ambient pressure in mbar (700-1400 typical range)
+ * @return ESP_OK on success, ESP_ERR_INVALID_ARG for invalid pressure
+ * @note Alternative to altitude compensation - do not use both simultaneously
+ */
  esp_err_t scd30_set_pressure_compensation(uint16_t pressure_mbar);
  
  #endif /* SCD30_DRIVER_H */
