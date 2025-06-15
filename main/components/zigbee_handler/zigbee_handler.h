@@ -155,3 +155,25 @@ esp_err_t zigbee_handler_cleanup(void);
  * @return ESP_OK if reconnection procedure started, error code otherwise
  */
 esp_err_t zigbee_handler_reconnect(void);
+
+/* -------------------------------------------------------------------------- */
+/* Compatibility wrappers matching the Q_sensor API                            */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * @brief Wrapper matching Q_sensor's zigbee_setup() function.
+ */
+void zigbee_setup(void);
+
+/**
+ * @brief Wrapper matching Q_sensor's update_attributes() function.
+ *        Currently only updates the SCD30 measurements.
+ */
+void update_attributes(attribute_t attribute);
+
+/** Compatibility stubs for functions used in Q_sensor but not implemented. */
+void send_bin_cfg_option(int endpoint, bool value);
+void send_zone_1_state(uint8_t bit_index, uint8_t value);
+void force_update_task(void);
+void force_update(void);
+void read_server_time(void);

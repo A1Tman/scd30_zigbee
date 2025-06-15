@@ -30,25 +30,24 @@
  static bool task_running = false;
  
  /* CRC calculation for SCD30 communication */
- static uint8_t scd30_crc8(const uint8_t *data, size_t len)
- {
-     // This CRC-8 calculation is based on the SCD30 datasheet and Adafruit's implementation.
-     const uint8_t POLYNOMIAL = 0x31;
-     uint8_t crc = 0xFF;
- 
-     for (size_t j = 0; j < len; ++j) {
-         crc ^= data[j];
- 
-         for (uint8_t bit = 0; bit < 8; ++bit) {
-             if (crc & 0x80) {
-                 crc = (crc << 1) ^ POLYNOMIAL;
-             } else {
-                 crc <<= 1;
-             }
-         }
-     }
-     return crc;
- }
+static uint8_t scd30_crc8(const uint8_t *data, size_t len)
+{
+    /* CRC-8 formula from the SCD30 datasheet.  Implementation mirrors the
+     * Adafruit library to ensure interoperability.  Test data 0xBE 0xEF should
+     * yield 0x92.
+     */
+    const uint8_t POLYNOMIAL = 0x31;
+    uint8_t crc = 0xFF;
+
+    for (size_t j = 0; j < len; j++) {
+        crc ^= data[j];
+        for (uint8_t i = 0; i < 8; i++) {
+            crc = (crc & 0x80) ? (crc << 1) ^ POLYNOMIAL : (crc << 1);
+        }
+    }
+
+    return crc;
+}
  
  /* Send command to SCD30 */
  static esp_err_t scd30_send_command(uint16_t command, const uint16_t *data, size_t words)
