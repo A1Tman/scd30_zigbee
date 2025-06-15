@@ -31,6 +31,12 @@ typedef enum {
 /* Manufacturer specific CO2 control cluster */
 #define CO2_CONTROL_CLUSTER_ID         0xFC00
 #define CO2_CONTROL_ATTR_AUTO_CALIBRATE_ID 0x0000
+#define CO2_CONTROL_ATTR_TEMP_OFFSET_ID         0x0001
+#define CO2_CONTROL_ATTR_PRESSURE_COMP_ID       0x0002
+#define CO2_CONTROL_ATTR_ALTITUDE_COMP_ID       0x0003
+#define CO2_CONTROL_ATTR_FORCE_RECAL_ID         0x0004
+#define CO2_CONTROL_ATTR_RESTART_MEASURE_ID     0x0005
+#define CO2_CONTROL_ATTR_DEBUG_COMMAND_ID       0x0006
 
 /* Network Steering & Initializing Configuration */
 #define ESP_ZB_NETWORK_INIT_TIMEOUT    90000  /*!< Timeout for Zigbee network initialization in ms */

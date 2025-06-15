@@ -40,6 +40,15 @@ static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask);
 static zigbee_connection_callback_t connection_callback = NULL;
 static void configure_reporting_alarm_handler(uint8_t param);
 
+static esp_err_t handle_co2_control_attribute(const esp_zb_zcl_set_attr_value_message_t *message);
+static esp_err_t handle_auto_calibrate_attr(const esp_zb_zcl_set_attr_value_message_t *message);
+static esp_err_t handle_temp_offset_attr(const esp_zb_zcl_set_attr_value_message_t *message);
+static esp_err_t handle_pressure_comp_attr(const esp_zb_zcl_set_attr_value_message_t *message);
+static esp_err_t handle_altitude_comp_attr(const esp_zb_zcl_set_attr_value_message_t *message);
+static esp_err_t handle_force_recalibration_attr(const esp_zb_zcl_set_attr_value_message_t *message);
+static esp_err_t handle_restart_measurement_attr(const esp_zb_zcl_set_attr_value_message_t *message);
+static esp_err_t handle_debug_command_attr(const esp_zb_zcl_set_attr_value_message_t *message);
+
 /* Core Zigbee functions */
 void esp_zb_task(void *pvParameters)
 {
@@ -109,6 +118,13 @@ void esp_zb_task(void *pvParameters)
 
     /* Manufacturer specific CO2 control cluster */
     bool auto_calibrate = false;
+    int16_t temp_offset_x100 = 250;        // Default 2.5°C offset * 100
+    uint16_t pressure_comp_mbar = 1013;    // Default sea level pressure
+    uint16_t altitude_comp_m = 0;          // Default no altitude compensation
+    uint16_t force_recalibration_ppm = 0;  // Default no forced recalibration
+    bool restart_measurement = false;      // Default no restart
+    uint8_t debug_command = 0;             // Default no debug command
+    
     esp_zb_attribute_list_t *esp_zb_co2_ctrl_cluster = esp_zb_zcl_attr_list_create(CO2_CONTROL_CLUSTER_ID);
     if (!esp_zb_co2_ctrl_cluster) {
         ESP_LOGE(TAG, "Failed to create CO2 control cluster");
@@ -116,10 +132,46 @@ void esp_zb_task(void *pvParameters)
         return;
     }
     esp_zb_custom_cluster_add_custom_attr(esp_zb_co2_ctrl_cluster,
-                                          CO2_CONTROL_ATTR_AUTO_CALIBRATE_ID,
-                                          ESP_ZB_ZCL_ATTR_TYPE_BOOL,
-                                          ESP_ZB_ZCL_ATTR_ACCESS_READ_WRITE,
-                                          &auto_calibrate);
+        CO2_CONTROL_ATTR_AUTO_CALIBRATE_ID,
+        ESP_ZB_ZCL_ATTR_TYPE_BOOL,
+        ESP_ZB_ZCL_ATTR_ACCESS_READ_WRITE,
+        &auto_calibrate);
+
+    esp_zb_custom_cluster_add_custom_attr(esp_zb_co2_ctrl_cluster,
+            CO2_CONTROL_ATTR_TEMP_OFFSET_ID,
+            ESP_ZB_ZCL_ATTR_TYPE_S16,
+            ESP_ZB_ZCL_ATTR_ACCESS_READ_WRITE,
+            &temp_offset_x100);
+
+    esp_zb_custom_cluster_add_custom_attr(esp_zb_co2_ctrl_cluster,
+            CO2_CONTROL_ATTR_PRESSURE_COMP_ID,
+            ESP_ZB_ZCL_ATTR_TYPE_U16,
+            ESP_ZB_ZCL_ATTR_ACCESS_READ_WRITE,
+            &pressure_comp_mbar);
+
+    esp_zb_custom_cluster_add_custom_attr(esp_zb_co2_ctrl_cluster,
+            CO2_CONTROL_ATTR_ALTITUDE_COMP_ID,
+            ESP_ZB_ZCL_ATTR_TYPE_U16,
+            ESP_ZB_ZCL_ATTR_ACCESS_READ_WRITE,
+            &altitude_comp_m);
+
+    esp_zb_custom_cluster_add_custom_attr(esp_zb_co2_ctrl_cluster,
+            CO2_CONTROL_ATTR_FORCE_RECAL_ID,
+            ESP_ZB_ZCL_ATTR_TYPE_U16,
+            ESP_ZB_ZCL_ATTR_ACCESS_READ_WRITE,
+            &force_recalibration_ppm);
+
+    esp_zb_custom_cluster_add_custom_attr(esp_zb_co2_ctrl_cluster,
+            CO2_CONTROL_ATTR_RESTART_MEASURE_ID,
+            ESP_ZB_ZCL_ATTR_TYPE_BOOL,
+            ESP_ZB_ZCL_ATTR_ACCESS_READ_WRITE,
+            &restart_measurement);
+
+    esp_zb_custom_cluster_add_custom_attr(esp_zb_co2_ctrl_cluster,
+            CO2_CONTROL_ATTR_DEBUG_COMMAND_ID,
+            ESP_ZB_ZCL_ATTR_TYPE_U8,
+            ESP_ZB_ZCL_ATTR_ACCESS_READ_WRITE,
+            &debug_command);
 
     /* Create cluster list and add clusters */
     esp_zb_cluster_list_t *esp_zb_cluster_list = esp_zb_zcl_cluster_list_create();
@@ -414,29 +466,342 @@ static void configure_reporting_alarm_handler(uint8_t param)
 }
 
 /**
- * @brief Handle attribute operations
+ * @brief Enhanced attribute handler for CO2 control cluster
+ * @param message Zigbee attribute set message
+ * @return ESP_OK if successful, otherwise error code
  */
 esp_err_t zb_attribute_handler(const esp_zb_zcl_set_attr_value_message_t *message)
 {
     esp_err_t ret = ESP_OK;
     ESP_RETURN_ON_FALSE(message, ESP_FAIL, TAG, "Empty message");
-    ESP_RETURN_ON_FALSE(message->info.status == ESP_ZB_ZCL_STATUS_SUCCESS, ESP_ERR_INVALID_ARG, TAG, "Received message: error status(%d)", message->info.status);
+    ESP_RETURN_ON_FALSE(message->info.status == ESP_ZB_ZCL_STATUS_SUCCESS, ESP_ERR_INVALID_ARG, TAG, 
+                        "Received message: error status(%d)", message->info.status);
+                        
     ESP_LOGI(TAG, "Received message: endpoint(%d), cluster(0x%x), attribute(0x%x), data size(%d)",
              message->info.dst_endpoint, message->info.cluster, message->attribute.id, message->attribute.data.size);
+
     if (message->info.dst_endpoint == HA_CUSTOM_CO2_ENDPOINT) {
         switch (message->info.cluster) {
         case CO2_CONTROL_CLUSTER_ID:
-            if (message->attribute.id == CO2_CONTROL_ATTR_AUTO_CALIBRATE_ID &&
-                message->attribute.data.size > 0) {
-                bool enable = *((uint8_t *)message->attribute.data.value) ? true : false;
-                scd30_set_auto_calibration(enable);
-                ESP_LOGI(TAG, "AUTO_CALIBRATE set to %d", enable);
-            }
+            ret = handle_co2_control_attribute(message);
             break;
         default:
             ESP_LOGI(TAG, "Message data: cluster(0x%x), attribute(0x%x)", message->info.cluster, message->attribute.id);
         }
     }
+    return ret;
+}
+
+/**
+ * @brief Handle CO2 control cluster attribute writes
+ * @param message Zigbee attribute set message  
+ * @return ESP_OK if successful, otherwise error code
+ */
+static esp_err_t handle_co2_control_attribute(const esp_zb_zcl_set_attr_value_message_t *message)
+{
+    esp_err_t ret = ESP_OK;
+    
+    if (message->attribute.data.size == 0) {
+        ESP_LOGW(TAG, "Empty attribute data for attribute 0x%04x", message->attribute.id);
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    switch (message->attribute.id) {
+        case CO2_CONTROL_ATTR_AUTO_CALIBRATE_ID:
+            ret = handle_auto_calibrate_attr(message);
+            break;
+            
+        case CO2_CONTROL_ATTR_TEMP_OFFSET_ID:
+            ret = handle_temp_offset_attr(message);
+            break;
+            
+        case CO2_CONTROL_ATTR_PRESSURE_COMP_ID:
+            ret = handle_pressure_comp_attr(message);
+            break;
+            
+        case CO2_CONTROL_ATTR_ALTITUDE_COMP_ID:
+            ret = handle_altitude_comp_attr(message);
+            break;
+            
+        case CO2_CONTROL_ATTR_FORCE_RECAL_ID:
+            ret = handle_force_recalibration_attr(message);
+            break;
+            
+        case CO2_CONTROL_ATTR_RESTART_MEASURE_ID:
+            ret = handle_restart_measurement_attr(message);
+            break;
+            
+        case CO2_CONTROL_ATTR_DEBUG_COMMAND_ID:
+            ret = handle_debug_command_attr(message);
+            break;
+            
+        default:
+            ESP_LOGW(TAG, "Unknown CO2 control attribute: 0x%04x", message->attribute.id);
+            ret = ESP_ERR_NOT_SUPPORTED;
+    }
+    
+    return ret;
+}
+
+/**
+ * @brief Handle auto calibration attribute
+ */
+static esp_err_t handle_auto_calibrate_attr(const esp_zb_zcl_set_attr_value_message_t *message)
+{
+    if (message->attribute.data.size < 1) {
+        ESP_LOGW(TAG, "Invalid data size for auto_calibrate: %d", message->attribute.data.size);
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    bool enable = *((uint8_t *)message->attribute.data.value) ? true : false;
+    esp_err_t ret = scd30_set_auto_calibration(enable);
+    
+    if (ret == ESP_OK) {
+        ESP_LOGI(TAG, "Auto calibration set to %s", enable ? "ENABLED" : "DISABLED");
+    } else {
+        ESP_LOGE(TAG, "Failed to set auto calibration: %s", esp_err_to_name(ret));
+    }
+    
+    return ret;
+}
+
+/**
+ * @brief Handle temperature offset attribute (value * 100)
+ */
+static esp_err_t handle_temp_offset_attr(const esp_zb_zcl_set_attr_value_message_t *message)
+{
+    if (message->attribute.data.size < 2) {
+        ESP_LOGW(TAG, "Invalid data size for temp_offset: %d", message->attribute.data.size);
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    // Parse int16 value (little-endian)
+    int16_t offset_x100;
+    memcpy(&offset_x100, message->attribute.data.value, sizeof(int16_t));
+    
+    // Convert to float (divide by 100)
+    float offset_celsius = offset_x100 / 100.0f;
+    
+    // Validate range (-10°C to +10°C seems reasonable)
+    if (offset_celsius < -10.0f || offset_celsius > 10.0f) {
+        ESP_LOGW(TAG, "Temperature offset out of range: %.2f°C", offset_celsius);
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    esp_err_t ret = scd30_set_temperature_offset(offset_celsius);
+    
+    if (ret == ESP_OK) {
+        ESP_LOGI(TAG, "Temperature offset set to %.2f°C", offset_celsius);
+    } else {
+        ESP_LOGE(TAG, "Failed to set temperature offset: %s", esp_err_to_name(ret));
+    }
+    
+    return ret;
+}
+
+/**
+ * @brief Handle pressure compensation attribute
+ */
+static esp_err_t handle_pressure_comp_attr(const esp_zb_zcl_set_attr_value_message_t *message)
+{
+    if (message->attribute.data.size < 2) {
+        ESP_LOGW(TAG, "Invalid data size for pressure_comp: %d", message->attribute.data.size);
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    // Parse uint16 value (little-endian)
+    uint16_t pressure_mbar;
+    memcpy(&pressure_mbar, message->attribute.data.value, sizeof(uint16_t));
+    
+    // Validate range (typical atmospheric pressure range)
+    if (pressure_mbar < 700 || pressure_mbar > 1400) {
+        ESP_LOGW(TAG, "Pressure compensation out of range: %u mbar", pressure_mbar);
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    esp_err_t ret = scd30_set_pressure_compensation(pressure_mbar);
+    
+    if (ret == ESP_OK) {
+        ESP_LOGI(TAG, "Pressure compensation set to %u mbar", pressure_mbar);
+    } else {
+        ESP_LOGE(TAG, "Failed to set pressure compensation: %s", esp_err_to_name(ret));
+    }
+    
+    return ret;
+}
+
+/**
+ * @brief Handle altitude compensation attribute
+ */
+static esp_err_t handle_altitude_comp_attr(const esp_zb_zcl_set_attr_value_message_t *message)
+{
+    if (message->attribute.data.size < 2) {
+        ESP_LOGW(TAG, "Invalid data size for altitude_comp: %d", message->attribute.data.size);
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    // Parse uint16 value (little-endian)
+    uint16_t altitude_m;
+    memcpy(&altitude_m, message->attribute.data.value, sizeof(uint16_t));
+    
+    // Note: Setting altitude to 0 disables altitude compensation
+    if (altitude_m > 8848) {  // Mount Everest height as upper limit
+        ESP_LOGW(TAG, "Altitude compensation out of range: %u meters", altitude_m);
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    esp_err_t ret = scd30_set_altitude_compensation(altitude_m);
+    
+    if (ret == ESP_OK) {
+        if (altitude_m == 0) {
+            ESP_LOGI(TAG, "Altitude compensation disabled");
+        } else {
+            ESP_LOGI(TAG, "Altitude compensation set to %u meters", altitude_m);
+        }
+    } else {
+        ESP_LOGE(TAG, "Failed to set altitude compensation: %s", esp_err_to_name(ret));
+    }
+    
+    return ret;
+}
+
+/**
+ * @brief Handle forced recalibration attribute (UPDATED VERSION)
+ */
+static esp_err_t handle_force_recalibration_attr(const esp_zb_zcl_set_attr_value_message_t *message)
+{
+    if (message->attribute.data.size < 2) {
+        ESP_LOGW(TAG, "Invalid data size for force_recalibration: %d", message->attribute.data.size);
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    // Parse uint16 value (little-endian)
+    uint16_t target_ppm;
+    memcpy(&target_ppm, message->attribute.data.value, sizeof(uint16_t));
+    
+    // Validate range (typical CO2 calibration values)
+    if (target_ppm < 300 || target_ppm > 2000) {
+        ESP_LOGW(TAG, "Force recalibration value out of range: %u ppm", target_ppm);
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    // Skip calibration if value is 0 (used to clear/cancel)
+    if (target_ppm == 0) {
+        ESP_LOGI(TAG, "Force recalibration cancelled (target = 0)");
+        return ESP_OK;
+    }
+    
+    ESP_LOGI(TAG, "Initiating forced recalibration to %u ppm", target_ppm);
+    
+    // Call the SCD30 force recalibration function
+    esp_err_t ret = scd30_force_recalibration(target_ppm);
+    
+    if (ret == ESP_OK) {
+        ESP_LOGI(TAG, "Forced recalibration initiated successfully for %u ppm", target_ppm);
+    } else {
+        ESP_LOGE(TAG, "Failed to initiate forced recalibration: %s", esp_err_to_name(ret));
+    }
+    
+    return ret;
+}
+
+/**
+ * @brief Handle restart measurement attribute
+ */
+static esp_err_t handle_restart_measurement_attr(const esp_zb_zcl_set_attr_value_message_t *message)
+{
+    if (message->attribute.data.size < 1) {
+        ESP_LOGW(TAG, "Invalid data size for restart_measurement: %d", message->attribute.data.size);
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    bool restart = *((uint8_t *)message->attribute.data.value) ? true : false;
+    
+    if (!restart) {
+        ESP_LOGI(TAG, "Restart measurement set to false - no action taken");
+        return ESP_OK;
+    }
+    
+    ESP_LOGI(TAG, "Restarting SCD30 measurements");
+    
+    // Stop current measurement
+    esp_err_t ret = scd30_stop_measurement();
+    if (ret != ESP_OK) {
+        ESP_LOGW(TAG, "Failed to stop measurement: %s", esp_err_to_name(ret));
+    }
+    
+    // Wait a bit before restarting
+    vTaskDelay(pdMS_TO_TICKS(500));
+    
+    // Restart with default pressure
+    ret = scd30_start_continuous_measurement(SCD30_AMBIENT_PRESSURE);
+    
+    if (ret == ESP_OK) {
+        ESP_LOGI(TAG, "SCD30 measurements restarted successfully");
+    } else {
+        ESP_LOGE(TAG, "Failed to restart measurements: %s", esp_err_to_name(ret));
+    }
+    
+    return ret;
+}
+
+/**
+ * @brief Handle debug command attribute
+ */
+static esp_err_t handle_debug_command_attr(const esp_zb_zcl_set_attr_value_message_t *message)
+{
+    if (message->attribute.data.size < 1) {
+        ESP_LOGW(TAG, "Invalid data size for debug_command: %d", message->attribute.data.size);
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    uint8_t debug_opcode = *((uint8_t *)message->attribute.data.value);
+    
+    ESP_LOGI(TAG, "Debug command received: 0x%02x", debug_opcode);
+    
+    esp_err_t ret = ESP_OK;
+    
+    switch (debug_opcode) {
+        case 0x01:  // Soft reset
+            ESP_LOGI(TAG, "Debug: Performing soft reset");
+            ret = scd30_reset();
+            break;
+            
+        case 0x02:  // Stop measurement
+            ESP_LOGI(TAG, "Debug: Stopping measurements");
+            ret = scd30_stop_measurement();
+            break;
+            
+        case 0x03:  // Start measurement
+            ESP_LOGI(TAG, "Debug: Starting measurements");
+            ret = scd30_start_continuous_measurement(SCD30_AMBIENT_PRESSURE);
+            break;
+            
+        case 0x04:  // Force measurement read
+            ESP_LOGI(TAG, "Debug: Forcing measurement read");
+            scd30_measurement_t measurement;
+            ret = scd30_read_measurement(&measurement, true);
+            if (ret == ESP_OK) {
+                ESP_LOGI(TAG, "Debug measurement: CO2=%.1f ppm, T=%.2f°C, H=%.1f%%",
+                        measurement.co2_ppm, measurement.temperature, measurement.humidity);
+            }
+            break;
+            
+        case 0x00:  // No operation
+            ESP_LOGI(TAG, "Debug: No operation");
+            break;
+            
+        default:
+            ESP_LOGW(TAG, "Unknown debug command: 0x%02x", debug_opcode);
+            ret = ESP_ERR_INVALID_ARG;
+    }
+    
+    if (ret == ESP_OK) {
+        ESP_LOGI(TAG, "Debug command 0x%02x executed successfully", debug_opcode);
+    } else {
+        ESP_LOGE(TAG, "Debug command 0x%02x failed: %s", debug_opcode, esp_err_to_name(ret));
+    }
+    
     return ret;
 }
 

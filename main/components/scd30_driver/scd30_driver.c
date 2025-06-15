@@ -114,123 +114,134 @@
      return ret;
  }
  
- esp_err_t scd30_init(void)
+ esp_err_t scd30_force_recalibration(uint16_t target_ppm)
  {
-     ESP_LOGI(TAG, "Initializing SCD30 sensor");
-     esp_err_t ret;
-     int retry_count = 0;
-     i2c_master_dev_handle_t dev_handle = NULL;
- 
-     // First, add the SCD30 device to the I2C bus
-     ret = i2c_handler_add_device(SCD30_SENSOR_ADDR, &dev_handle);
-     if (ret != ESP_OK) {
-         ESP_LOGE(TAG, "Failed to add SCD30 to I2C bus: %s", esp_err_to_name(ret));
-         return ret;
+     // Validate input range (typical outdoor air is ~400 ppm)
+     if (target_ppm < 300 || target_ppm > 2000) {
+         ESP_LOGE(TAG, "Invalid recalibration target: %u ppm (valid range: 300-2000)", target_ppm);
+         return ESP_ERR_INVALID_ARG;
      }
- 
-     while (retry_count < SCD30_INIT_RETRY_COUNT) {
-         if (retry_count > 0) {
-             ESP_LOGI(TAG, "Retry attempt %d of %d", retry_count + 1, SCD30_INIT_RETRY_COUNT);
-             vTaskDelay(pdMS_TO_TICKS(SCD30_INIT_RETRY_DELAY_MS));
-         }
- 
-         // Add initial delay after power-up
-         vTaskDelay(pdMS_TO_TICKS(1000));
-         
-         // Check if we can communicate with the sensor
-         ret = scd30_check_communication();
-         if (ret != ESP_OK) {
-             ESP_LOGW(TAG, "Cannot communicate with SCD30 (attempt %d): %s", 
-                      retry_count + 1, esp_err_to_name(ret));
-             retry_count++;
-             continue;
-         }
-         
-         // Perform soft reset first
-         ret = scd30_reset();
-         if (ret != ESP_OK) {
-             ESP_LOGW(TAG, "Failed to reset sensor: %s", esp_err_to_name(ret));
-             // Continue anyway as this might fail on first boot
-         }
-         
-         // Wait for sensor to initialize after reset
-         vTaskDelay(pdMS_TO_TICKS(SCD30_INIT_RETRY_DELAY_MS));
-         
-         // Stop any ongoing measurement
-         ret = scd30_stop_measurement();
-         if (ret != ESP_OK) {
-             ESP_LOGW(TAG, "Failed to stop measurements: %s", esp_err_to_name(ret));
-             // Continue as this might fail if no measurements are running
-         }
-         vTaskDelay(pdMS_TO_TICKS(500));
-                 
-         // Set temperature offset
-         ESP_LOGI(TAG, "Attempting to set temperature offset to %.2f°C", SCD30_SW_TEMP_OFFSET);
-         ret = scd30_set_temperature_offset(SCD30_SW_TEMP_OFFSET);
-         if (ret != ESP_OK) {
-             ESP_LOGW(TAG, "Failed to set temperature offset (attempt %d): %s", 
-                      retry_count + 1, esp_err_to_name(ret));
-             retry_count++;
-             continue;
-         }
- 
-         // Verify the offset
-         float current_offset;
-         ret = scd30_get_temperature_offset(&current_offset);
-         if (ret == ESP_OK) {
-             ESP_LOGI(TAG, "Verified temperature offset is set to %.2f°C", current_offset);
-         } else {
-             ESP_LOGW(TAG, "Failed to verify temperature offset");
-             retry_count++;
-             continue;
-         }
- 
-         vTaskDelay(pdMS_TO_TICKS(100));
-         
-         // Apply compensation based on configuration
-         #if SCD30_USE_PRESSURE_COMP
-         ret = scd30_set_pressure_compensation(DEFAULT_PRESSURE_MBAR);
-         if (ret != ESP_OK) {
-             ESP_LOGW(TAG, "Failed to set pressure compensation: %s", esp_err_to_name(ret));
-             // Continue anyway as this is not critical
-         } else {
-             ESP_LOGI(TAG, "Pressure compensation enabled at %u mbar", DEFAULT_PRESSURE_MBAR);
-         }
-         #else
-         ret = scd30_set_altitude_compensation(SCD30_DEFAULT_ALTITUDE);
-         if (ret != ESP_OK) {
-             ESP_LOGW(TAG, "Failed to set altitude compensation: %s", esp_err_to_name(ret));
-             // Continue anyway as this is not critical
-         } else {
-             ESP_LOGI(TAG, "Altitude compensation enabled at %u meters", SCD30_DEFAULT_ALTITUDE);
-         }
-         #endif
- 
-         // Set measurement interval
-         ret = scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL);
-         if (ret != ESP_OK) {
-             ESP_LOGW(TAG, "Failed to set measurement interval (attempt %d): %s", 
-                      retry_count + 1, esp_err_to_name(ret));
-             retry_count++;
-             continue;
-         }
- 
-         // If we got here, initialization was successful
-         ESP_LOGI(TAG, "SCD30 initialized successfully after %d attempt(s)", retry_count + 1);
-         
-         // Adding delay to allow sensor stabilization
-         vTaskDelay(pdMS_TO_TICKS(2000)); // 2 seconds delay to stabilize the sensor before probing
- 
-         return ESP_OK;
+     
+     ESP_LOGI(TAG, "Starting forced recalibration to %u ppm", target_ppm);
+     ESP_LOGW(TAG, "Ensure sensor has been exposed to %u ppm CO2 for at least 2 minutes", target_ppm);
+     
+     // Send forced recalibration command with target value
+     esp_err_t ret = scd30_send_command(SCD30_CMD_FORCE_RECALIBRATION, &target_ppm, 1);
+     
+     if (ret == ESP_OK) {
+         ESP_LOGI(TAG, "Forced recalibration to %u ppm initiated successfully", target_ppm);
+         ESP_LOGI(TAG, "Recalibration process may take several minutes to complete");
+     } else {
+         ESP_LOGE(TAG, "Failed to initiate forced recalibration: %s", esp_err_to_name(ret));
      }
- 
-     // If we got here, all retry attempts failed
-     ESP_LOGE(TAG, "Failed to initialize SCD30 after %d attempts", SCD30_INIT_RETRY_COUNT);
-     i2c_master_bus_rm_device(dev_handle);  // Clean up if initialization failed
-     return ESP_ERR_INVALID_RESPONSE;
+     
+     return ret;
  }
- 
- 
+
+ esp_err_t scd30_init(void)
+{
+    ESP_LOGI(TAG, "Initializing SCD30 sensor");
+    esp_err_t ret;
+    int retry_count = 0;
+    i2c_master_dev_handle_t dev_handle = NULL;
+
+    // Add the SCD30 device to the I2C bus
+    ret = i2c_handler_add_device(SCD30_SENSOR_ADDR, &dev_handle);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to add SCD30 to I2C bus: %s", esp_err_to_name(ret));
+        return ret;
+    }
+
+    while (retry_count < SCD30_INIT_RETRY_COUNT) {
+        if (retry_count > 0) {
+            ESP_LOGI(TAG, "Retry attempt %d of %d", retry_count + 1, SCD30_INIT_RETRY_COUNT);
+            vTaskDelay(pdMS_TO_TICKS(SCD30_INIT_RETRY_DELAY_MS));
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(1000));  // Initial delay after power-up
+
+        // Check communication
+        ret = scd30_check_communication();
+        if (ret != ESP_OK) {
+            ESP_LOGW(TAG, "Cannot communicate with SCD30 (attempt %d): %s",
+                     retry_count + 1, esp_err_to_name(ret));
+            retry_count++;
+            continue;
+        }
+
+        // Soft reset
+        scd30_reset();
+        vTaskDelay(pdMS_TO_TICKS(SCD30_INIT_RETRY_DELAY_MS));
+
+        // Stop any ongoing measurement
+        scd30_stop_measurement();
+        vTaskDelay(pdMS_TO_TICKS(500));
+
+        // Set temperature offset
+        ESP_LOGI(TAG, "Attempting to set temperature offset to %.2f°C", SCD30_HW_TEMP_OFFSET);
+        ret = scd30_set_temperature_offset(SCD30_HW_TEMP_OFFSET);
+        if (ret != ESP_OK) {
+            ESP_LOGW(TAG, "Failed to set temperature offset (attempt %d): %s",
+                     retry_count + 1, esp_err_to_name(ret));
+            retry_count++;
+            continue;
+        }
+
+        float current_offset;
+        ret = scd30_get_temperature_offset(&current_offset);
+        if (ret == ESP_OK) {
+            ESP_LOGI(TAG, "Verified temperature offset is set to %.2f°C", current_offset);
+        } else {
+            ESP_LOGW(TAG, "Failed to verify temperature offset");
+            retry_count++;
+            continue;
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(100));
+
+        // Disable auto-calibration for testing
+        scd30_set_auto_calibration(false);
+
+        // Use pressure compensation (1013 mbar at sea level)
+        ret = scd30_set_pressure_compensation(1013);
+        if (ret != ESP_OK) {
+            ESP_LOGW(TAG, "Failed to set pressure compensation: %s", esp_err_to_name(ret));
+        } else {
+            ESP_LOGI(TAG, "Pressure compensation enabled at 1013 mbar");
+        }
+
+        // Explicitly disable altitude compensation
+        ret = scd30_set_altitude_compensation(0);
+        if (ret != ESP_OK) {
+            ESP_LOGW(TAG, "Failed to disable altitude compensation: %s", esp_err_to_name(ret));
+        } else {
+            ESP_LOGI(TAG, "Altitude compensation disabled (set to 0 meters)");
+        }
+
+        // Set measurement interval
+        ret = scd30_set_measurement_interval(SCD30_MEASUREMENT_INTERVAL);
+        if (ret != ESP_OK) {
+            ESP_LOGW(TAG, "Failed to set measurement interval (attempt %d): %s",
+                     retry_count + 1, esp_err_to_name(ret));
+            retry_count++;
+            continue;
+        }
+
+        ESP_LOGI(TAG, "SCD30 initialized successfully after %d attempt(s)", retry_count + 1);
+
+        // Full warm-up period before first reading
+        ESP_LOGI(TAG, "Waiting for 120 seconds for sensor warm-up...");
+        vTaskDelay(pdMS_TO_TICKS(120000));
+
+        return ESP_OK;
+    }
+
+    // If all retry attempts failed
+    ESP_LOGE(TAG, "Failed to initialize SCD30 after %d attempts", SCD30_INIT_RETRY_COUNT);
+    i2c_master_bus_rm_device(dev_handle);
+    return ESP_ERR_INVALID_RESPONSE;
+}
+  
  esp_err_t scd30_start_continuous_measurement(uint16_t ambient_pressure_mbar)
  {
      uint16_t pressure_data = ambient_pressure_mbar;
@@ -272,6 +283,16 @@
      return ret;
  }
  
+ static float parse_scd30_float(const uint8_t *data) {
+    uint32_t raw = ((uint32_t)data[0] << 24) |
+                   ((uint32_t)data[1] << 16) |
+                   ((uint32_t)data[3] << 8)  |
+                   ((uint32_t)data[4]);
+    float value;
+    memcpy(&value, &raw, sizeof(float));
+    return value;
+}
+
  esp_err_t scd30_read_measurement(scd30_measurement_t *measurement, bool skip_ready_check)
 {
     if (measurement == NULL) {
@@ -283,55 +304,33 @@
     if (!skip_ready_check) {
         bool data_ready = false;
         ret = scd30_get_data_ready_status(&data_ready);
-        if (ret != ESP_OK) {
-            return ret;
-        }
-
-        if (!data_ready) {
-            ESP_LOGD(TAG, "Measurement data not ready yet.");
-            return ESP_ERR_INVALID_STATE;
-        }
+        if (ret != ESP_OK) return ret;
+        if (!data_ready) return ESP_ERR_INVALID_STATE;
     }
 
-    uint8_t data[18];  // 6 bytes per value (including CRC)
+    uint8_t data[18];  // 3 floats, each 4 bytes + 1 CRC per 2 bytes
 
-    // Send read measurement command
     ret = scd30_send_command(SCD30_CMD_READ_MEASUREMENT, NULL, 0);
-    if (ret != ESP_OK) {
-        return ret;
-    }
+    if (ret != ESP_OK) return ret;
 
-    // Wait longer for measurement data
-    vTaskDelay(pdMS_TO_TICKS(15));  
+    vTaskDelay(pdMS_TO_TICKS(15));
 
-    // Read measurement data
     ret = scd30_read_data(data, sizeof(data));
-    if (ret != ESP_OK) {
-        return ret;
+    if (ret != ESP_OK) return ret;
+
+    // CRC checks
+    for (int i = 0; i < 18; i += 6) {
+        if (scd30_crc8(&data[i], 2) != data[i+2] ||
+            scd30_crc8(&data[i+3], 2) != data[i+5]) {
+            ESP_LOGW(TAG, "CRC check failed for measurement block at offset %d", i);
+            return ESP_ERR_INVALID_CRC;
+        }
     }
 
-    // Convert data to float values (same as File 1)
-    uint32_t co2_raw = ((uint32_t)data[0] << 24) |
-                       ((uint32_t)data[1] << 16) |
-                       ((uint32_t)data[3] << 8) |
-                       data[4];
-    measurement->co2_ppm = *(float*)&co2_raw;
+    measurement->co2_ppm     = parse_scd30_float(&data[0]);
+    measurement->temperature = parse_scd30_float(&data[6]);
+    measurement->humidity    = parse_scd30_float(&data[12]);
 
-    uint32_t temp_raw = ((uint32_t)data[6] << 24) |
-                        ((uint32_t)data[7] << 16) |
-                        ((uint32_t)data[9] << 8) |
-                        data[10];
-    float raw_temp = *(float*)&temp_raw;
-    
-    // Software temperature compensation
-    measurement->temperature = raw_temp - SCD30_SW_TEMP_OFFSET;
-
-    uint32_t hum_raw = ((uint32_t)data[12] << 24) |
-                       ((uint32_t)data[13] << 16) |
-                       ((uint32_t)data[15] << 8) |
-                       data[16];
-    measurement->humidity = *(float*)&hum_raw;
-   
     return ESP_OK;
 }
  

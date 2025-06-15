@@ -36,13 +36,21 @@
  #define SCD30_CMD_TEMP_OFFSET      0x5403  /*!< Set/Get temperature offset */
  #define SCD30_CMD_RESET            0xD304  /*!< Soft reset */
  #define SCD30_CMD_AUTO_SELF_CALIBRATION 0x5306 /*!< (De)Activate self-calibration (ASC), Format: uint16 “1”: Activate ASC, “0”: Deactivate continuous ASC*/
+ #define SCD30_CMD_FORCE_RECALIBRATION  0x5204  /*!< Force recalibration command */
+
+/**
+ * @brief Force recalibration of the SCD30 to a specific CO2 reference value
+ * @param target_ppm CO2 reference concentration in ppm (typically 400-2000)
+ * @return ESP_OK on success, ESP_ERR_INVALID_ARG for invalid values
+ * @note Sensor should be exposed to the target concentration for at least 2 minutes before calling
+ */
+esp_err_t scd30_force_recalibration(uint16_t target_ppm);
  
  /* Configuration Values */
  #define SCD30_MEASUREMENT_INTERVAL  5       /*!< Measurement interval in seconds */
  #define SCD30_AMBIENT_PRESSURE     1013    /*!< Default ambient pressure in mbar */
  #define SCD30_DEFAULT_ALTITUDE     500     /*!< Default altitude in meters */
  #define SCD30_HW_TEMP_OFFSET      2.5f    /*!< Hardware temperature offset in °C */
- #define SCD30_SW_TEMP_OFFSET      2.0f   /*!< Software temperature offset in °C */
  
  // Measurement ranges
  #define SCD30_CO2_MIN 200
