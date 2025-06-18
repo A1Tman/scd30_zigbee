@@ -219,7 +219,7 @@ void app_main(void)
             if (bits & FACTORY_RESET_REQUESTED_BIT) {
                 ESP_LOGI(TAG, "Factory reset requested, performing reset...");
                 
-                // Use our cleanup function instead of doing it manually here
+                // Use cleanup function instead of doing it manually
                 app_cleanup();
                 
                 // Perform factory reset
