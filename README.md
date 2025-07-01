@@ -5,13 +5,16 @@
 ![Home Assistant](https://img.shields.io/badge/Integration-Home%20Assistant-41BDF5?style=flat-square&logo=home-assistant)
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=flat-square)
 
-# ESP32 Zigbee CO2 Sensor
 
-An ESP32-based CO2, temperature, and humidity sensor that integrates with Zigbee networks using the SCD30 sensor module.
+# ESP32 Zigbee CO₂ Sensor
+
+An ESP32-based CO₂, temperature, and humidity sensor that integrates with Zigbee networks using the SCD30 sensor module.
 
 ## Table of Contents
 
 - [Hardware Requirements](#hardware-requirements)
+  - [Wiring Diagram](#wiring-diagram)
+  - [I2C Configuration](#i2c-configuration)
 - [Features](#features)
 - [Software Dependencies](#software-dependencies)
 - [Building and Flashing](#building-and-flashing)
@@ -19,6 +22,12 @@ An ESP32-based CO2, temperature, and humidity sensor that integrates with Zigbee
 - [Sensor Configuration](#sensor-configuration)
 - [Project Structure](#project-structure)
 - [Usage](#usage)
+  - [Initial Startup](#initial-startup)
+  - [Normal Operation](#normal-operation)
+  - [Expected Readings](#expected-readings)
+  - [Home Assistant Setup](#home-assistant-setup)
+  - [Zigbee Cluster Attributes](#zigbee-cluster-attributes)
+- [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -49,7 +58,7 @@ For complete ESP32-C6 GPIO information, see the [official documentation](https:/
 ## Features
 
 - **SCD30 Sensor Integration**
-  - Uses Sensirion SCD30 sensor for CO2, temperature, and humidity measurements
+  - Uses Sensirion SCD30 sensor for CO₂, temperature, and humidity measurements
   - Integrates with Zigbee protocol for network communication
   - Configurable temperature offset and altitude compensation
   - Automatic measurement intervals
@@ -115,12 +124,12 @@ The device operates as a Zigbee End Device (ZED) with the following clusters:
 - Carbon Dioxide Measurement Cluster
 - Temperature Measurement Cluster
 - Humidity Measurement Cluster
-- CO2 Control Cluster (0xFC00) with `AUTO_CALIBRATE` attribute
+- CO₂ Control Cluster (0xFC00) with `AUTO_CALIBRATE` attribute
 
 Device specifications:
 - Profile ID: Home Automation (0x0104)
-- Device ID: Custom CO2 Sensor (`ESP_ZB_HA_CUSTOM_ATTR_DEVICE_ID`)
-- Endpoint: 12 (`HA_CUSTOM_CO2_ENDPOINT`)
+- Device ID: Custom CO₂ Sensor (`ESP_ZB_HA_CUSTOM_ATTR_DEVICE_ID`)
+- Endpoint: 12 (`HA_CUSTOM_CO₂_ENDPOINT`)
 - Manufacturer: ESPRESSIF
 - Model: ESP32-C6
 
@@ -148,7 +157,7 @@ The SCD30 sensor is configured with:
 **Error Handling & Validation:**
 - Automatic sensor initialization with up to 3 retry attempts
 - Measurement validation against defined ranges:
-  - CO2: `SCD30_CO2_MIN` to `SCD30_CO2_MAX` ppm
+  - CO₂: `SCD30_CO₂_MIN` to `SCD30_CO₂_MAX` ppm
   - Temperature: `SCD30_TEMP_MIN` to `SCD30_TEMP_MAX` °C  
   - Humidity: `SCD30_HUM_MIN` to `SCD30_HUM_MAX` %
 - Automatic sensor reset after consecutive errors (`SCD30_MAX_CONSECUTIVE_ERRORS`)
@@ -171,7 +180,7 @@ The SCD30 sensor is configured with:
 ├── sdkconfig                   # ESP-IDF project configuration
 ├── LICENSE                     # MIT License
 ├── NOTICE                      # Third-party notices
-└── Sensirion_CO2_Sensors_SCD30_Interface_Descr... # Sensor documentation
+└── Sensirion_CO₂_Sensors_SCD30_Interface_Descr... # Sensor documentation
 ```
 
 ## Usage
@@ -192,7 +201,7 @@ CO₂: 450.0 ppm, Temperature: 23.45°C, Humidity: 45.2%
 - **Update Zigbee attributes** automatically for coordinator polling
 - **Validate readings** against configured ranges and retry on errors
 - **Auto-recover** from sensor communication issues
-- **Control auto calibration** via the `AUTO_CALIBRATE` attribute in the CO2 Control cluster
+- **Control auto calibration** via the `AUTO_CALIBRATE` attribute in the CO₂ Control cluster
 
 Home Assistant users can toggle this attribute from the device page to start or stop
 the SCD30's automatic self calibration routine.
@@ -223,6 +232,208 @@ Complete within 3 seconds:
   * Use when device can't connect or needs to join different network
 
 > **Note:** All button presses include 100ms debounce protection.
+
+## Home Assistant Setup
+
+To integrate the ESP32 Zigbee CO₂ sensor with Home Assistant using ZHA and your custom quirks, add the following to your configuration.
+
+---
+
+### ZHA Configuration
+
+```yaml
+# configuration.yaml
+zha:
+  # … your existing ZHA setup …
+  custom_quirks_path: '/config/custom_zha_quirks'
+```
+
+---
+
+### Folder Structure
+
+```
+/config
+└── custom_zha_quirks/
+    └── custom_co2_sensor.py
+```
+
+---
+
+### Scripts
+
+```yaml
+# scripts.yaml
+
+# 1) Calibrate to outdoor baseline (400 ppm)
+scd30_calibrate_outdoor:
+  alias: "SCD30 – Calibrate to Outdoor Air (400 ppm)"
+  sequence:
+    - action: zha.set_zigbee_cluster_attribute
+      data:
+        ieee: "<YOUR_DEVICE_IEEE>"
+        endpoint_id: 12
+        cluster_id: 0xFC00            # CO2ControlCluster
+        cluster_type: in
+        attribute: 4                  # force_recalibration_ppm
+        value: 400
+    - service: persistent_notification.create
+      data:
+        title: "SCD30 Calibration"
+        message: "Calibrated to 400 ppm outdoor baseline"
+
+# 2) Enable auto-calibration
+scd30_enable_auto_calibration:
+  alias: "SCD30 – Enable Auto Calibration"
+  sequence:
+    - action: zha.set_zigbee_cluster_attribute
+      data:
+        ieee: "<YOUR_DEVICE_IEEE>"
+        endpoint_id: 12
+        cluster_id: 0xFC00            # CO2ControlCluster
+        cluster_type: in
+        attribute: 0                  # auto_calibrate
+        value: true
+    - service: persistent_notification.create
+      data:
+        title: "SCD30 Auto Calibration"
+        message: "Auto-calibration enabled"
+```
+
+---
+
+### Number Helpers
+
+```yaml
+# templates/numbers.yaml
+
+- name: "SCD30 Temperature Offset"
+  unique_id: scd30_temp_offset
+  state: >-
+    {{ (states('sensor.co2_control_cluster_temp_offset_x100')|int(0)) / 100 }}
+  min: -10.0
+  max: 10.0
+  step: 0.1
+  unit_of_measurement: "°C"
+  set_value:
+    - action: zha.set_zigbee_cluster_attribute
+      data:
+        ieee: "<YOUR_DEVICE_IEEE>"
+        endpoint_id: 12
+        cluster_id: 0xFC00
+        cluster_type: in
+        attribute: 1                  # temp_offset_x100
+        value: "{{ (value * 100)|int }}"
+
+- name: "SCD30 Pressure Compensation"
+  unique_id: scd30_pressure_comp
+  state: >-
+    {{ states('sensor.co2_control_cluster_pressure_comp_mbar')|int(1013) }}
+  min: 700
+  max: 1400
+  step: 1
+  unit_of_measurement: "mbar"
+  set_value:
+    - action: zha.set_zigbee_cluster_attribute
+      data:
+        ieee: "<YOUR_DEVICE_IEEE>"
+        endpoint_id: 12
+        cluster_id: 0xFC00
+        cluster_type: in
+        attribute: 2                  # pressure_comp_mbar
+        value: "{{ value|int }}"
+```
+
+---
+
+### Switch Helpers
+
+```yaml
+# templates/switches.yaml
+
+- name: "SCD30 Auto Calibration"
+  unique_id: scd30_auto_calibration
+  icon: mdi:auto-fix
+  state: >
+    {{ is_state('input_boolean.co2_auto_calibration','on') }}
+  turn_on:
+    - service: zha.set_zigbee_cluster_attribute
+      data:
+        ieee: "<YOUR_DEVICE_IEEE>"
+        endpoint_id: 12
+        cluster_id: 0xFC00
+        cluster_type: in
+        attribute: 0                  # auto_calibrate
+        value: true
+  turn_off:
+    - service: zha.set_zigbee_cluster_attribute
+      data:
+        ieee: "<YOUR_DEVICE_IEEE>"
+        endpoint_id: 12
+        cluster_id: 0xFC00
+        cluster_type: in
+        attribute: 0                  # auto_calibrate
+        value: false
+```
+
+> **Note:**
+>
+> * Replace `<YOUR_DEVICE_IEEE>` with your sensor’s IEEE address.
+> * Adjust any min/max values or aliases to suit your setup.
+> * Add additional scripts or helpers as needed.
+
+---
+
+## Zigbee Cluster Attributes
+
+| Attribute ID | Name                      | Type    | Description                       |
+| -----------: | ------------------------- | ------- | --------------------------------- |
+|     `0x0000` | `auto_calibrate`          | Boolean | Enable/disable auto-calibration   |
+|     `0x0001` | `temp_offset_x100`        | Int16   | Temperature offset (×100)         |
+|     `0x0002` | `pressure_comp_mbar`      | Uint16  | Pressure compensation (mbar)      |
+|     `0x0003` | `altitude_comp_m`         | Uint16  | Altitude compensation (meters)    |
+|     `0x0004` | `force_recalibration_ppm` | Uint16  | Force a one-off recalibration     |
+|     `0x0005` | `restart_measurement`     | Boolean | Restart sensor measurements       |
+|     `0x0006` | `debug_command`           | Uint8   | Send a debug command code (0–255) |
+
+---
+
+## Troubleshooting
+
+### A. Serial-Console Debugging  
+When connected via USB and viewing logs:
+
+> **Stuck in Bootloader**  
+> - **Signs:** Repeated “Waiting for download” or no “chip Revision” messages.  
+> - **Fix:** Hold BOOT while resetting; verify USB-to-UART wiring and drivers.
+
+> **I²C Errors on Startup**  
+> - **Signs:** “NACK” or “Sensor init failed” in logs.  
+> - **Fix:** Double-check SDA/SCL wiring and pin assignments; confirm menuconfig pins match.
+
+> **Zigbee Join Failures**  
+> - **Signs:** “Network start error” or endless “Attempting to join” loops.  
+> - **Fix:** Ensure coordinator channels (11–26) are permitted, correct PAN ID/join permissions, or increase the join timeout.
+
+### B. Production / Headless Deployment  
+
+> **Device fails to rejoin after power‑cycle**  
+> - **Symptom:** Sensor disappears from Home Assistant when moved and won’t auto-rejoin.  
+> - **Workaround:** Press the “Restart Measurements” button every few seconds until it reappears; if not, remove and re-pair in HA.  
+> - **If HA won’t refresh:** Restart Home Assistant to clear cache, then re-pair.
+
+> **No Readings Over Zigbee**  
+> - **Symptom:** HA never receives updates.  
+> - **Fix:** Look for join LED blink, temporarily connect via USB for logs, or force rejoin via button.
+
+> **Stale or Drifting CO₂ Values**  
+> - **Symptom:** Readings remain constant or slowly drift.  
+> - **Fix:** Perform manual calibration under known CO₂; allow up to 14 days for auto-calibration to stabilize.
+
+> **Unexpected Resets / Brown‑outs**  
+> - **Symptom:** Device reboots intermittently.  
+> - **Fix:** Verify a stable 3.3 V supply with sufficient current and solid wiring; add a small decoupling capacitor near VIN/GND if needed.
+
 
 ## Contributing
 
