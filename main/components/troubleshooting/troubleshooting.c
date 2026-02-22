@@ -1,4 +1,5 @@
 #include "troubleshooting.h"
+#include "app_defs.h"
 #include "esp_timer.h"
 #include "esp_log.h"
 #include "driver/gpio.h"
@@ -13,6 +14,8 @@ static bool button_pressed = false;
 static int boot_button_press_count = 0;
 static int64_t last_press_time = 0;
 static TimerHandle_t reset_timer = NULL;
+// Spinlock protecting boot_button_press_count between the ISR and the timer callback
+static portMUX_TYPE button_count_mux = portMUX_INITIALIZER_UNLOCKED;
 
 // Forward declarations
 static void reset_press_count(TimerHandle_t timer);
@@ -87,8 +90,6 @@ static void IRAM_ATTR boot_button_isr_handler(void* arg) {
                     if (boot_button_press_count == 1) {
                         xTimerStartFromISR(reset_timer, &xHigherPriorityTaskWoken);
                     }
-                    
-                    ESP_EARLY_LOGI(TAG, "Press count: %d", boot_button_press_count);  // Debug logging
 
                     if (boot_button_press_count == DIAG_INFO_PRESS_COUNT) {
                         xEventGroupSetBitsFromISR(system_events, 
@@ -117,11 +118,18 @@ static void IRAM_ATTR boot_button_isr_handler(void* arg) {
     }
 }
 
-// Modify the timer callback
 static void reset_press_count(TimerHandle_t timer) {
-    if (boot_button_press_count > 0 && boot_button_press_count < FACTORY_RESET_PRESS_COUNT) {
-        ESP_LOGW(TAG, "Button press sequence timeout, count was: %d", boot_button_press_count);
+    // Use a critical section: the ISR can preempt this task and also modify
+    // boot_button_press_count, so the read-check-write sequence must be atomic.
+    portENTER_CRITICAL(&button_count_mux);
+    int count = boot_button_press_count;
+    if (count > 0 && count < FACTORY_RESET_PRESS_COUNT) {
         boot_button_press_count = 0;
+    }
+    portEXIT_CRITICAL(&button_count_mux);
+
+    if (count > 0 && count < FACTORY_RESET_PRESS_COUNT) {
+        ESP_LOGW(TAG, "Button press sequence timeout, count was: %d", count);
     }
 }
 
@@ -174,7 +182,7 @@ esp_err_t troubleshooting_init(void) {
         "button_events",
         8192,
         NULL,
-        5,
+        APP_NORMAL_PRIORITY,
         NULL
     );
     

@@ -4,6 +4,7 @@
  */
 
  #include "i2c_handler.h"
+ #include "scd30_driver.h"
  #include "esp_log.h"
  #include "freertos/FreeRTOS.h"
  #include "freertos/task.h"
@@ -230,7 +231,7 @@
      return ESP_OK;
  }
  
- void i2c_scan() {
+ void i2c_scan(void) {
      // Use the defined address for SCD30 from the header
      uint8_t address = SCD30_SENSOR_ADDR; 
      esp_err_t ret = i2c_handler_probe_device(address);

@@ -11,7 +11,6 @@
  #include "freertos/task.h"
  #include <string.h>
  #include <driver/gpio.h>
- #include "math.h"
  
    static const char *TAG = "SCD30_DRIVER";
  
@@ -440,22 +439,7 @@
      // Task will clean up and delete itself
      return ESP_OK;
  }
- 
- esp_err_t validate_scd30_readings(float co2_ppm, float temperature, float humidity) {
-     if (co2_ppm < SCD30_CO2_MIN || co2_ppm > SCD30_CO2_MAX) {
-         ESP_LOGW(TAG, "Invalid CO2 reading: %f ppm", co2_ppm);
-         return ESP_ERR_INVALID_RESPONSE;
-     }
-     if (temperature < SCD30_TEMP_MIN || temperature > SCD30_TEMP_MAX) {
-         ESP_LOGW(TAG, "Invalid temperature reading: %f°C", temperature);
-         return ESP_ERR_INVALID_RESPONSE;
-     }
-     if (humidity < SCD30_HUM_MIN || humidity > SCD30_HUM_MAX) {
-         ESP_LOGW(TAG, "Invalid humidity reading: %f%%", humidity);
-         return ESP_ERR_INVALID_RESPONSE;
-     }
-     return ESP_OK;
- }
+
  
  esp_err_t scd30_get_temperature_offset(float *offset_celsius)
  {

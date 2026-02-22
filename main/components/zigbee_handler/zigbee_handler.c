@@ -20,7 +20,6 @@
 #include <inttypes.h>
 
 static const char *TAG = "ZIGBEE_HANDLER";
-static const char *TAG_DEFERRED = "DEFERRED_DRIVER";
 
 /********************* Functions **************************/
 /* Static variables */
@@ -897,7 +896,7 @@ esp_err_t zigbee_handler_update_measurements(float co2_ppm, float temperature, f
     uint16_t zbHumidity = (uint16_t)(humidity * 100.0);      // Humidity in 0.01% units
     
     // Validation and logging of the CO2 float value
-    if (zbCO2 <= 0.0f || zbCO2 > 0.1f) {  // Sanity check: 0 to 100,000 ppm range
+    if (zbCO2 <= 0.0f || zbCO2 > 0.01f) {  // Sanity check: 0 to 10,000 ppm (SCD30 maximum)
         ESP_LOGW(TAG, "CO2 value outside expected range: %f (raw: %f ppm)", 
                 (double)zbCO2, (double)co2_ppm);
         // Still proceed with the value - this is just a warning
@@ -1149,22 +1148,6 @@ esp_err_t zigbee_handler_power_save_init(void)
     return rc;
 }
 
-/* Task and driver functions */
-esp_err_t deferred_driver_init(void)
-{
-    esp_err_t ret;
-    ret = i2c_handler_init();
-    if (ret != ESP_OK) {
-        ESP_LOGW(TAG_DEFERRED, "FAILED to initialize I2C");
-        return ret;
-    }
-    ret = scd30_start_task(SCD30_TASK_PRIORITY);
-    if (ret != ESP_OK) {
-        ESP_LOGW(TAG_DEFERRED, "FAILED to start SCD30 task");
-    }
-    return ret;
-}
-
 esp_err_t zigbee_handler_clean_start(void)
 {
     ESP_LOGI(TAG, "Performing clean start for Zigbee stack");
@@ -1254,42 +1237,4 @@ esp_err_t zigbee_handler_reconnect(void)
     return ESP_OK;
 }
 
-void zigbee_setup(void)
-{
-    ESP_LOGI(TAG, "zigbee_setup() wrapper called");
-    zigbee_handler_start();
-}
 
-void update_attributes(attribute_t attribute)
-{
-    if (attribute == ATTRIBUTE_ALL || attribute == ATTRIBUTE_SCD) {
-        scd30_measurement_t m;
-        if (scd30_read_measurement(&m, false) == ESP_OK) {
-            zigbee_handler_update_measurements(m.co2_ppm, m.temperature, m.humidity);
-        } else {
-            ESP_LOGW(TAG, "update_attributes: failed to read measurement");
-        }
-    }
-}
-
-void send_bin_cfg_option(int endpoint, bool value) {
-    ESP_LOGI(TAG, "send_bin_cfg_option stub called (endpoint %d, value %d)", endpoint, value);
-}
-
-void send_zone_1_state(uint8_t bit_index, uint8_t value) {
-    ESP_LOGI(TAG, "send_zone_1_state stub called (bit %d, value %d)", bit_index, value);
-}
-
-void force_update_task(void) {
-    ESP_LOGI(TAG, "force_update_task stub executed");
-    update_attributes(ATTRIBUTE_ALL);
-}
-
-void force_update(void) {
-    ESP_LOGI(TAG, "force_update stub executed");
-    update_attributes(ATTRIBUTE_ALL);
-}
-
-void read_server_time(void) {
-    ESP_LOGI(TAG, "read_server_time stub called");
-}

@@ -15,11 +15,6 @@
 #include "zb_vendor.h"
 #include "esp_zigbee_core.h"
 
-typedef enum {
-    ATTRIBUTE_ALL,  /*!< Update all available attributes */
-    ATTRIBUTE_SCD,  /*!< Update SCD30 related attributes only */
-} attribute_t;
-
 /* Zigbee Network Configuration */
 #define MAX_CHILDREN                   1     /*!< Maximum number of connected devices */
 #define INSTALLCODE_POLICY_ENABLE      false  /*!< Install code policy for security */
@@ -149,8 +144,6 @@ esp_err_t zb_action_handler(esp_zb_core_action_callback_id_t callback_id, const 
 esp_err_t zb_attribute_handler(const esp_zb_zcl_set_attr_value_message_t *message);
 esp_err_t zigbee_handler_configure_reporting(void);
 
-// Task-related functions that need to be accessible
-esp_err_t deferred_driver_init(void);
 void status_management(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id);
 
 /**
@@ -172,20 +165,4 @@ esp_err_t zigbee_handler_cleanup(void);
 esp_err_t zigbee_handler_reconnect(void);
 
 
-/**
- * @brief Zigbee setup wrapper function.
- */
-void zigbee_setup(void);
 
-/**
- * @brief Zigbee update wrapper for measurements.
- *        Currently only updates the SCD30 measurements.
- */
-void update_attributes(attribute_t attribute);
-
-/** Stubs for functions that are currently not implemented. */
-void send_bin_cfg_option(int endpoint, bool value);
-void send_zone_1_state(uint8_t bit_index, uint8_t value);
-void force_update_task(void);
-void force_update(void);
-void read_server_time(void);

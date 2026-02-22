@@ -64,6 +64,3 @@ extern EventGroupHandle_t system_events;
 /* System Reserved */
 #define IDLE_PRIORITY              0  /*!< Reserved for FreeRTOS idle task */
 
-/* SCD30 Configuration */
-#define SCD30_INIT_RETRY_COUNT        3    /*!< Number of times to retry SCD30 initialization */
-#define SCD30_INIT_RETRY_DELAY_MS  1000    /*!< Delay between initialization retries in ms */
