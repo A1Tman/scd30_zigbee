@@ -168,20 +168,22 @@ void app_main(void)
     }
 
     // Check if we should perform a clean start
+    uint8_t has_connected_before = 0;
     nvs_handle_t nvs_handle;
     esp_err_t err = nvs_open("storage", NVS_READWRITE, &nvs_handle);
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error opening NVS handle: %s", esp_err_to_name(err));
+        ESP_LOGE(TAG, "Error opening NVS handle: %s — treating as first boot", esp_err_to_name(err));
+        // has_connected_before stays 0; a clean start will be performed below
+    } else {
+        size_t required_size = sizeof(has_connected_before);
+        nvs_get_blob(nvs_handle, "has_connected", &has_connected_before, &required_size);
+        nvs_close(nvs_handle);
     }
-    
-    uint8_t has_connected_before = 0;
-    size_t required_size = sizeof(has_connected_before);
-    err = nvs_get_blob(nvs_handle, "has_connected", &has_connected_before, &required_size);
-    
+
     bool clean_start_performed = false;
-    
+
     // Perform clean start only if device has never connected before
-    if (err == ESP_ERR_NVS_NOT_FOUND || has_connected_before == 0) {
+    if (has_connected_before == 0) {
         ESP_LOGI(TAG, "No previous connection detected, performing clean start");
         ESP_ERROR_CHECK(zigbee_handler_clean_start());
         clean_start_performed = true;
@@ -189,8 +191,6 @@ void app_main(void)
         ESP_LOGI(TAG, "Previous connection detected, attempting normal start");
         ESP_ERROR_CHECK(zigbee_handler_start());
     }
-    
-    nvs_close(nvs_handle);
 
     // Improved connection waiting with progressive backoff
     bool connected = false;

@@ -143,14 +143,10 @@
     ESP_LOGI(TAG, "Initializing SCD30 sensor");
     esp_err_t ret;
     int retry_count = 0;
-    i2c_master_dev_handle_t dev_handle = NULL;
 
-    // Add the SCD30 device to the I2C bus
-    ret = i2c_handler_add_device(SCD30_SENSOR_ADDR, &dev_handle);
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to add SCD30 to I2C bus: %s", esp_err_to_name(ret));
-        return ret;
-    }
+    // The SCD30 device was already registered on the I2C bus by i2c_handler_init().
+    // Do not add it again here — a second registration would create a leaked handle
+    // since all I2C operations use the handle stored in i2c_handler.
 
     while (retry_count < SCD30_INIT_RETRY_COUNT) {
         if (retry_count > 0) {
@@ -238,7 +234,6 @@
 
     // If all retry attempts failed
     ESP_LOGE(TAG, "Failed to initialize SCD30 after %d attempts", SCD30_INIT_RETRY_COUNT);
-    i2c_master_bus_rm_device(dev_handle);
     return ESP_ERR_INVALID_RESPONSE;
 }
   
@@ -405,6 +400,7 @@
      }
  
      scd30_stop_measurement();
+     scd30_task_handle = NULL;
      vTaskDelete(NULL);
  }
  

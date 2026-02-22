@@ -13,18 +13,6 @@
 #include "esp_err.h"
 #include "stdbool.h"
 
-/**
- * @brief Initialize non-volatile storage
- * @return ESP_OK if successful, otherwise error code
- */
-static esp_err_t init_nvs(void);
-
-/**
- * @brief Initialize sensor system (I2C bus and SCD30 sensor)
- * @return ESP_OK if successful, otherwise error code
- */
-static esp_err_t init_sensor_system(void);
-
 // Function declarations
 void zigbee_connection_callback(bool connected);
 

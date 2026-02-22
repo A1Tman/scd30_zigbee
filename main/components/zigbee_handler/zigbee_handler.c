@@ -33,8 +33,6 @@ extern EventGroupHandle_t system_events;
 /* Forward declarations */
 esp_err_t handle_read_attr_response(const esp_zb_zcl_cmd_read_attr_resp_message_t *message);
 esp_err_t handle_write_attr_response(const esp_zb_zcl_cmd_write_attr_resp_message_t *message);
-esp_err_t handle_attr_report(const esp_zb_zcl_report_attr_message_t *message);
-esp_err_t handle_default_response(const esp_zb_zcl_cmd_default_resp_message_t *message);
 void handle_status(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id);
 static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask);
 static zigbee_connection_callback_t connection_callback = NULL;
@@ -249,8 +247,6 @@ esp_err_t zigbee_handler_start(void)
 
 static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask)
 {
-    static uint8_t steering_attempts = 0;
-    
     if (mode_mask == ESP_ZB_BDB_MODE_NETWORK_STEERING) {
         // First check if we're already connected
         if (zigbee_handler_is_connected()) {
@@ -679,16 +675,16 @@ static esp_err_t handle_force_recalibration_attr(const esp_zb_zcl_set_attr_value
     uint16_t target_ppm;
     memcpy(&target_ppm, message->attribute.data.value, sizeof(uint16_t));
     
+    // A write of 0 cancels/clears a pending recalibration without triggering one
+    if (target_ppm == 0) {
+        ESP_LOGI(TAG, "Force recalibration cancelled (target = 0)");
+        return ESP_OK;
+    }
+
     // Validate range (typical CO2 calibration values)
     if (target_ppm < 300 || target_ppm > 2000) {
         ESP_LOGW(TAG, "Force recalibration value out of range: %u ppm", target_ppm);
         return ESP_ERR_INVALID_ARG;
-    }
-    
-    // Skip calibration if value is 0 (used to clear/cancel)
-    if (target_ppm == 0) {
-        ESP_LOGI(TAG, "Force recalibration cancelled (target = 0)");
-        return ESP_OK;
     }
     
     ESP_LOGI(TAG, "Initiating forced recalibration to %u ppm", target_ppm);
