@@ -8,11 +8,12 @@
 
 static const char *TAG = "TROUBLESHOOTING";
 
-// Static variables for button handling
-static int64_t press_start_time = 0;
-static bool button_pressed = false;
-static int boot_button_press_count = 0;
-static int64_t last_press_time = 0;
+// Static variables for button handling — shared between ISR and task context,
+// so all must be volatile to prevent the compiler from caching their values.
+static volatile int64_t press_start_time = 0;
+static volatile bool button_pressed = false;
+static volatile int boot_button_press_count = 0;
+static volatile int64_t last_press_time = 0;
 static TimerHandle_t reset_timer = NULL;
 // Spinlock protecting boot_button_press_count between the ISR and the timer callback
 static portMUX_TYPE button_count_mux = portMUX_INITIALIZER_UNLOCKED;

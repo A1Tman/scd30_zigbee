@@ -7,13 +7,9 @@
  */
 
 #pragma once
-#ifndef MAIN_H
-#define MAIN_H
 
 #include "esp_err.h"
 #include "stdbool.h"
 
 // Function declarations
 void zigbee_connection_callback(bool connected);
-
-#endif /* MAIN_H */

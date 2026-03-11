@@ -16,7 +16,7 @@
  
  /* Static variables */
  static TaskHandle_t scd30_task_handle = NULL;
- static bool task_running = false;
+ static volatile bool task_running = false;
  
  /* CRC calculation for SCD30 communication */
  static uint8_t scd30_crc8(const uint8_t *data, size_t len)
@@ -385,7 +385,7 @@
                  scd30_reset();
                  vTaskDelay(pdMS_TO_TICKS(SCD30_RECOVERY_DELAY_MS));
                  scd30_start_continuous_measurement(SCD30_AMBIENT_PRESSURE);
-                 consecutive_errors = 0; // Reset error counter after a successful read
+                 consecutive_errors = 0; // Reset error counter after sensor reset attempt
              }
  
              vTaskDelay(pdMS_TO_TICKS(5000));
@@ -482,11 +482,14 @@
  
  esp_err_t scd30_set_temperature_offset(float offset_celsius)
  {
-     // Convert to ticks (1 tick = 0.01°C)
-     uint16_t offset_ticks = (uint16_t)(offset_celsius * 100.0f);
+     // Convert to ticks (1 tick = 0.01°C).
+     // Cast via int16_t first: casting a negative float directly to uint16_t
+     // is implementation-defined behaviour in C.
+     int16_t signed_ticks = (int16_t)(offset_celsius * 100.0f);
+     uint16_t offset_ticks = (uint16_t)signed_ticks;
      
-     ESP_LOGI(TAG, "Setting temperature offset to %.2f°C (%u ticks, 0x%04X)", 
-              offset_celsius, offset_ticks, offset_ticks);
+     ESP_LOGI(TAG, "Setting temperature offset to %.2f°C (%d ticks, 0x%04X)",
+              offset_celsius, signed_ticks, offset_ticks);
               
      return scd30_send_command(SCD30_CMD_TEMP_OFFSET, &offset_ticks, 1);
  }

@@ -112,26 +112,10 @@ esp_err_t zigbee_handler_update_measurements(float co2_ppm, float temperature, f
 bool zigbee_handler_is_connected(void);
 
 /**
- * @brief Register connection status callback
- * @param callback Function to be called when connection status changes
+ * @brief Register a callback invoked when the Zigbee connection status changes.
+ * @param callback Function receiving `true` on connect, `false` on disconnect.
  */
-void zigbee_handler_register_connection_callback(zigbee_connection_callback_t callback);
-
-/**
- * @brief Set the connection status callback for the Zigbee handler.
- *
- * This function allows you to register a callback function that will be called 
- * whenever the connection status changes. The callback function should accept 
- * a boolean parameter indicating whether the device is connected (`true`) or 
- * disconnected (`false`).
- *
- * @param callback Pointer to a function that takes a single `bool` parameter.
- *                 - `true`: Device is connected.
- *                 - `false`: Device is disconnected.
- *
- * @return None.
- */
-void zigbee_handler_set_connection_callback(void (*callback)(bool connected));
+void zigbee_handler_set_connection_callback(zigbee_connection_callback_t callback);
 
 
 //Required callback handlers (part of the Zigbee stack interface)

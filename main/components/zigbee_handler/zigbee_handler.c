@@ -30,9 +30,9 @@ static bool is_connected = false;
 extern EventGroupHandle_t system_events;
 
 /* Forward declarations */
-esp_err_t handle_read_attr_response(const esp_zb_zcl_cmd_read_attr_resp_message_t *message);
-esp_err_t handle_write_attr_response(const esp_zb_zcl_cmd_write_attr_resp_message_t *message);
-void handle_status(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id);
+static esp_err_t handle_read_attr_response(const esp_zb_zcl_cmd_read_attr_resp_message_t *message);
+static esp_err_t handle_write_attr_response(const esp_zb_zcl_cmd_write_attr_resp_message_t *message);
+static void handle_status(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id);
 static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask);
 static zigbee_connection_callback_t connection_callback = NULL;
 static void configure_reporting_alarm_handler(uint8_t param);
@@ -496,8 +496,8 @@ static esp_err_t handle_co2_control_attribute(const esp_zb_zcl_set_attr_value_me
 {
     esp_err_t ret = ESP_OK;
     
-    if (message->attribute.data.size == 0) {
-        ESP_LOGW(TAG, "Empty attribute data for attribute 0x%04x", message->attribute.id);
+    if (message->attribute.data.size == 0 || message->attribute.data.value == NULL) {
+        ESP_LOGW(TAG, "Empty or NULL attribute data for attribute 0x%04x", message->attribute.id);
         return ESP_ERR_INVALID_ARG;
     }
 
@@ -724,10 +724,11 @@ static esp_err_t handle_restart_measurement_attr(const esp_zb_zcl_set_attr_value
     if (ret != ESP_OK) {
         ESP_LOGW(TAG, "Failed to stop measurement: %s", esp_err_to_name(ret));
     }
-    
-    // Wait a bit before restarting
-    vTaskDelay(pdMS_TO_TICKS(500));
-    
+
+    // NOTE: Do not vTaskDelay here — this runs in the Zigbee stack callback
+    // context and blocking would prevent the stack from servicing keep-alives.
+    // scd30_send_command already enforces the required inter-command gap (30 ms).
+
     // Restart with default pressure
     ret = scd30_start_continuous_measurement(SCD30_AMBIENT_PRESSURE);
     
@@ -804,7 +805,7 @@ static esp_err_t handle_debug_command_attr(const esp_zb_zcl_set_attr_value_messa
 /**
  * @brief Handle read attribute responses
  */
-esp_err_t handle_read_attr_response(const esp_zb_zcl_cmd_read_attr_resp_message_t *message)
+static esp_err_t handle_read_attr_response(const esp_zb_zcl_cmd_read_attr_resp_message_t *message)
 {
     ESP_RETURN_ON_FALSE(message, ESP_ERR_INVALID_ARG, TAG, "Empty read response message");
     if (message->info.dst_endpoint == HA_CUSTOM_CO2_ENDPOINT) {
@@ -822,7 +823,7 @@ esp_err_t handle_read_attr_response(const esp_zb_zcl_cmd_read_attr_resp_message_
 /**
  * @brief Handle write attribute responses
  */
-esp_err_t handle_write_attr_response(const esp_zb_zcl_cmd_write_attr_resp_message_t *message)
+static esp_err_t handle_write_attr_response(const esp_zb_zcl_cmd_write_attr_resp_message_t *message)
 {
     ESP_RETURN_ON_FALSE(message, ESP_ERR_INVALID_ARG, TAG, "Empty write response message");
     if (message->info.dst_endpoint == HA_CUSTOM_CO2_ENDPOINT) {
@@ -836,7 +837,7 @@ esp_err_t handle_write_attr_response(const esp_zb_zcl_cmd_write_attr_resp_messag
 /**
  * @brief Handle Zigbee status codes
  */
-void handle_status(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id)
+static void handle_status(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id)
 {
     switch (status) {
         case ESP_ZB_ZCL_STATUS_SUCCESS:
@@ -1122,12 +1123,8 @@ bool zigbee_handler_is_connected(void)
     return is_connected;
 }
 
-void zigbee_handler_register_connection_callback(zigbee_connection_callback_t callback)
+void zigbee_handler_set_connection_callback(zigbee_connection_callback_t callback)
 {
-    connection_callback = callback;
-}
-
-void zigbee_handler_set_connection_callback(void (*callback)(bool connected)) {
     connection_callback = callback;
 }
 
@@ -1173,7 +1170,10 @@ esp_err_t zigbee_handler_clean_start(void)
     
     if (zb_fct) {
         ESP_LOGI(TAG, "Erasing Zigbee factory test partition");
-        esp_partition_erase_range(zb_fct, 0, zb_fct->size);
+        esp_err_t fct_err = esp_partition_erase_range(zb_fct, 0, zb_fct->size);
+        if (fct_err != ESP_OK) {
+            ESP_LOGW(TAG, "Failed to erase Zigbee factory test partition: %s", esp_err_to_name(fct_err));
+        }
     }
     
     return zigbee_handler_start();

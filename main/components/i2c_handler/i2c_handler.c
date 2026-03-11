@@ -204,29 +204,20 @@
  
  esp_err_t i2c_handler_probe_device(uint8_t address)
  {
-     if (!is_initialized || !i2c_dev_handle) {
+     if (!is_initialized || !i2c_bus_handle) {
          return ESP_ERR_INVALID_STATE;
      }
- 
-     uint8_t probe_cmd[] = {0x02, 0x02};  // Get data ready command
-     uint8_t probe_resp[3];
- 
+
      ESP_LOGI(TAG, "Probing device at address 0x%02x...", address);
-     
-     esp_err_t ret = i2c_master_transmit(i2c_dev_handle, probe_cmd, sizeof(probe_cmd), I2C_MASTER_TIMEOUT_MS);
+
+     // Use the bus-level probe so that the address argument is actually used.
+     // i2c_master_probe sends a bare address frame and checks for an ACK.
+     esp_err_t ret = i2c_master_probe(i2c_bus_handle, address, I2C_MASTER_TIMEOUT_MS);
      if (ret != ESP_OK) {
-         ESP_LOGE(TAG, "Probe transmit failed for address 0x%02x: %s", address, esp_err_to_name(ret));
+         ESP_LOGE(TAG, "Probe failed for address 0x%02x: %s", address, esp_err_to_name(ret));
          return ret;
      }
- 
-     vTaskDelay(pdMS_TO_TICKS(5));  // Wait a bit before reading
- 
-     ret = i2c_master_receive(i2c_dev_handle, probe_resp, sizeof(probe_resp), I2C_MASTER_TIMEOUT_MS);
-     if (ret != ESP_OK) {
-         ESP_LOGE(TAG, "Probe receive failed for address 0x%02x: %s", address, esp_err_to_name(ret));
-         return ret;
-     }
- 
+
      ESP_LOGI(TAG, "Probe successful for address 0x%02x", address);
      return ESP_OK;
  }
