@@ -16,7 +16,7 @@
 #include "esp_zigbee_core.h"
 
 /* Zigbee Network Configuration */
-#define MAX_CHILDREN                   1     /*!< Maximum number of connected devices */
+#define MAX_CHILDREN                   0     /*!< End devices cannot have children */
 #define INSTALLCODE_POLICY_ENABLE      false  /*!< Install code policy for security */
 #define ED_AGING_TIMEOUT               ESP_ZB_ED_AGING_TIMEOUT_64MIN /*!< End device aging timeout */
 #define ED_KEEP_ALIVE                  3000   /*!< Keep alive time in milliseconds */
@@ -127,8 +127,6 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct);
 esp_err_t zb_action_handler(esp_zb_core_action_callback_id_t callback_id, const void *message);
 esp_err_t zb_attribute_handler(const esp_zb_zcl_set_attr_value_message_t *message);
 esp_err_t zigbee_handler_configure_reporting(void);
-
-void status_management(esp_zb_zcl_status_t status, uint16_t cluster_id, uint16_t attr_id);
 
 /**
  * @brief Perform a clean start of the Zigbee stack (erases storage)
