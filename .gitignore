@@ -4,6 +4,7 @@
 .idea/
 *.old
 *.log
+%SystemDrive%
 
 # ESP-IDF build system
 build/
