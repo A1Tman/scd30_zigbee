@@ -1,16 +1,22 @@
 # VSCode + ESP-IDF project ignores
 .vscode/
 *.code-workspace
+.idea/
 *.old
 *.log
 
 # ESP-IDF build system
 build/
+build_new/
+.claude
 managed_components/
-sdkconfig.old
 *.bin
 *.elf
 *.map
 *.tmp
 *.pyc
 __pycache__/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
