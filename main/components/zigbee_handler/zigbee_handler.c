@@ -24,7 +24,7 @@ static const char *TAG = "ZIGBEE_HANDLER";
 /********************* Functions **************************/
 /* Static variables */
 static uint8_t steering_attempts = 0;
-static bool is_connected = false;
+static volatile bool is_connected = false;
 
 /* External variables */
 extern EventGroupHandle_t system_events;
@@ -220,10 +220,7 @@ void esp_zb_task(void *pvParameters)
     ESP_LOGI(TAG, "Device configured as: Custom CO2 Sensor (Device ID: 0x%04x)", endpoint_config.app_device_id);
     
     // Task main loop
-    while (1) {
-        esp_zb_cli_main_loop_iteration();
-        vTaskDelay(pdMS_TO_TICKS(10));  // 10ms delay to prevent watchdog triggers
-    }
+    esp_zb_stack_main_loop();
 
     // Should never reach here
     vTaskDelete(NULL);
@@ -856,7 +853,7 @@ esp_err_t zigbee_handler_update_measurements(float co2_ppm, float temperature, f
     // Set attribute values in the local ZCL attribute table.
     // esp_zb_zcl_set_attribute_val only writes to local storage; the Zigbee
     // task's own main-loop drives any resulting OTA transmission, so calling
-    // esp_zb_cli_main_loop_iteration() from this task context is not needed
+    // esp_zb_stack_main_loop_iteration() from this task context is not needed
     // and would be a thread-safety violation.
 
     // CO2 attribute
@@ -904,7 +901,7 @@ esp_err_t zigbee_handler_configure_reporting(void)
     static float co2_change = 0.0001f;  // This corresponds to ~100ppm change
     esp_zb_zcl_config_report_record_t co2_record = {
         .attributeID = ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MEASURED_VALUE_ID,
-        .attrType = 0x39, // float type (single precision)
+        .attrType = ESP_ZB_ZCL_ATTR_TYPE_SINGLE,
         .min_interval = min_interval,
         .max_interval = max_interval,
         .reportable_change = &co2_change
@@ -940,12 +937,6 @@ esp_err_t zigbee_handler_configure_reporting(void)
     } else {
         ESP_LOGI(TAG, "CO₂ reporting configured successfully with TO_SRV direction");
     }
-
-    // Process any pending events before continuing
-    esp_zb_cli_main_loop_iteration();
-    vTaskDelay(pdMS_TO_TICKS(1000));
-
-    // REMOVED: Force immediate report section - this was causing crashes
 
     // ------------------------------
     // Temperature reporting configuration
@@ -991,12 +982,6 @@ esp_err_t zigbee_handler_configure_reporting(void)
         ESP_LOGI(TAG, "Temperature reporting configured successfully with TO_SRV direction");
     }
 
-    // Process any pending events
-    esp_zb_cli_main_loop_iteration();
-    vTaskDelay(pdMS_TO_TICKS(500));
-
-    // REMOVED: Force immediate report section - this was causing crashes
-
     // ------------------------------
     // Humidity reporting configuration
     // ------------------------------
@@ -1041,11 +1026,6 @@ esp_err_t zigbee_handler_configure_reporting(void)
         ESP_LOGI(TAG, "Humidity reporting configured successfully with TO_SRV direction");
     }
 
-    // REMOVED: Force immediate report section - this was causing crashes
-
-    // Final processing to ensure all commands are handled
-    esp_zb_cli_main_loop_iteration();
-    
     ESP_LOGI(TAG, "Attribute reporting configuration completed with status: %s", 
              final_ret == ESP_OK ? "Success" : "Some configurations failed");
 
