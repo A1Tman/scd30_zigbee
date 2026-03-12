@@ -18,6 +18,7 @@
 #include "string.h"
 #include "esp_partition.h"
 #include <inttypes.h>
+#include <math.h>
 
 static const char *TAG = "ZIGBEE_HANDLER";
 
@@ -846,8 +847,8 @@ esp_err_t zigbee_handler_update_measurements(float co2_ppm, float temperature, f
     
     // Convert values for Zigbee transmission:
     float zbCO2 = co2_ppm / 1e6f;  // According to official spec, CO2 is a float value scaled by 1e6
-    int16_t zbTemperature = (int16_t)(temperature * 100.0);  // Temperature in 0.01°C units
-    uint16_t zbHumidity = (uint16_t)(humidity * 100.0);      // Humidity in 0.01% units
+    int16_t zbTemperature = (int16_t)roundf(temperature * 100.0f);  // Temperature in 0.01°C units
+    uint16_t zbHumidity = (uint16_t)roundf(humidity * 100.0f);      // Humidity in 0.01% units
     
     // Validation and logging of the CO2 float value
     if (zbCO2 <= 0.0f || zbCO2 > 0.01f) {  // Sanity check: 0 to 10,000 ppm (SCD30 maximum)
