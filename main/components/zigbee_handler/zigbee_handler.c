@@ -330,16 +330,20 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
                      extended_pan_id[7], extended_pan_id[6], extended_pan_id[5], extended_pan_id[4],
                      extended_pan_id[3], extended_pan_id[2], extended_pan_id[1], extended_pan_id[0]);
             
+            commissioning_in_progress = false;
             xEventGroupSetBits(system_events, ZIGBEE_CONNECTED_BIT);
-            
+
             if (connection_callback) {
                 connection_callback(true);
             }
-            
+
             // Reporting configuration disabled - let coordinator poll instead
             ESP_LOGI(TAG, "Attribute reporting disabled - coordinator will poll for updates");
         } else {
-            ESP_LOGW(TAG, "Network steering failed (status: %s, attempt: %d)", 
+            // Clear connected state so the retry callback and main loop can act on it
+            is_connected = false;
+            xEventGroupClearBits(system_events, ZIGBEE_CONNECTED_BIT);
+            ESP_LOGW(TAG, "Network steering failed (status: %s, attempt: %d)",
                      esp_err_to_name(err_status), steering_attempts);
             uint8_t current_channel = esp_zb_get_current_channel();
             ESP_LOGW(TAG, "Last attempted channel: %d", current_channel);
