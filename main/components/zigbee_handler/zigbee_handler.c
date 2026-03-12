@@ -25,6 +25,7 @@ static const char *TAG = "ZIGBEE_HANDLER";
 /* Static variables */
 static uint8_t steering_attempts = 0;
 static volatile bool is_connected = false;
+static volatile bool steering_in_flight = false;
 
 /* External variables */
 extern EventGroupHandle_t system_events;
@@ -262,15 +263,18 @@ static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask)
         ESP_LOGI(TAG, "Commissioning attempt %d: channel %d (mask: 0x%08x)",
                  steering_attempts + 1, channel, (unsigned int)channel_mask);
 
+        if (steering_in_flight) {
+            ESP_LOGW(TAG, "Steering already in flight, skipping duplicate attempt");
+            return;
+        }
+
         esp_zb_set_primary_network_channel_set(channel_mask);
         steering_attempts++;
+        steering_in_flight = true;
 
-        // Trigger the actual steering scan. The result arrives via
-        // ESP_ZB_BDB_SIGNAL_STEERING, which schedules the next retry if needed.
-        // This is the only place that drives the retry loop to prevent the
-        // double-scheduling that occurred when this function also re-scheduled itself.
         esp_err_t err = esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
         if (err != ESP_OK) {
+            steering_in_flight = false;
             ESP_LOGW(TAG, "Failed to start network steering: %s", esp_err_to_name(err));
         }
         return;
@@ -331,6 +335,7 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
                      extended_pan_id[3], extended_pan_id[2], extended_pan_id[1], extended_pan_id[0]);
             
             commissioning_in_progress = false;
+            steering_in_flight = false;
             xEventGroupSetBits(system_events, ZIGBEE_CONNECTED_BIT);
 
             if (connection_callback) {
@@ -342,6 +347,7 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
         } else {
             // Clear connected state so the retry callback and main loop can act on it
             is_connected = false;
+            steering_in_flight = false;
             xEventGroupClearBits(system_events, ZIGBEE_CONNECTED_BIT);
             ESP_LOGW(TAG, "Network steering failed (status: %s, attempt: %d)",
                      esp_err_to_name(err_status), steering_attempts);
@@ -1138,19 +1144,16 @@ esp_err_t zigbee_handler_reconnect(void)
         return ESP_ERR_INVALID_STATE;
     }
     
-    // Initiate network steering (reconnection)
-    ESP_LOGI(TAG, "Starting network steering to reconnect");
-    
-    // Use channel 15 for first reconnection attempt
-    uint32_t channel_mask = (1 << 15);
-    esp_zb_set_primary_network_channel_set(channel_mask);
-    ESP_LOGI(TAG, "Setting initial reconnection channel mask: 0x%08lx (channel 15)", channel_mask);
-    
-    esp_err_t err = esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to start network steering: %s", esp_err_to_name(err));
-        return err;
+    if (steering_in_flight) {
+        ESP_LOGW(TAG, "Steering already in flight, reconnect request ignored");
+        return ESP_OK;
     }
+
+    // Route through the commissioning callback so channel rotation and
+    // the steering_in_flight guard are applied consistently.
+    esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,
+                           ESP_ZB_BDB_MODE_NETWORK_STEERING, 0);
+    ESP_LOGI(TAG, "Reconnection scheduled via commissioning callback");
     
     return ESP_OK;
 }

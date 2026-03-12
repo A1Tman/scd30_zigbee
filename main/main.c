@@ -263,10 +263,10 @@ void app_main(void)
                 ESP_LOGW(TAG, "Waiting for Zigbee connection... (%u/%u ms)", 
                         (unsigned int)attempt_wait_time, (unsigned int)attempt_timeout);
                 
-                // Periodically check if we should attempt a network rejoin
+                // Periodically nudge the commissioning callback if still waiting
                 if (attempt_wait_time % 30000 == 0 && attempt_wait_time > 0) { // Every 30 seconds
                     ESP_LOGI(TAG, "Attempting to force rejoin...");
-                    esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
+                    zigbee_handler_reconnect();
                 }
             }
         }
