@@ -24,6 +24,7 @@
 static const char *TAG = "ZIGBEE_HANDLER";
 static const int64_t STEERING_STALE_TIMEOUT_MS = 12000;
 static const uint32_t FLASH_ERASE_SECTOR_SIZE = 4096;
+#define ZIGBEE_SIGNAL_NLME_STATUS_INDICATION 0x32
 
 /********************* Functions **************************/
 /* Static variables */
@@ -436,6 +437,14 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
 
     case ESP_ZB_NWK_SIGNAL_PERMIT_JOIN_STATUS:
         ESP_LOGI(TAG, "Network join permit status: %s", err_status == ESP_OK ? "Permitted" : "Not Permitted");
+        break;
+
+    case ZIGBEE_SIGNAL_NLME_STATUS_INDICATION:
+        if (err_status == ESP_OK) {
+            ESP_LOGD(TAG, "NLME status indication received");
+        } else {
+            ESP_LOGW(TAG, "NLME status indication: %s", esp_err_to_name(err_status));
+        }
         break;
 
     case ESP_ZB_ZDO_SIGNAL_PRODUCTION_CONFIG_READY:
