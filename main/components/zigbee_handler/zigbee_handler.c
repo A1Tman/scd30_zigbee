@@ -17,13 +17,13 @@
 #include "scd30_driver.h"
 #include "string.h"
 #include "esp_partition.h"
-#include "esp_spi_flash.h"
 #include "esp_timer.h"
 #include <inttypes.h>
 #include <math.h>
 
 static const char *TAG = "ZIGBEE_HANDLER";
 static const int64_t STEERING_STALE_TIMEOUT_MS = 25000;
+static const uint32_t FLASH_ERASE_SECTOR_SIZE = 4096;
 
 /********************* Functions **************************/
 /* Static variables */
@@ -1139,7 +1139,7 @@ esp_err_t zigbee_handler_clean_start(void)
     
     if (zb_fct) {
         ESP_LOGI(TAG, "Erasing Zigbee factory test partition");
-        if ((zb_fct->size % SPI_FLASH_SEC_SIZE) != 0) {
+        if ((zb_fct->size % FLASH_ERASE_SECTOR_SIZE) != 0) {
             ESP_LOGW(TAG, "Skipping Zigbee factory test erase because partition size %" PRIu32
                           " is not flash-sector aligned", zb_fct->size);
         } else {
