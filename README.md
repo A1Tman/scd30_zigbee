@@ -408,8 +408,8 @@ Replace `<YOUR_DEVICE_IEEE>` with the sensor's IEEE address from ZHA.
 
 ```yaml
 # scripts.yaml
-scd30_toggle_asc:
-  alias: "SCD30 - Toggle auto calibration"
+scd30_apply_auto_calibration:
+  alias: "SCD30 - Apply auto calibration"
   sequence:
     - action: zha_toolkit.attr_write
       data:
@@ -422,6 +422,22 @@ scd30_toggle_asc:
         read_before_write: false
         read_after_write: false
         tries: 3
+
+scd30_enable_auto_calibration:
+  alias: "SCD30 - Enable auto calibration"
+  sequence:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.scd30_auto_calibration
+    - action: script.scd30_apply_auto_calibration
+
+scd30_disable_auto_calibration:
+  alias: "SCD30 - Disable auto calibration"
+  sequence:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.scd30_auto_calibration
+    - action: script.scd30_apply_auto_calibration
 
 scd30_apply_temperature_offset:
   alias: "SCD30 - Apply temperature offset"
@@ -468,8 +484,8 @@ scd30_apply_altitude_compensation:
         read_after_write: false
         tries: 3
 
-scd30_calibrate_outdoor:
-  alias: "SCD30 - Calibrate to outdoor air"
+scd30_apply_force_recalibration:
+  alias: "SCD30 - Apply forced recalibration"
   sequence:
     - action: zha_toolkit.attr_write
       data:
@@ -482,6 +498,21 @@ scd30_calibrate_outdoor:
         read_before_write: false
         read_after_write: false
         tries: 3
+
+scd30_calibrate_outdoor:
+  alias: "SCD30 - Calibrate to outdoor air"
+  sequence:
+    - action: zha_toolkit.attr_write
+      data:
+        ieee: "<YOUR_DEVICE_IEEE>"
+        endpoint: 12
+        cluster: 0xFC00
+        attribute: 4
+        attr_type: 33
+        attr_val: 400
+        read_before_write: false
+        read_after_write: false
+        tries: 3
 ```
 
 Recommended usage:
@@ -489,13 +520,104 @@ Recommended usage:
 - Keep `force_recalibration_ppm` for deliberate maintenance actions, not routine automations
 - After writing a new temperature offset or compensation value, wait for the next stabilization window before judging the reading
 
-### 6. Optional dashboard layout
+### 6. Optional Lovelace dashboard
 
-The custom quirk exposes readable entities for the `0xFC00` cluster, and the helper-based workflow gives you stable UI controls for toggles, numbers, and scripts. A practical dashboard split is:
-- Current readings
-- Quick actions such as outdoor calibration or environment presets
-- Environmental compensation
-- Advanced calibration controls
+This example keeps the live measurement entities, exposes the helper inputs you edit directly, and uses scripts for the actual writes to the device.
+
+```yaml
+views:
+  - type: sections
+    max_columns: 4
+    title: Zigbee controls
+    path: zigbee-controls
+    sections:
+      - type: grid
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                content: |
+                  ## SCD30 CO2 Sensor Control
+                  Sensor management and calibration
+              - type: entities
+                title: Current Readings
+                icon: mdi:chart-line
+                entities:
+                  - entity: sensor.espressif_esp32c6_carbon_dioxide
+                    name: CO2 Concentration
+                    icon: mdi:molecule-co2
+                  - entity: sensor.espressif_esp32c6_temperature
+                    name: Temperature
+                    icon: mdi:thermometer
+                  - entity: sensor.espressif_esp32c6_humidity
+                    name: Humidity
+                    icon: mdi:water-percent
+              - type: entities
+                title: Quick Actions
+                icon: mdi:lightning-bolt
+                entities:
+                  - entity: script.scd30_calibrate_outdoor
+                    name: Calibrate to Outdoor Air (400 ppm)
+                    icon: mdi:air-filter
+                    action_name: CALIBRATE
+                  - entity: script.scd30_enable_auto_calibration
+                    name: Enable Auto Calibration
+                    icon: mdi:auto-fix
+                    action_name: ENABLE
+                  - entity: script.scd30_disable_auto_calibration
+                    name: Disable Auto Calibration
+                    icon: mdi:auto-fix-off
+                    action_name: DISABLE
+              - type: entities
+                title: Environmental Compensation
+                icon: mdi:tune
+                entities:
+                  - entity: input_number.scd30_temperature_offset
+                    name: Temperature Offset
+                    icon: mdi:thermometer-lines
+                  - entity: script.scd30_apply_temperature_offset
+                    name: Apply Temperature Offset
+                    icon: mdi:content-save-outline
+                    action_name: APPLY
+                  - entity: input_number.scd30_pressure_compensation
+                    name: Pressure Compensation
+                    icon: mdi:gauge
+                  - entity: script.scd30_apply_pressure_compensation
+                    name: Apply Pressure Compensation
+                    icon: mdi:content-save-outline
+                    action_name: APPLY
+                  - entity: input_number.scd30_altitude_compensation
+                    name: Altitude Compensation
+                    icon: mdi:mountain
+                  - entity: script.scd30_apply_altitude_compensation
+                    name: Apply Altitude Compensation
+                    icon: mdi:content-save-outline
+                    action_name: APPLY
+                  - entity: input_boolean.scd30_auto_calibration
+                    name: Auto Calibration
+                    icon: mdi:auto-fix
+                  - entity: script.scd30_apply_auto_calibration
+                    name: Apply Auto Calibration Setting
+                    icon: mdi:content-save-outline
+                    action_name: APPLY
+              - type: entities
+                title: Advanced Controls
+                icon: mdi:cog
+                entities:
+                  - entity: input_number.scd30_force_recalibration
+                    name: Force Recalibration (ppm)
+                    icon: mdi:bullseye-arrow
+                  - entity: script.scd30_apply_force_recalibration
+                    name: Apply Forced Recalibration
+                    icon: mdi:content-save-outline
+                    action_name: APPLY
+```
+
+Suggested cleanup from older dashboards:
+- Remove `button.scd30_restart_measurements`
+- Remove `select.scd30_debug_commands`
+- Replace location-specific presets such as `script.scd30_set_oslo_environment` with generic pressure or altitude scripts
+- Prefer helper entities plus write scripts over direct writes from dashboard entity rows
 
 ---
 
