@@ -22,7 +22,7 @@
 #include <math.h>
 
 static const char *TAG = "ZIGBEE_HANDLER";
-static const int64_t STEERING_STALE_TIMEOUT_MS = 25000;
+static const int64_t STEERING_STALE_TIMEOUT_MS = 12000;
 static const uint32_t FLASH_ERASE_SECTOR_SIZE = 4096;
 
 /********************* Functions **************************/
@@ -30,8 +30,10 @@ static const uint32_t FLASH_ERASE_SECTOR_SIZE = 4096;
 static uint8_t steering_attempts = 0;
 static volatile bool is_connected = false;
 static volatile bool steering_in_flight = false;
+static volatile bool commissioning_in_progress = false;
 static volatile uint32_t pending_channel_mask = 0;
 static volatile int64_t steering_started_at_ms = 0;
+static volatile uint8_t steering_watchdog_token = 0;
 
 /* External variables */
 extern EventGroupHandle_t system_events;
@@ -44,6 +46,7 @@ static void configure_reporting_alarm_handler(uint8_t param);
 static esp_err_t schedule_reconnect_request(uint32_t channel_mask);
 static bool steering_is_stale(void);
 static void clear_stale_steering_state(const char *reason);
+static void steering_watchdog_alarm_handler(uint8_t token);
 
 static esp_err_t handle_co2_control_attribute(const esp_zb_zcl_set_attr_value_message_t *message);
 static esp_err_t handle_auto_calibrate_attr(const esp_zb_zcl_set_attr_value_message_t *message);
@@ -305,6 +308,10 @@ static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask)
         steering_attempts++;
         steering_in_flight = true;
         steering_started_at_ms = esp_timer_get_time() / 1000;
+        steering_watchdog_token++;
+        esp_zb_scheduler_alarm(steering_watchdog_alarm_handler,
+                               steering_watchdog_token,
+                               STEERING_STALE_TIMEOUT_MS + 1000);
 
         esp_err_t err = esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
         if (err != ESP_OK) {
@@ -329,7 +336,6 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
     uint32_t *p_sg_p = signal_struct->p_app_signal;
     esp_err_t err_status = signal_struct->esp_err_status;
     esp_zb_app_signal_type_t sig_type = *p_sg_p;
-    static bool commissioning_in_progress = false;
     
     switch (sig_type) {
     case ESP_ZB_ZDO_SIGNAL_SKIP_STARTUP:
@@ -1244,14 +1250,31 @@ static bool steering_is_stale(void)
     }
 
     int64_t now_ms = esp_timer_get_time() / 1000;
-    return (now_ms - steering_started_at_ms) > STEERING_STALE_TIMEOUT_MS;
+    return (now_ms - steering_started_at_ms) >= STEERING_STALE_TIMEOUT_MS;
 }
 
 static void clear_stale_steering_state(const char *reason)
 {
     ESP_LOGW(TAG, "Clearing stale steering state: %s", reason);
+    commissioning_in_progress = false;
     steering_in_flight = false;
     steering_started_at_ms = 0;
+}
+
+static void steering_watchdog_alarm_handler(uint8_t token)
+{
+    if (token != steering_watchdog_token) {
+        return;
+    }
+
+    if (!steering_is_stale()) {
+        return;
+    }
+
+    clear_stale_steering_state("steering result timeout expired");
+    ESP_LOGW(TAG, "Restarting commissioning after stale steering timeout");
+    esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,
+                           ESP_ZB_BDB_MODE_NETWORK_STEERING, 0);
 }
 
 

@@ -4,6 +4,8 @@
 
 - Disabled maintenance-only Zigbee controls by default to reduce exposed attack surface.
 - Updated the Home Assistant and ZHA quirk documentation to match the default control cluster.
+- Stopped automatic Zigbee network storage wipes during normal boot and reconnect handling.
+- Added stale steering recovery so commissioning restarts automatically if Zigbee join gets stuck.
 
 ## v1.0.11 - 2026-03-13
 
