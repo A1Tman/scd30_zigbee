@@ -188,18 +188,14 @@ void app_main(void)
         }
     }
 
-    bool clean_start_performed = false;
-
-    // Perform clean start only if the explicit stored flag says the device has never connected.
-    // Missing or unreadable flags should not erase Zigbee network storage on their own.
+    // Never erase Zigbee storage automatically during normal boot.
+    // A missing or zero-valued flag only means "no confirmed prior join", not "wipe credentials now".
     if (has_connection_flag && has_connected_before == 0) {
-        ESP_LOGI(TAG, "No previous connection detected, performing clean start");
-        ESP_ERROR_CHECK(zigbee_handler_clean_start());
-        clean_start_performed = true;
+        ESP_LOGW(TAG, "No confirmed previous Zigbee join recorded; attempting normal start without erasing network storage");
     } else {
         ESP_LOGI(TAG, "Previous connection detected, attempting normal start");
-        ESP_ERROR_CHECK(zigbee_handler_start());
     }
+    ESP_ERROR_CHECK(zigbee_handler_start());
 
     // Improved connection waiting with progressive backoff
     bool connected = false;
@@ -286,7 +282,7 @@ void app_main(void)
             if (connection_attempts < MAX_CONNECTION_ATTEMPTS) {
                 ESP_LOGW(TAG, "Connection attempt %d failed, trying again...", connection_attempts);
                 
-                // If we've tried once normally, and once with a clean start, try changing channels
+                // If repeated normal retries fail, try a narrower channel mask before giving up.
                 if (connection_attempts == 2) {
                     ESP_LOGI(TAG, "Trying different channel mask...");
                     // Try a different channel - for example channel 25
@@ -296,16 +292,6 @@ void app_main(void)
                         ESP_LOGW(TAG, "Failed to schedule reconnect on alternate channel mask: %s",
                                  esp_err_to_name(reconnect_err));
                     }
-                } 
-                // On the second attempt, try a clean start if we haven't done one already
-                else if (connection_attempts == 1 && !clean_start_performed) {
-                    ESP_LOGI(TAG, "Performing clean start to reset Zigbee stack state...");
-                    zigbee_handler_cleanup();
-                    esp_err_t err = zigbee_handler_clean_start();
-                    if (err != ESP_OK) {
-                        ESP_LOGE(TAG, "Clean start failed: %s", esp_err_to_name(err));
-                    }
-                    clean_start_performed = true;
                 }
                 
                 vTaskDelay(pdMS_TO_TICKS(5000)); // Wait 5 seconds before next attempt
