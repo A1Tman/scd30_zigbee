@@ -169,21 +169,30 @@ void app_main(void)
 
     // Check if we should perform a clean start
     uint8_t has_connected_before = 0;
+    bool has_connection_flag = false;
     nvs_handle_t nvs_handle;
     esp_err_t err = nvs_open("storage", NVS_READWRITE, &nvs_handle);
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error opening NVS handle: %s — treating as first boot", esp_err_to_name(err));
-        // has_connected_before stays 0; a clean start will be performed below
+        ESP_LOGW(TAG, "Error opening NVS handle: %s — attempting normal Zigbee start", esp_err_to_name(err));
     } else {
         size_t required_size = sizeof(has_connected_before);
-        nvs_get_blob(nvs_handle, "has_connected", &has_connected_before, &required_size);
+        err = nvs_get_blob(nvs_handle, "has_connected", &has_connected_before, &required_size);
         nvs_close(nvs_handle);
+        if (err == ESP_OK) {
+            has_connection_flag = true;
+        } else if (err == ESP_ERR_NVS_NOT_FOUND) {
+            ESP_LOGW(TAG, "No saved Zigbee connection flag found in NVS; attempting normal start before any clean start");
+        } else {
+            ESP_LOGW(TAG, "Failed to read Zigbee connection flag from NVS: %s; attempting normal start",
+                     esp_err_to_name(err));
+        }
     }
 
     bool clean_start_performed = false;
 
-    // Perform clean start only if device has never connected before
-    if (has_connected_before == 0) {
+    // Perform clean start only if the explicit stored flag says the device has never connected.
+    // Missing or unreadable flags should not erase Zigbee network storage on their own.
+    if (has_connection_flag && has_connected_before == 0) {
         ESP_LOGI(TAG, "No previous connection detected, performing clean start");
         ESP_ERROR_CHECK(zigbee_handler_clean_start());
         clean_start_performed = true;

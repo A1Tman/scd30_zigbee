@@ -17,6 +17,7 @@
 #include "scd30_driver.h"
 #include "string.h"
 #include "esp_partition.h"
+#include "esp_spi_flash.h"
 #include "esp_timer.h"
 #include <inttypes.h>
 #include <math.h>
@@ -1138,9 +1139,14 @@ esp_err_t zigbee_handler_clean_start(void)
     
     if (zb_fct) {
         ESP_LOGI(TAG, "Erasing Zigbee factory test partition");
-        esp_err_t fct_err = esp_partition_erase_range(zb_fct, 0, zb_fct->size);
-        if (fct_err != ESP_OK) {
-            ESP_LOGW(TAG, "Failed to erase Zigbee factory test partition: %s", esp_err_to_name(fct_err));
+        if ((zb_fct->size % SPI_FLASH_SEC_SIZE) != 0) {
+            ESP_LOGW(TAG, "Skipping Zigbee factory test erase because partition size %" PRIu32
+                          " is not flash-sector aligned", zb_fct->size);
+        } else {
+            esp_err_t fct_err = esp_partition_erase_range(zb_fct, 0, zb_fct->size);
+            if (fct_err != ESP_OK) {
+                ESP_LOGW(TAG, "Failed to erase Zigbee factory test partition: %s", esp_err_to_name(fct_err));
+            }
         }
     }
     
