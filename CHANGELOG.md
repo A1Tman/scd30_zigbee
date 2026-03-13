@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.0.15 - 2026-03-13
+
+- Persisted SCD30 control settings in NVS so temperature offset, ASC, and compensation settings survive reboot.
+- Applied Zigbee-driven SCD30 configuration changes safely from the sensor task instead of directly from Zigbee callbacks.
+- Documented the tested Home Assistant workflow using `zha_toolkit.attr_write` for the manufacturer-specific control cluster.
+- Reduced benign Zigbee log noise by treating successful NLME status indications as handled debug events.
+
 ## v1.0.14 - 2026-03-13
 
 - Added a saved-channel fast rejoin path so known devices reconnect to Zigbee much faster after reboot.

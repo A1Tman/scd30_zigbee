@@ -6,6 +6,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stdint.h>
 #include "esp_err.h"
 
 /* SCD30 I2C Configuration */
@@ -49,6 +50,7 @@ esp_err_t scd30_force_recalibration(uint16_t target_ppm);
 #define SCD30_AMBIENT_PRESSURE     1013    /*!< Default ambient pressure in mbar */
 #define SCD30_DEFAULT_ALTITUDE     500     /*!< Default altitude in meters */
 #define SCD30_HW_TEMP_OFFSET      2.5f    /*!< Hardware temperature offset in °C */
+#define SCD30_CONFIG_VERSION       1
 
 /* Measurement ranges */
 #define SCD30_CO2_MIN 200
@@ -66,6 +68,21 @@ typedef struct {
     float temperature;    /*!< Temperature in degrees Celsius */
     float humidity;       /*!< Relative humidity in percent */
 } scd30_measurement_t;
+
+typedef enum {
+    SCD30_COMPENSATION_MODE_NONE = 0,
+    SCD30_COMPENSATION_MODE_PRESSURE = 1,
+    SCD30_COMPENSATION_MODE_ALTITUDE = 2,
+} scd30_compensation_mode_t;
+
+typedef struct {
+    uint16_t version;
+    int16_t temp_offset_x100;
+    uint16_t pressure_comp_mbar;
+    uint16_t altitude_comp_m;
+    uint8_t auto_calibration;
+    uint8_t compensation_mode;
+} scd30_runtime_config_t;
 
 /**
  * @brief Initialize the SCD30 sensor
@@ -163,3 +180,45 @@ esp_err_t scd30_set_pressure_compensation(uint16_t pressure_mbar);
  * @return ESP_OK on success, otherwise error code
  */
 esp_err_t scd30_set_auto_calibration(bool enable);
+
+/**
+ * @brief Load the persisted SCD30 runtime configuration
+ * @param config Pointer to store the current configuration
+ * @return ESP_OK on success, otherwise error code
+ */
+esp_err_t scd30_get_config(scd30_runtime_config_t *config);
+
+/**
+ * @brief Persist and safely apply a new temperature offset
+ * @param offset_celsius Temperature offset in degrees Celsius
+ * @return ESP_OK if queued/applied successfully, otherwise error code
+ */
+esp_err_t scd30_update_temperature_offset(float offset_celsius);
+
+/**
+ * @brief Persist and safely apply a new ASC setting
+ * @param enable True to enable ASC, false to disable
+ * @return ESP_OK if queued/applied successfully, otherwise error code
+ */
+esp_err_t scd30_update_auto_calibration(bool enable);
+
+/**
+ * @brief Persist and safely apply a new pressure compensation setting
+ * @param pressure_mbar Ambient pressure in mbar, or 0 to disable pressure compensation
+ * @return ESP_OK if queued/applied successfully, otherwise error code
+ */
+esp_err_t scd30_update_pressure_compensation(uint16_t pressure_mbar);
+
+/**
+ * @brief Persist and safely apply a new altitude compensation setting
+ * @param altitude_meters Altitude in meters, or 0 to disable altitude compensation
+ * @return ESP_OK if queued/applied successfully, otherwise error code
+ */
+esp_err_t scd30_update_altitude_compensation(uint16_t altitude_meters);
+
+/**
+ * @brief Queue a forced recalibration request for safe execution in the sensor task
+ * @param target_ppm Target reference concentration in ppm
+ * @return ESP_OK if queued/applied successfully, otherwise error code
+ */
+esp_err_t scd30_request_force_recalibration(uint16_t target_ppm);

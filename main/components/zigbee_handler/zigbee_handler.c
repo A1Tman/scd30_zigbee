@@ -128,10 +128,17 @@ void esp_zb_task(void *pvParameters)
     }
 
     /* Manufacturer specific CO2 control cluster */
-    bool auto_calibrate = false;
-    int16_t temp_offset_x100 = 250;        // Default 2.5°C offset * 100
-    uint16_t pressure_comp_mbar = 1013;    // Default sea level pressure
-    uint16_t altitude_comp_m = 0;          // Default no altitude compensation
+    scd30_runtime_config_t sensor_config;
+    if (scd30_get_config(&sensor_config) != ESP_OK) {
+        memset(&sensor_config, 0, sizeof(sensor_config));
+        sensor_config.temp_offset_x100 = 250;
+        sensor_config.pressure_comp_mbar = 1013;
+    }
+
+    bool auto_calibrate = sensor_config.auto_calibration != 0;
+    int16_t temp_offset_x100 = sensor_config.temp_offset_x100;
+    uint16_t pressure_comp_mbar = sensor_config.pressure_comp_mbar;
+    uint16_t altitude_comp_m = sensor_config.altitude_comp_m;
     uint16_t force_recalibration_ppm = 0;  // Default no forced recalibration
 #if ENABLE_MAINTENANCE_ZIGBEE_CONTROLS
     bool restart_measurement = false;      // Default no restart
@@ -621,10 +628,10 @@ static esp_err_t handle_auto_calibrate_attr(const esp_zb_zcl_set_attr_value_mess
     }
     
     bool enable = *((uint8_t *)message->attribute.data.value) ? true : false;
-    esp_err_t ret = scd30_set_auto_calibration(enable);
+    esp_err_t ret = scd30_update_auto_calibration(enable);
     
     if (ret == ESP_OK) {
-        ESP_LOGI(TAG, "Auto calibration set to %s", enable ? "ENABLED" : "DISABLED");
+        ESP_LOGI(TAG, "Auto calibration update queued: %s", enable ? "ENABLED" : "DISABLED");
     } else {
         ESP_LOGE(TAG, "Failed to set auto calibration: %s", esp_err_to_name(ret));
     }
@@ -655,10 +662,10 @@ static esp_err_t handle_temp_offset_attr(const esp_zb_zcl_set_attr_value_message
         return ESP_ERR_INVALID_ARG;
     }
     
-    esp_err_t ret = scd30_set_temperature_offset(offset_celsius);
+    esp_err_t ret = scd30_update_temperature_offset(offset_celsius);
     
     if (ret == ESP_OK) {
-        ESP_LOGI(TAG, "Temperature offset set to %.2f°C", offset_celsius);
+        ESP_LOGI(TAG, "Temperature offset update queued: %.2f°C", offset_celsius);
     } else {
         ESP_LOGE(TAG, "Failed to set temperature offset: %s", esp_err_to_name(ret));
     }
@@ -680,16 +687,21 @@ static esp_err_t handle_pressure_comp_attr(const esp_zb_zcl_set_attr_value_messa
     uint16_t pressure_mbar;
     memcpy(&pressure_mbar, message->attribute.data.value, sizeof(uint16_t));
     
-    // Validate range (typical atmospheric pressure range)
-    if (pressure_mbar < 700 || pressure_mbar > 1400) {
+    // A value of 0 disables pressure compensation. Otherwise expect a realistic
+    // atmospheric pressure range.
+    if (pressure_mbar != 0 && (pressure_mbar < 700 || pressure_mbar > 1400)) {
         ESP_LOGW(TAG, "Pressure compensation out of range: %u mbar", pressure_mbar);
         return ESP_ERR_INVALID_ARG;
     }
     
-    esp_err_t ret = scd30_set_pressure_compensation(pressure_mbar);
+    esp_err_t ret = scd30_update_pressure_compensation(pressure_mbar);
     
     if (ret == ESP_OK) {
-        ESP_LOGI(TAG, "Pressure compensation set to %u mbar", pressure_mbar);
+        if (pressure_mbar == 0) {
+            ESP_LOGI(TAG, "Pressure compensation disable queued");
+        } else {
+            ESP_LOGI(TAG, "Pressure compensation update queued: %u mbar", pressure_mbar);
+        }
     } else {
         ESP_LOGE(TAG, "Failed to set pressure compensation: %s", esp_err_to_name(ret));
     }
@@ -717,13 +729,13 @@ static esp_err_t handle_altitude_comp_attr(const esp_zb_zcl_set_attr_value_messa
         return ESP_ERR_INVALID_ARG;
     }
     
-    esp_err_t ret = scd30_set_altitude_compensation(altitude_m);
+    esp_err_t ret = scd30_update_altitude_compensation(altitude_m);
     
     if (ret == ESP_OK) {
         if (altitude_m == 0) {
-            ESP_LOGI(TAG, "Altitude compensation disabled");
+            ESP_LOGI(TAG, "Altitude compensation disable queued");
         } else {
-            ESP_LOGI(TAG, "Altitude compensation set to %u meters", altitude_m);
+            ESP_LOGI(TAG, "Altitude compensation update queued: %u meters", altitude_m);
         }
     } else {
         ESP_LOGE(TAG, "Failed to set altitude compensation: %s", esp_err_to_name(ret));
@@ -761,10 +773,10 @@ static esp_err_t handle_force_recalibration_attr(const esp_zb_zcl_set_attr_value
     ESP_LOGI(TAG, "Initiating forced recalibration to %u ppm", target_ppm);
     
     // Call the SCD30 force recalibration function
-    esp_err_t ret = scd30_force_recalibration(target_ppm);
+    esp_err_t ret = scd30_request_force_recalibration(target_ppm);
     
     if (ret == ESP_OK) {
-        ESP_LOGI(TAG, "Forced recalibration initiated successfully for %u ppm", target_ppm);
+        ESP_LOGI(TAG, "Forced recalibration request queued for %u ppm", target_ppm);
     } else {
         ESP_LOGE(TAG, "Failed to initiate forced recalibration: %s", esp_err_to_name(ret));
     }

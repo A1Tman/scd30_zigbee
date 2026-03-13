@@ -353,7 +353,16 @@ Suggested workflow:
 - Install ZHA Toolkit in Home Assistant
 - Restart Home Assistant
 - Use it to inspect endpoint `12`, cluster `0xFC00`, and attributes `0x0000` through `0x0004`
-- Keep regular automation writes on the built-in `zha.set_zigbee_cluster_attribute` service
+- Use `zha_toolkit.attr_write` for writes to the manufacturer-specific control cluster
+
+For this device, `zha_toolkit.attr_write` has proven more reliable than the built-in `zha.set_zigbee_cluster_attribute` action for custom `0xFC00` attributes. In Home Assistant, switch the action editor to YAML mode and use the device IEEE address directly.
+
+Useful ZCL attribute types for this cluster:
+- `0x0000 auto_calibrate` -> `attr_type: 16` (`0x10`, bool)
+- `0x0001 temp_offset_x100` -> `attr_type: 41` (`0x29`, int16)
+- `0x0002 pressure_comp_mbar` -> `attr_type: 33` (`0x21`, uint16)
+- `0x0003 altitude_comp_m` -> `attr_type: 33` (`0x21`, uint16)
+- `0x0004 force_recalibration_ppm` -> `attr_type: 33` (`0x21`, uint16)
 
 ### 4. Create helper entities
 
@@ -402,55 +411,83 @@ Replace `<YOUR_DEVICE_IEEE>` with the sensor's IEEE address from ZHA.
 scd30_toggle_asc:
   alias: "SCD30 - Toggle auto calibration"
   sequence:
-    - action: zha.set_zigbee_cluster_attribute
+    - action: zha_toolkit.attr_write
       data:
         ieee: "<YOUR_DEVICE_IEEE>"
-        endpoint_id: 12
-        cluster_id: 0xFC00
-        cluster_type: in
+        endpoint: 12
+        cluster: 0xFC00
         attribute: 0
-        value: "{{ is_state('input_boolean.scd30_auto_calibration', 'on') }}"
+        attr_type: 16
+        attr_val: "{{ 1 if is_state('input_boolean.scd30_auto_calibration', 'on') else 0 }}"
+        read_before_write: false
+        read_after_write: false
+        tries: 3
 
 scd30_apply_temperature_offset:
   alias: "SCD30 - Apply temperature offset"
   sequence:
-    - action: zha.set_zigbee_cluster_attribute
+    - action: zha_toolkit.attr_write
       data:
         ieee: "<YOUR_DEVICE_IEEE>"
-        endpoint_id: 12
-        cluster_id: 0xFC00
-        cluster_type: in
+        endpoint: 12
+        cluster: 0xFC00
         attribute: 1
-        value: "{{ (states('input_number.scd30_temperature_offset') | float(0) * 100) | round(0) | int }}"
+        attr_type: 41
+        attr_val: "{{ (states('input_number.scd30_temperature_offset') | float(0) * 100) | round(0) | int }}"
+        read_before_write: false
+        read_after_write: false
+        tries: 3
 
 scd30_apply_pressure_compensation:
   alias: "SCD30 - Apply pressure compensation"
   sequence:
-    - action: zha.set_zigbee_cluster_attribute
+    - action: zha_toolkit.attr_write
       data:
         ieee: "<YOUR_DEVICE_IEEE>"
-        endpoint_id: 12
-        cluster_id: 0xFC00
-        cluster_type: in
+        endpoint: 12
+        cluster: 0xFC00
         attribute: 2
-        value: "{{ states('input_number.scd30_pressure_compensation') | int(1013) }}"
+        attr_type: 33
+        attr_val: "{{ states('input_number.scd30_pressure_compensation') | int(1013) }}"
+        read_before_write: false
+        read_after_write: false
+        tries: 3
+
+scd30_apply_altitude_compensation:
+  alias: "SCD30 - Apply altitude compensation"
+  sequence:
+    - action: zha_toolkit.attr_write
+      data:
+        ieee: "<YOUR_DEVICE_IEEE>"
+        endpoint: 12
+        cluster: 0xFC00
+        attribute: 3
+        attr_type: 33
+        attr_val: "{{ states('input_number.scd30_altitude_compensation') | int(0) }}"
+        read_before_write: false
+        read_after_write: false
+        tries: 3
 
 scd30_calibrate_outdoor:
   alias: "SCD30 - Calibrate to outdoor air"
   sequence:
-    - action: zha.set_zigbee_cluster_attribute
+    - action: zha_toolkit.attr_write
       data:
         ieee: "<YOUR_DEVICE_IEEE>"
-        endpoint_id: 12
-        cluster_id: 0xFC00
-        cluster_type: in
+        endpoint: 12
+        cluster: 0xFC00
         attribute: 4
-        value: "{{ states('input_number.scd30_force_recalibration') | int(400) }}"
+        attr_type: 33
+        attr_val: "{{ states('input_number.scd30_force_recalibration') | int(400) }}"
+        read_before_write: false
+        read_after_write: false
+        tries: 3
 ```
 
 Recommended usage:
 - Use either `pressure_comp_mbar` or `altitude_comp_m`
 - Keep `force_recalibration_ppm` for deliberate maintenance actions, not routine automations
+- After writing a new temperature offset or compensation value, wait for the next stabilization window before judging the reading
 
 ### 6. Optional dashboard layout
 
