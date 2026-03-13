@@ -45,8 +45,10 @@ static esp_err_t handle_temp_offset_attr(const esp_zb_zcl_set_attr_value_message
 static esp_err_t handle_pressure_comp_attr(const esp_zb_zcl_set_attr_value_message_t *message);
 static esp_err_t handle_altitude_comp_attr(const esp_zb_zcl_set_attr_value_message_t *message);
 static esp_err_t handle_force_recalibration_attr(const esp_zb_zcl_set_attr_value_message_t *message);
+#if ENABLE_MAINTENANCE_ZIGBEE_CONTROLS
 static esp_err_t handle_restart_measurement_attr(const esp_zb_zcl_set_attr_value_message_t *message);
 static esp_err_t handle_debug_command_attr(const esp_zb_zcl_set_attr_value_message_t *message);
+#endif
 
 /* Core Zigbee functions */
 void esp_zb_task(void *pvParameters)
@@ -121,8 +123,10 @@ void esp_zb_task(void *pvParameters)
     uint16_t pressure_comp_mbar = 1013;    // Default sea level pressure
     uint16_t altitude_comp_m = 0;          // Default no altitude compensation
     uint16_t force_recalibration_ppm = 0;  // Default no forced recalibration
+#if ENABLE_MAINTENANCE_ZIGBEE_CONTROLS
     bool restart_measurement = false;      // Default no restart
     uint8_t debug_command = 0;             // Default no debug command
+#endif
     
     esp_zb_attribute_list_t *esp_zb_co2_ctrl_cluster = esp_zb_zcl_attr_list_create(CO2_CONTROL_CLUSTER_ID);
     if (!esp_zb_co2_ctrl_cluster) {
@@ -160,6 +164,7 @@ void esp_zb_task(void *pvParameters)
             ESP_ZB_ZCL_ATTR_ACCESS_READ_WRITE,
             &force_recalibration_ppm);
 
+#if ENABLE_MAINTENANCE_ZIGBEE_CONTROLS
     esp_zb_custom_cluster_add_custom_attr(esp_zb_co2_ctrl_cluster,
             CO2_CONTROL_ATTR_RESTART_MEASURE_ID,
             ESP_ZB_ZCL_ATTR_TYPE_BOOL,
@@ -171,6 +176,9 @@ void esp_zb_task(void *pvParameters)
             ESP_ZB_ZCL_ATTR_TYPE_U8,
             ESP_ZB_ZCL_ATTR_ACCESS_READ_WRITE,
             &debug_command);
+#else
+    ESP_LOGI(TAG, "Maintenance-only Zigbee controls are disabled in this build");
+#endif
 
     /* Create cluster list and add clusters */
     esp_zb_cluster_list_t *esp_zb_cluster_list = esp_zb_zcl_cluster_list_create();
@@ -537,15 +545,17 @@ static esp_err_t handle_co2_control_attribute(const esp_zb_zcl_set_attr_value_me
         case CO2_CONTROL_ATTR_FORCE_RECAL_ID:
             ret = handle_force_recalibration_attr(message);
             break;
-            
+
+#if ENABLE_MAINTENANCE_ZIGBEE_CONTROLS
         case CO2_CONTROL_ATTR_RESTART_MEASURE_ID:
             ret = handle_restart_measurement_attr(message);
             break;
-            
+
         case CO2_CONTROL_ATTR_DEBUG_COMMAND_ID:
             ret = handle_debug_command_attr(message);
             break;
-            
+#endif
+
         default:
             ESP_LOGW(TAG, "Unknown CO2 control attribute: 0x%04x", message->attribute.id);
             ret = ESP_ERR_NOT_SUPPORTED;
@@ -719,6 +729,7 @@ static esp_err_t handle_force_recalibration_attr(const esp_zb_zcl_set_attr_value
 /**
  * @brief Handle restart measurement attribute
  */
+#if ENABLE_MAINTENANCE_ZIGBEE_CONTROLS
 static esp_err_t handle_restart_measurement_attr(const esp_zb_zcl_set_attr_value_message_t *message)
 {
     if (message->attribute.data.size < 1) {
@@ -753,7 +764,7 @@ static esp_err_t handle_restart_measurement_attr(const esp_zb_zcl_set_attr_value
     } else {
         ESP_LOGE(TAG, "Failed to restart measurements: %s", esp_err_to_name(ret));
     }
-    
+
     return ret;
 }
 
@@ -813,9 +824,10 @@ static esp_err_t handle_debug_command_attr(const esp_zb_zcl_set_attr_value_messa
     } else {
         ESP_LOGE(TAG, "Debug command 0x%02x failed: %s", debug_opcode, esp_err_to_name(ret));
     }
-    
+
     return ret;
 }
+#endif
 
 /* Secondary handlers */
 /**

@@ -32,6 +32,8 @@
 #define CO2_CONTROL_ATTR_FORCE_RECAL_ID         0x0004
 #define CO2_CONTROL_ATTR_RESTART_MEASURE_ID     0x0005
 #define CO2_CONTROL_ATTR_DEBUG_COMMAND_ID       0x0006
+/* Disable maintenance-only attributes by default for personal deployments. */
+#define ENABLE_MAINTENANCE_ZIGBEE_CONTROLS      0
 
 /* Network Steering & Initializing Configuration */
 #define ESP_ZB_NETWORK_INIT_TIMEOUT    90000  /*!< Timeout for Zigbee network initialization in ms */

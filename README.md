@@ -294,8 +294,6 @@ class CO2ControlCluster(CustomCluster, Diagnostic):
         0x0002: ("pressure_comp_mbar", t.uint16_t, True),
         0x0003: ("altitude_comp_m", t.uint16_t, True),
         0x0004: ("force_recalibration_ppm", t.uint16_t, True),
-        0x0005: ("restart_measurement", t.Bool, True),
-        0x0006: ("debug_command", t.uint8_t, True),
     }
 
     server_commands = {}
@@ -343,6 +341,10 @@ class ESP32CO2Device(CustomDevice):
 
 Restart Home Assistant after adding the quirk. If the device was already paired before the quirk existed, re-interview it or re-pair it so ZHA picks up the custom cluster mapping.
 
+If you intentionally enable the maintenance-only firmware controls, extend the quirk with:
+- `0x0005: ("restart_measurement", t.Bool, True)`
+- `0x0006: ("debug_command", t.uint8_t, True)`
+
 ### 3. Optional: use ZHA Toolkit for inspection and troubleshooting
 
 ZHA Toolkit is useful for reading manufacturer-specific attributes, testing writes, and checking cluster behavior while building dashboards and scripts.
@@ -350,7 +352,7 @@ ZHA Toolkit is useful for reading manufacturer-specific attributes, testing writ
 Suggested workflow:
 - Install ZHA Toolkit in Home Assistant
 - Restart Home Assistant
-- Use it to inspect endpoint `12`, cluster `0xFC00`, and attributes `0x0000` through `0x0006`
+- Use it to inspect endpoint `12`, cluster `0xFC00`, and attributes `0x0000` through `0x0004`
 - Keep regular automation writes on the built-in `zha.set_zigbee_cluster_attribute` service
 
 ### 4. Create helper entities
@@ -449,7 +451,6 @@ scd30_calibrate_outdoor:
 Recommended usage:
 - Use either `pressure_comp_mbar` or `altitude_comp_m`
 - Keep `force_recalibration_ppm` for deliberate maintenance actions, not routine automations
-- Treat `restart_measurement` and `debug_command` as maintenance controls
 
 ### 6. Optional dashboard layout
 
@@ -457,7 +458,7 @@ The custom quirk exposes readable entities for the `0xFC00` cluster, and the hel
 - Current readings
 - Quick actions such as outdoor calibration or environment presets
 - Environmental compensation
-- Advanced or maintenance-only controls
+- Advanced calibration controls
 
 ---
 
@@ -470,11 +471,12 @@ The custom quirk exposes readable entities for the `0xFC00` cluster, and the hel
 |     `0x0002` | `pressure_comp_mbar`      | Uint16  | Pressure compensation (mbar)      |
 |     `0x0003` | `altitude_comp_m`         | Uint16  | Altitude compensation (meters)    |
 |     `0x0004` | `force_recalibration_ppm` | Uint16  | Force a one-off recalibration     |
-|     `0x0005` | `restart_measurement`     | Boolean | Restart sensor measurements       |
-|     `0x0006` | `debug_command`           | Uint8   | Send a debug command code (0–255) |
+|     `0x0005` | `restart_measurement`     | Boolean | Optional maintenance-only control |
+|     `0x0006` | `debug_command`           | Uint8   | Optional maintenance-only control |
 
 Notes:
-- Attributes `0x0005` and `0x0006` are best treated as maintenance controls
+- The default firmware exposes only attributes `0x0000` through `0x0004`
+- Attributes `0x0005` and `0x0006` are available only if `ENABLE_MAINTENANCE_ZIGBEE_CONTROLS` is set to `1` in `main/components/zigbee_handler/zigbee_handler.h`
 - Do not drive `pressure_comp_mbar` and `altitude_comp_m` at the same time
 
 ---

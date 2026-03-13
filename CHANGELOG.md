@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.13 - 2026-03-13
+
+- Disabled maintenance-only Zigbee controls by default to reduce exposed attack surface.
+- Updated the Home Assistant and ZHA quirk documentation to match the default control cluster.
+
 ## v1.0.11 - 2026-03-13
 
 - Fixed the I2C startup and probe flow for the SCD30.
