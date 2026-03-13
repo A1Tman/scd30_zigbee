@@ -146,5 +146,12 @@ esp_err_t zigbee_handler_cleanup(void);
  */
 esp_err_t zigbee_handler_reconnect(void);
 
+/**
+ * @brief Attempt to reconnect using a specific primary channel mask.
+ * @param channel_mask Zigbee primary channel mask to apply for the next steering attempt.
+ * @return ESP_OK if reconnection procedure started, error code otherwise
+ */
+esp_err_t zigbee_handler_reconnect_with_mask(uint32_t channel_mask);
+
 
 

@@ -27,6 +27,7 @@ static const char *TAG = "ZIGBEE_HANDLER";
 static uint8_t steering_attempts = 0;
 static volatile bool is_connected = false;
 static volatile bool steering_in_flight = false;
+static volatile uint32_t pending_channel_mask = 0;
 
 /* External variables */
 extern EventGroupHandle_t system_events;
@@ -36,6 +37,7 @@ static void handle_status(esp_zb_zcl_status_t status, uint16_t cluster_id, uint1
 static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask);
 static zigbee_connection_callback_t connection_callback = NULL;
 static void configure_reporting_alarm_handler(uint8_t param);
+static esp_err_t schedule_reconnect_request(uint32_t channel_mask);
 
 static esp_err_t handle_co2_control_attribute(const esp_zb_zcl_set_attr_value_message_t *message);
 static esp_err_t handle_auto_calibrate_attr(const esp_zb_zcl_set_attr_value_message_t *message);
@@ -256,13 +258,29 @@ static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask)
             return;
         }
 
-        // Rotate through the most common Zigbee channels on each attempt.
-        static const uint8_t channels[] = {15, 11, 20, 25};
-        uint8_t channel = channels[steering_attempts % 4];
-        uint32_t channel_mask = (1u << channel);
+        uint32_t channel_mask = pending_channel_mask;
+        if (channel_mask != 0) {
+            pending_channel_mask = 0;
+            if ((channel_mask & (channel_mask - 1)) == 0) {
+                uint8_t channel = 0;
+                while (((channel_mask >> channel) & 0x1u) == 0u) {
+                    channel++;
+                }
+                ESP_LOGI(TAG, "Commissioning attempt %d: forced channel %d (mask: 0x%08x)",
+                         steering_attempts + 1, channel, (unsigned int)channel_mask);
+            } else {
+                ESP_LOGI(TAG, "Commissioning attempt %d: forced channel mask 0x%08x",
+                         steering_attempts + 1, (unsigned int)channel_mask);
+            }
+        } else {
+            // Rotate through the most common Zigbee channels on each attempt.
+            static const uint8_t channels[] = {15, 11, 20, 25};
+            uint8_t channel = channels[steering_attempts % 4];
+            channel_mask = (1u << channel);
 
-        ESP_LOGI(TAG, "Commissioning attempt %d: channel %d (mask: 0x%08x)",
-                 steering_attempts + 1, channel, (unsigned int)channel_mask);
+            ESP_LOGI(TAG, "Commissioning attempt %d: channel %d (mask: 0x%08x)",
+                     steering_attempts + 1, channel, (unsigned int)channel_mask);
+        }
 
         if (steering_in_flight) {
             ESP_LOGW(TAG, "Steering already in flight, skipping duplicate attempt");
@@ -1138,24 +1156,39 @@ esp_err_t zigbee_handler_cleanup(void)
 esp_err_t zigbee_handler_reconnect(void)
 {
     ESP_LOGI(TAG, "Initiating Zigbee reconnection");
-    
-    // Reset steering attempts counter
-    steering_attempts = 0;
-    
+
+    return schedule_reconnect_request(0);
+}
+
+esp_err_t zigbee_handler_reconnect_with_mask(uint32_t channel_mask)
+{
+    ESP_LOGI(TAG, "Initiating Zigbee reconnection with mask 0x%08lx",
+             (unsigned long)channel_mask);
+
+    return schedule_reconnect_request(channel_mask);
+}
+
+static esp_err_t schedule_reconnect_request(uint32_t channel_mask)
+{
     if (!esp_zb_is_started()) {
         ESP_LOGE(TAG, "Zigbee stack not started");
         return ESP_ERR_INVALID_STATE;
     }
-    
+
     if (steering_in_flight) {
         ESP_LOGW(TAG, "Steering already in flight, reconnect request ignored");
         return ESP_OK;
     }
 
+    // Reset steering attempts counter so reconnects start from a known state.
+    steering_attempts = 0;
+
     if (!esp_zb_lock_acquire(pdMS_TO_TICKS(200))) {
         ESP_LOGW(TAG, "Failed to acquire Zigbee lock for reconnect scheduling");
         return ESP_ERR_TIMEOUT;
     }
+
+    pending_channel_mask = channel_mask;
     // Route through the commissioning callback so channel rotation and
     // the steering_in_flight guard are applied consistently.
     esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,

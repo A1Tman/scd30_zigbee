@@ -281,8 +281,12 @@ void app_main(void)
                 if (connection_attempts == 2) {
                     ESP_LOGI(TAG, "Trying different channel mask...");
                     // Try a different channel - for example channel 25
-                    uint32_t channel_mask = (1 << 25);
-                    esp_zb_set_primary_network_channel_set(channel_mask);
+                    uint32_t channel_mask = (1u << 25);
+                    esp_err_t reconnect_err = zigbee_handler_reconnect_with_mask(channel_mask);
+                    if (reconnect_err != ESP_OK) {
+                        ESP_LOGW(TAG, "Failed to schedule reconnect on alternate channel mask: %s",
+                                 esp_err_to_name(reconnect_err));
+                    }
                 } 
                 // On the second attempt, try a clean start if we haven't done one already
                 else if (connection_attempts == 1 && !clean_start_performed) {
@@ -460,7 +464,10 @@ void app_main(void)
                 last_reconnect_attempt = current_time;
                 
                 ESP_LOGW(TAG, "Still disconnected from Zigbee network, attempting to rejoin...");
-                esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
+                esp_err_t err = zigbee_handler_reconnect();
+                if (err != ESP_OK) {
+                    ESP_LOGW(TAG, "Failed to schedule long-term reconnect: %s", esp_err_to_name(err));
+                }
             }
         }
         // Just connected (transition from disconnected to connected)

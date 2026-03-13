@@ -35,7 +35,10 @@ static void handle_button_events(void) {
     
     if (bits & REJOIN_REQUESTED_BIT) {
         ESP_LOGI(TAG, "Rejoin requested via long press");
-        esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
+        esp_err_t err = zigbee_handler_reconnect();
+        if (err != ESP_OK) {
+            ESP_LOGW(TAG, "Failed to schedule Zigbee reconnect: %s", esp_err_to_name(err));
+        }
         xEventGroupClearBits(system_events, REJOIN_REQUESTED_BIT);
         vTaskDelay(pdMS_TO_TICKS(100));  // Add small delay after operation
     }
