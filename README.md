@@ -27,6 +27,7 @@ An ESP32-based CO₂, temperature, and humidity sensor that integrates with Zigb
   - [Expected Readings](#expected-readings)
   - [Home Assistant Setup](#home-assistant-setup)
   - [Zigbee Cluster Attributes](#zigbee-cluster-attributes)
+- [Changelog](CHANGELOG.md)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
@@ -78,8 +79,8 @@ For complete ESP32-C6 GPIO information, see the [official documentation](https:/
 ## Software Dependencies
 
 **Required Framework:**
-- **ESP-IDF v5.1 or later** (required for ESP32-C6 Zigbee support)
-- **ESP Zigbee SDK** (included with ESP-IDF v5.1+)
+- **ESP-IDF v5.5.3** (tested)
+- **ESP Zigbee SDK** (bundled with ESP-IDF)
 
 **Installation:**
 - Follow the [ESP-IDF Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32c6/get-started/)
@@ -101,6 +102,7 @@ For complete ESP32-C6 GPIO information, see the [official documentation](https:/
    idf.py menuconfig
    ```
    - Enable Zigbee End Device role
+   - Set flash size to **16 MB** for ESP32-C6-WROOM-1-N16 boards
    - Configure any necessary GPIO pins
    - Set up any additional project configurations
 
@@ -146,13 +148,15 @@ The SCD30 sensor is configured with:
 **Measurement Settings:**
 - Measurement interval: Configurable (`SCD30_MEASUREMENT_INTERVAL` seconds)
 - Reading frequency: Every 5 seconds when data is available
-- Warm-up delay: 5 seconds (`SCD30_WARMUP_TIME_MS`) after starting continuous measurement
+- Startup stabilization: 10 seconds (`SCD30_STARTUP_STABILIZATION_MS`) after continuous measurement starts
+  - Measurements are taken immediately
+  - Zigbee publishes are deferred until readings stabilize
 
 **Compensation:**
-- Temperature offset: Configurable (`SCD30_SW_TEMP_OFFSET`) with both hardware and software compensation
-- Environmental compensation: Choose between:
-  - Pressure compensation (`DEFAULT_PRESSURE_MBAR`) when `SCD30_USE_PRESSURE_COMP` is enabled
-  - Altitude compensation (`SCD30_DEFAULT_ALTITUDE` meters) when pressure compensation is disabled
+- Temperature offset: Hardware offset is set to 2.5 C by default
+- Environmental compensation: choose one of these approaches, not both
+  - Pressure compensation: default 1013 mbar
+  - Altitude compensation: disabled by default until explicitly set
 
 **Error Handling & Validation:**
 - Automatic sensor initialization with up to 3 retry attempts
@@ -163,6 +167,8 @@ The SCD30 sensor is configured with:
 - Automatic sensor reset after consecutive errors (`SCD30_MAX_CONSECUTIVE_ERRORS`)
 - CRC validation for all I2C communication
 - Recovery delay (`SCD30_RECOVERY_DELAY_MS`) after sensor reset
+- Forced recalibration support
+  - Use only when the sensor has been at a known reference concentration for at least 2 minutes
 
 ## Project Structure
 
@@ -189,10 +195,11 @@ The SCD30 sensor is configured with:
 1. **Power up the device** - The ESP32 will boot and initialize
 2. **Sensor initialization** - SCD30 will be configured with temperature offset and environmental compensation
 3. **Network joining** - Device automatically attempts to join available Zigbee networks across channels 11-26
-4. **Warm-up period** - After Zigbee connection, wait 5 seconds for sensor stabilization
+4. **Measurement task starts** - The application starts the SCD30 task as soon as the sensor is configured
+5. **Startup stabilization** - The device waits for valid readings before publishing to Zigbee, without blocking boot
 
 ### Normal Operation
-Once connected and warmed up, the device will:
+Once connected, the device will:
 - **Take measurements every 5 seconds** when data is available
 - **Log readings to console**:
 ```bash
@@ -235,22 +242,17 @@ Complete within 3 seconds:
 
 ## Home Assistant Setup
 
-To integrate the ESP32 Zigbee CO₂ sensor with Home Assistant using ZHA and your custom quirks, add the following to your configuration.
+The device exposes standard measurement clusters plus a manufacturer-specific control cluster at `0xFC00`. To make those extra controls readable in ZHA, add a custom quirk and then build your helpers and scripts on top of the cluster attributes.
 
----
-
-### ZHA Configuration
+### 1. Enable custom quirks
 
 ```yaml
 # configuration.yaml
 zha:
-  # … your existing ZHA setup …
   custom_quirks_path: '/config/custom_zha_quirks'
 ```
 
----
-
-### Folder Structure
+### 2. Add the custom quirk
 
 ```
 /config
@@ -258,129 +260,204 @@ zha:
     └── custom_co2_sensor.py
 ```
 
----
+```python
+from zigpy.profiles import zha
+from zigpy.quirks import CustomCluster, CustomDevice
+from zigpy.zcl.clusters.general import Basic, Identify
+from zigpy.zcl.clusters.measurement import (
+    CarbonDioxideConcentration,
+    RelativeHumidity,
+    TemperatureMeasurement,
+)
+from zigpy.zcl.clusters.homeautomation import Diagnostic
+import zigpy.types as t
+from zhaquirks.const import (
+    DEVICE_TYPE,
+    ENDPOINTS,
+    INPUT_CLUSTERS,
+    MODELS_INFO,
+    OUTPUT_CLUSTERS,
+    PROFILE_ID,
+)
 
-### Scripts
+
+class CO2ControlCluster(CustomCluster, Diagnostic):
+    """SCD30 control cluster exposed by the ESP32 firmware."""
+
+    cluster_id = 0xFC00
+    name = "CO2 Control"
+    ep_attribute = "co2_control"
+
+    attributes = {
+        0x0000: ("auto_calibrate", t.Bool, True),
+        0x0001: ("temp_offset_x100", t.int16s, True),
+        0x0002: ("pressure_comp_mbar", t.uint16_t, True),
+        0x0003: ("altitude_comp_m", t.uint16_t, True),
+        0x0004: ("force_recalibration_ppm", t.uint16_t, True),
+        0x0005: ("restart_measurement", t.Bool, True),
+        0x0006: ("debug_command", t.uint8_t, True),
+    }
+
+    server_commands = {}
+    client_commands = {}
+
+
+class ESP32CO2Device(CustomDevice):
+    signature = {
+        MODELS_INFO: [("ESPRESSIF", "esp32c6")],
+        ENDPOINTS: {
+            12: {
+                PROFILE_ID: zha.PROFILE_ID,
+                DEVICE_TYPE: 0xFFF2,
+                INPUT_CLUSTERS: [
+                    Basic.cluster_id,
+                    Identify.cluster_id,
+                    CarbonDioxideConcentration.cluster_id,
+                    TemperatureMeasurement.cluster_id,
+                    RelativeHumidity.cluster_id,
+                    0xFC00,
+                ],
+                OUTPUT_CLUSTERS: [],
+            },
+        },
+    }
+
+    replacement = {
+        ENDPOINTS: {
+            12: {
+                PROFILE_ID: zha.PROFILE_ID,
+                DEVICE_TYPE: 0xFFF2,
+                INPUT_CLUSTERS: [
+                    Basic,
+                    Identify,
+                    CarbonDioxideConcentration,
+                    TemperatureMeasurement,
+                    RelativeHumidity,
+                    CO2ControlCluster,
+                ],
+                OUTPUT_CLUSTERS: [],
+            },
+        },
+    }
+```
+
+Restart Home Assistant after adding the quirk. If the device was already paired before the quirk existed, re-interview it or re-pair it so ZHA picks up the custom cluster mapping.
+
+### 3. Optional: use ZHA Toolkit for inspection and troubleshooting
+
+ZHA Toolkit is useful for reading manufacturer-specific attributes, testing writes, and checking cluster behavior while building dashboards and scripts.
+
+Suggested workflow:
+- Install ZHA Toolkit in Home Assistant
+- Restart Home Assistant
+- Use it to inspect endpoint `12`, cluster `0xFC00`, and attributes `0x0000` through `0x0006`
+- Keep regular automation writes on the built-in `zha.set_zigbee_cluster_attribute` service
+
+### 4. Create helper entities
+
+If you prefer dashboards based on helpers instead of writing raw cluster values directly, create `input_boolean` and `input_number` helpers and then sync them with ZHA scripts.
+
+```yaml
+# configuration.yaml or helpers package
+input_boolean:
+  scd30_auto_calibration:
+    name: SCD30 Auto Calibration
+    icon: mdi:auto-fix
+
+input_number:
+  scd30_temperature_offset:
+    name: SCD30 Temperature Offset
+    min: -10
+    max: 10
+    step: 0.1
+    unit_of_measurement: "°C"
+  scd30_pressure_compensation:
+    name: SCD30 Pressure Compensation
+    min: 700
+    max: 1400
+    step: 1
+    unit_of_measurement: "mbar"
+  scd30_altitude_compensation:
+    name: SCD30 Altitude Compensation
+    min: 0
+    max: 3000
+    step: 1
+    unit_of_measurement: "m"
+  scd30_force_recalibration:
+    name: SCD30 Force Recalibration
+    min: 400
+    max: 2000
+    step: 1
+    unit_of_measurement: "ppm"
+```
+
+### 5. Write scripts that push helper values to the device
+
+Replace `<YOUR_DEVICE_IEEE>` with the sensor's IEEE address from ZHA.
 
 ```yaml
 # scripts.yaml
+scd30_toggle_asc:
+  alias: "SCD30 - Toggle auto calibration"
+  sequence:
+    - action: zha.set_zigbee_cluster_attribute
+      data:
+        ieee: "<YOUR_DEVICE_IEEE>"
+        endpoint_id: 12
+        cluster_id: 0xFC00
+        cluster_type: in
+        attribute: 0
+        value: "{{ is_state('input_boolean.scd30_auto_calibration', 'on') }}"
 
-# 1) Calibrate to outdoor baseline (400 ppm)
+scd30_apply_temperature_offset:
+  alias: "SCD30 - Apply temperature offset"
+  sequence:
+    - action: zha.set_zigbee_cluster_attribute
+      data:
+        ieee: "<YOUR_DEVICE_IEEE>"
+        endpoint_id: 12
+        cluster_id: 0xFC00
+        cluster_type: in
+        attribute: 1
+        value: "{{ (states('input_number.scd30_temperature_offset') | float(0) * 100) | round(0) | int }}"
+
+scd30_apply_pressure_compensation:
+  alias: "SCD30 - Apply pressure compensation"
+  sequence:
+    - action: zha.set_zigbee_cluster_attribute
+      data:
+        ieee: "<YOUR_DEVICE_IEEE>"
+        endpoint_id: 12
+        cluster_id: 0xFC00
+        cluster_type: in
+        attribute: 2
+        value: "{{ states('input_number.scd30_pressure_compensation') | int(1013) }}"
+
 scd30_calibrate_outdoor:
-  alias: "SCD30 – Calibrate to Outdoor Air (400 ppm)"
+  alias: "SCD30 - Calibrate to outdoor air"
   sequence:
     - action: zha.set_zigbee_cluster_attribute
       data:
         ieee: "<YOUR_DEVICE_IEEE>"
         endpoint_id: 12
-        cluster_id: 0xFC00            # CO2ControlCluster
+        cluster_id: 0xFC00
         cluster_type: in
-        attribute: 4                  # force_recalibration_ppm
-        value: 400
-    - service: persistent_notification.create
-      data:
-        title: "SCD30 Calibration"
-        message: "Calibrated to 400 ppm outdoor baseline"
-
-# 2) Enable auto-calibration
-scd30_enable_auto_calibration:
-  alias: "SCD30 – Enable Auto Calibration"
-  sequence:
-    - action: zha.set_zigbee_cluster_attribute
-      data:
-        ieee: "<YOUR_DEVICE_IEEE>"
-        endpoint_id: 12
-        cluster_id: 0xFC00            # CO2ControlCluster
-        cluster_type: in
-        attribute: 0                  # auto_calibrate
-        value: true
-    - service: persistent_notification.create
-      data:
-        title: "SCD30 Auto Calibration"
-        message: "Auto-calibration enabled"
+        attribute: 4
+        value: "{{ states('input_number.scd30_force_recalibration') | int(400) }}"
 ```
 
----
+Recommended usage:
+- Use either `pressure_comp_mbar` or `altitude_comp_m`
+- Keep `force_recalibration_ppm` for deliberate maintenance actions, not routine automations
+- Treat `restart_measurement` and `debug_command` as maintenance controls
 
-### Number Helpers
+### 6. Optional dashboard layout
 
-```yaml
-# templates/numbers.yaml
-
-- name: "SCD30 Temperature Offset"
-  unique_id: scd30_temp_offset
-  state: >-
-    {{ (states('sensor.co2_control_cluster_temp_offset_x100')|int(0)) / 100 }}
-  min: -10.0
-  max: 10.0
-  step: 0.1
-  unit_of_measurement: "°C"
-  set_value:
-    - action: zha.set_zigbee_cluster_attribute
-      data:
-        ieee: "<YOUR_DEVICE_IEEE>"
-        endpoint_id: 12
-        cluster_id: 0xFC00
-        cluster_type: in
-        attribute: 1                  # temp_offset_x100
-        value: "{{ (value * 100)|int }}"
-
-- name: "SCD30 Pressure Compensation"
-  unique_id: scd30_pressure_comp
-  state: >-
-    {{ states('sensor.co2_control_cluster_pressure_comp_mbar')|int(1013) }}
-  min: 700
-  max: 1400
-  step: 1
-  unit_of_measurement: "mbar"
-  set_value:
-    - action: zha.set_zigbee_cluster_attribute
-      data:
-        ieee: "<YOUR_DEVICE_IEEE>"
-        endpoint_id: 12
-        cluster_id: 0xFC00
-        cluster_type: in
-        attribute: 2                  # pressure_comp_mbar
-        value: "{{ value|int }}"
-```
-
----
-
-### Switch Helpers
-
-```yaml
-# templates/switches.yaml
-
-- name: "SCD30 Auto Calibration"
-  unique_id: scd30_auto_calibration
-  icon: mdi:auto-fix
-  state: >
-    {{ is_state('input_boolean.co2_auto_calibration','on') }}
-  turn_on:
-    - service: zha.set_zigbee_cluster_attribute
-      data:
-        ieee: "<YOUR_DEVICE_IEEE>"
-        endpoint_id: 12
-        cluster_id: 0xFC00
-        cluster_type: in
-        attribute: 0                  # auto_calibrate
-        value: true
-  turn_off:
-    - service: zha.set_zigbee_cluster_attribute
-      data:
-        ieee: "<YOUR_DEVICE_IEEE>"
-        endpoint_id: 12
-        cluster_id: 0xFC00
-        cluster_type: in
-        attribute: 0                  # auto_calibrate
-        value: false
-```
-
-> **Note:**
->
-> * Replace `<YOUR_DEVICE_IEEE>` with your sensor’s IEEE address.
-> * Adjust any min/max values or aliases to suit your setup.
-> * Add additional scripts or helpers as needed.
+The custom quirk exposes readable entities for the `0xFC00` cluster, and the helper-based workflow gives you stable UI controls for toggles, numbers, and scripts. A practical dashboard split is:
+- Current readings
+- Quick actions such as outdoor calibration or environment presets
+- Environmental compensation
+- Advanced or maintenance-only controls
 
 ---
 
@@ -395,6 +472,10 @@ scd30_enable_auto_calibration:
 |     `0x0004` | `force_recalibration_ppm` | Uint16  | Force a one-off recalibration     |
 |     `0x0005` | `restart_measurement`     | Boolean | Restart sensor measurements       |
 |     `0x0006` | `debug_command`           | Uint8   | Send a debug command code (0–255) |
+
+Notes:
+- Attributes `0x0005` and `0x0006` are best treated as maintenance controls
+- Do not drive `pressure_comp_mbar` and `altitude_comp_m` at the same time
 
 ---
 
@@ -419,7 +500,7 @@ When connected via USB and viewing logs:
 
 > **Device fails to rejoin after power‑cycle**  
 > - **Symptom:** Sensor disappears from Home Assistant when moved and won’t auto-rejoin.  
-> - **Workaround:** Press the “Restart Measurements” button every few seconds until it reappears; if not, remove and re-pair in HA.  
+> - **Workaround:** Use the long-press rejoin action or re-pair the device in ZHA if network state is stale.  
 > - **If HA won’t refresh:** Restart Home Assistant to clear cache, then re-pair.
 
 > **No Readings Over Zigbee**  
