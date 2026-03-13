@@ -17,10 +17,12 @@
 #include "scd30_driver.h"
 #include "string.h"
 #include "esp_partition.h"
+#include "esp_timer.h"
 #include <inttypes.h>
 #include <math.h>
 
 static const char *TAG = "ZIGBEE_HANDLER";
+static const int64_t STEERING_STALE_TIMEOUT_MS = 25000;
 
 /********************* Functions **************************/
 /* Static variables */
@@ -28,6 +30,7 @@ static uint8_t steering_attempts = 0;
 static volatile bool is_connected = false;
 static volatile bool steering_in_flight = false;
 static volatile uint32_t pending_channel_mask = 0;
+static volatile int64_t steering_started_at_ms = 0;
 
 /* External variables */
 extern EventGroupHandle_t system_events;
@@ -38,6 +41,8 @@ static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask);
 static zigbee_connection_callback_t connection_callback = NULL;
 static void configure_reporting_alarm_handler(uint8_t param);
 static esp_err_t schedule_reconnect_request(uint32_t channel_mask);
+static bool steering_is_stale(void);
+static void clear_stale_steering_state(const char *reason);
 
 static esp_err_t handle_co2_control_attribute(const esp_zb_zcl_set_attr_value_message_t *message);
 static esp_err_t handle_auto_calibrate_attr(const esp_zb_zcl_set_attr_value_message_t *message);
@@ -298,10 +303,12 @@ static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask)
         esp_zb_set_primary_network_channel_set(channel_mask);
         steering_attempts++;
         steering_in_flight = true;
+        steering_started_at_ms = esp_timer_get_time() / 1000;
 
         esp_err_t err = esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
         if (err != ESP_OK) {
             steering_in_flight = false;
+            steering_started_at_ms = 0;
             ESP_LOGW(TAG, "Failed to start network steering: %s", esp_err_to_name(err));
         }
         return;
@@ -334,6 +341,11 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
     case ESP_ZB_BDB_SIGNAL_DEVICE_FIRST_START:
     case ESP_ZB_BDB_SIGNAL_DEVICE_REBOOT:
         ESP_LOGI(TAG, "Device startup signal received");
+        if (commissioning_in_progress && steering_is_stale()) {
+            clear_stale_steering_state("startup signal arrived while steering was stale");
+            commissioning_in_progress = false;
+        }
+
         if (!commissioning_in_progress) {
             ESP_LOGI(TAG, "Starting commissioning sequence...");
             commissioning_in_progress = true;
@@ -363,6 +375,7 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
             
             commissioning_in_progress = false;
             steering_in_flight = false;
+            steering_started_at_ms = 0;
             xEventGroupSetBits(system_events, ZIGBEE_CONNECTED_BIT);
 
             if (connection_callback) {
@@ -375,6 +388,7 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
             // Clear connected state so the retry callback and main loop can act on it
             is_connected = false;
             steering_in_flight = false;
+            steering_started_at_ms = 0;
             xEventGroupClearBits(system_events, ZIGBEE_CONNECTED_BIT);
             ESP_LOGW(TAG, "Network steering failed (status: %s, attempt: %d)",
                      esp_err_to_name(err_status), steering_attempts);
@@ -415,6 +429,8 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
             connection_callback(false);
         }
         commissioning_in_progress = false;
+        steering_in_flight = false;
+        steering_started_at_ms = 0;
         esp_zb_bdb_start_top_level_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
         break;
     
@@ -1187,6 +1203,10 @@ static esp_err_t schedule_reconnect_request(uint32_t channel_mask)
         return ESP_ERR_INVALID_STATE;
     }
 
+    if (steering_in_flight && steering_is_stale()) {
+        clear_stale_steering_state("reconnect requested after steering timeout");
+    }
+
     if (steering_in_flight) {
         ESP_LOGW(TAG, "Steering already in flight, reconnect request ignored");
         return ESP_OK;
@@ -1209,6 +1229,23 @@ static esp_err_t schedule_reconnect_request(uint32_t channel_mask)
     ESP_LOGI(TAG, "Reconnection scheduled via commissioning callback");
 
     return ESP_OK;
+}
+
+static bool steering_is_stale(void)
+{
+    if (!steering_in_flight || steering_started_at_ms == 0) {
+        return false;
+    }
+
+    int64_t now_ms = esp_timer_get_time() / 1000;
+    return (now_ms - steering_started_at_ms) > STEERING_STALE_TIMEOUT_MS;
+}
+
+static void clear_stale_steering_state(const char *reason)
+{
+    ESP_LOGW(TAG, "Clearing stale steering state: %s", reason);
+    steering_in_flight = false;
+    steering_started_at_ms = 0;
 }
 
 
