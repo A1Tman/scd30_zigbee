@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.14 - 2026-03-13
+
+- Added a saved-channel fast rejoin path so known devices reconnect to Zigbee much faster after reboot.
+- Persisted the last successful Zigbee channel in NVS and reuse it before falling back to broader steering.
+- Avoided unconditional network steering on non-factory-new startup signals.
+
 ## v1.0.13 - 2026-03-13
 
 - Disabled maintenance-only Zigbee controls by default to reduce exposed attack surface.

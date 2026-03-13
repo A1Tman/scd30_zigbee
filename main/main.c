@@ -24,6 +24,12 @@ static const char *TAG = "MAIN";
 #define ZIGBEE_CONNECTION_TIMEOUT_MS 120000  // 2 minutes
 #define CONNECTION_CHECK_INTERVAL_MS 2000    // Check connection every 2 seconds
 #define MAIN_TASK_DELAY_MS           500     // Check interval for factory reset
+#define ZIGBEE_FAST_REJOIN_DELAY_MS  4000    // Wait before forcing a saved-channel rejoin
+#define ZIGBEE_NVS_NAMESPACE         "storage"
+#define ZIGBEE_CONNECTED_KEY         "has_connected"
+#define ZIGBEE_LAST_CHANNEL_KEY      "zb_last_ch"
+#define ZIGBEE_CHANNEL_MIN           11
+#define ZIGBEE_CHANNEL_MAX           26
 
 // Event group to signal when Zigbee is ready
 EventGroupHandle_t system_events = NULL;
@@ -45,6 +51,115 @@ static esp_err_t init_nvs(void)
         ret = nvs_flash_init();
     }
     return ret;
+}
+
+static bool load_zigbee_connection_flag(uint8_t *has_connected_before)
+{
+    nvs_handle_t nvs_handle;
+    esp_err_t err = nvs_open(ZIGBEE_NVS_NAMESPACE, NVS_READWRITE, &nvs_handle);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "Error opening NVS handle: %s — attempting normal Zigbee start", esp_err_to_name(err));
+        return false;
+    }
+
+    size_t required_size = sizeof(*has_connected_before);
+    err = nvs_get_blob(nvs_handle, ZIGBEE_CONNECTED_KEY, has_connected_before, &required_size);
+    nvs_close(nvs_handle);
+
+    if (err == ESP_OK) {
+        return true;
+    }
+
+    if (err == ESP_ERR_NVS_NOT_FOUND) {
+        ESP_LOGW(TAG, "No saved Zigbee connection flag found in NVS; attempting normal start before any clean start");
+    } else {
+        ESP_LOGW(TAG, "Failed to read Zigbee connection flag from NVS: %s; attempting normal start",
+                 esp_err_to_name(err));
+    }
+
+    return false;
+}
+
+static bool load_saved_zigbee_channel(uint8_t *last_channel)
+{
+    nvs_handle_t nvs_handle;
+    esp_err_t err = nvs_open(ZIGBEE_NVS_NAMESPACE, NVS_READWRITE, &nvs_handle);
+    if (err != ESP_OK) {
+        return false;
+    }
+
+    err = nvs_get_u8(nvs_handle, ZIGBEE_LAST_CHANNEL_KEY, last_channel);
+    nvs_close(nvs_handle);
+
+    if (err != ESP_OK) {
+        return false;
+    }
+
+    if (*last_channel < ZIGBEE_CHANNEL_MIN || *last_channel > ZIGBEE_CHANNEL_MAX) {
+        ESP_LOGW(TAG, "Ignoring invalid saved Zigbee channel %u", *last_channel);
+        return false;
+    }
+
+    return true;
+}
+
+static void save_zigbee_network_state(uint8_t last_channel)
+{
+    nvs_handle_t nvs_handle;
+    esp_err_t err = nvs_open(ZIGBEE_NVS_NAMESPACE, NVS_READWRITE, &nvs_handle);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "Failed to open NVS for Zigbee state save: %s", esp_err_to_name(err));
+        return;
+    }
+
+    uint8_t has_connected = 1;
+    err = nvs_set_blob(nvs_handle, ZIGBEE_CONNECTED_KEY, &has_connected, sizeof(has_connected));
+    if (err == ESP_OK && last_channel >= ZIGBEE_CHANNEL_MIN && last_channel <= ZIGBEE_CHANNEL_MAX) {
+        err = nvs_set_u8(nvs_handle, ZIGBEE_LAST_CHANNEL_KEY, last_channel);
+    }
+
+    if (err == ESP_OK) {
+        err = nvs_commit(nvs_handle);
+    }
+
+    nvs_close(nvs_handle);
+
+    if (err == ESP_OK) {
+        ESP_LOGI(TAG, "Saved Zigbee connection state to NVS (channel %u)", last_channel);
+    } else {
+        ESP_LOGW(TAG, "Failed to save Zigbee connection state: %s", esp_err_to_name(err));
+    }
+}
+
+static void clear_zigbee_network_state(void)
+{
+    nvs_handle_t nvs_handle;
+    esp_err_t err = nvs_open(ZIGBEE_NVS_NAMESPACE, NVS_READWRITE, &nvs_handle);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "Failed to open NVS for Zigbee state reset: %s", esp_err_to_name(err));
+        return;
+    }
+
+    uint8_t has_connected = 0;
+    err = nvs_set_blob(nvs_handle, ZIGBEE_CONNECTED_KEY, &has_connected, sizeof(has_connected));
+    if (err == ESP_OK) {
+        esp_err_t erase_err = nvs_erase_key(nvs_handle, ZIGBEE_LAST_CHANNEL_KEY);
+        if (erase_err != ESP_OK && erase_err != ESP_ERR_NVS_NOT_FOUND) {
+            err = erase_err;
+        }
+    }
+
+    if (err == ESP_OK) {
+        err = nvs_commit(nvs_handle);
+    }
+
+    nvs_close(nvs_handle);
+
+    if (err == ESP_OK) {
+        ESP_LOGI(TAG, "Reset Zigbee connection state in NVS");
+    } else {
+        ESP_LOGW(TAG, "Failed to reset Zigbee connection state: %s", esp_err_to_name(err));
+    }
 }
 
 // Initialize I2C and SCD30 sensor
@@ -169,29 +284,18 @@ void app_main(void)
 
     // Check if we should perform a clean start
     uint8_t has_connected_before = 0;
-    bool has_connection_flag = false;
-    nvs_handle_t nvs_handle;
-    esp_err_t err = nvs_open("storage", NVS_READWRITE, &nvs_handle);
-    if (err != ESP_OK) {
-        ESP_LOGW(TAG, "Error opening NVS handle: %s — attempting normal Zigbee start", esp_err_to_name(err));
-    } else {
-        size_t required_size = sizeof(has_connected_before);
-        err = nvs_get_blob(nvs_handle, "has_connected", &has_connected_before, &required_size);
-        nvs_close(nvs_handle);
-        if (err == ESP_OK) {
-            has_connection_flag = true;
-        } else if (err == ESP_ERR_NVS_NOT_FOUND) {
-            ESP_LOGW(TAG, "No saved Zigbee connection flag found in NVS; attempting normal start before any clean start");
-        } else {
-            ESP_LOGW(TAG, "Failed to read Zigbee connection flag from NVS: %s; attempting normal start",
-                     esp_err_to_name(err));
-        }
-    }
+    bool has_connection_flag = load_zigbee_connection_flag(&has_connected_before);
+    uint8_t saved_channel = 0;
+    bool has_saved_channel = load_saved_zigbee_channel(&saved_channel);
+    bool fast_rejoin_eligible = has_connection_flag && has_connected_before != 0 && has_saved_channel;
 
     // Never erase Zigbee storage automatically during normal boot.
     // A missing or zero-valued flag only means "no confirmed prior join", not "wipe credentials now".
     if (has_connection_flag && has_connected_before == 0) {
         ESP_LOGW(TAG, "No confirmed previous Zigbee join recorded; attempting normal start without erasing network storage");
+    } else if (fast_rejoin_eligible) {
+        ESP_LOGI(TAG, "Previous connection detected, attempting normal start with saved channel %u fast rejoin fallback",
+                 saved_channel);
     } else {
         ESP_LOGI(TAG, "Previous connection detected, attempting normal start");
     }
@@ -202,6 +306,7 @@ void app_main(void)
     uint32_t total_wait_time = 0;
     uint8_t connection_attempts = 0;
     const uint8_t MAX_CONNECTION_ATTEMPTS = 3;
+    bool fast_rejoin_requested = false;
 
     while (!connected && connection_attempts < MAX_CONNECTION_ATTEMPTS) {
         ESP_LOGI(TAG, "Waiting for Zigbee connection (attempt %d/%d)...", 
@@ -234,15 +339,7 @@ void app_main(void)
                 nvs_flash_erase();
                 nvs_flash_init(); // Re-initialize NVS
                 
-                // Explicitly clear the has_connected flag to ensure clean start on next boot
-                nvs_handle_t nvs_handle;
-                if (nvs_open("storage", NVS_READWRITE, &nvs_handle) == ESP_OK) {
-                    uint8_t has_connected = 0;
-                    nvs_set_blob(nvs_handle, "has_connected", &has_connected, sizeof(has_connected));
-                    nvs_commit(nvs_handle);
-                    nvs_close(nvs_handle);
-                    ESP_LOGI(TAG, "Reset connection status in NVS");
-                }
+                clear_zigbee_network_state();
                 
                 // Restart the device
                 ESP_LOGI(TAG, "Factory reset complete, restarting device");
@@ -253,23 +350,26 @@ void app_main(void)
                 connected = true;
                 ESP_LOGI(TAG, "Connected to Zigbee network after %u ms", (unsigned int)total_wait_time);
                 
-                // Save the connection status to NVS
-                nvs_handle_t nvs_handle;
-                if (nvs_open("storage", NVS_READWRITE, &nvs_handle) == ESP_OK) {
-                    uint8_t has_connected = 1;
-                    nvs_set_blob(nvs_handle, "has_connected", &has_connected, sizeof(has_connected));
-                    nvs_commit(nvs_handle);
-                    nvs_close(nvs_handle);
-                    ESP_LOGI(TAG, "Saved connection status to NVS");
-                }
+                save_zigbee_network_state((uint8_t)esp_zb_get_current_channel());
                 
                 break;
             } else {
                 ESP_LOGW(TAG, "Waiting for Zigbee connection... (%u/%u ms)", 
                         (unsigned int)attempt_wait_time, (unsigned int)attempt_timeout);
-                
-                // Periodically nudge the commissioning callback if still waiting
-                if (attempt_wait_time % 30000 == 0 && attempt_wait_time > 0) { // Every 30 seconds
+
+                if (!fast_rejoin_requested && fast_rejoin_eligible &&
+                    attempt_wait_time >= ZIGBEE_FAST_REJOIN_DELAY_MS) {
+                    uint32_t channel_mask = (1u << saved_channel);
+                    ESP_LOGI(TAG, "Fast rejoin fallback: trying saved Zigbee channel %u", saved_channel);
+                    esp_err_t fast_rejoin_err = zigbee_handler_reconnect_with_mask(channel_mask);
+                    if (fast_rejoin_err != ESP_OK) {
+                        ESP_LOGW(TAG, "Failed to schedule fast rejoin on saved channel: %s",
+                                 esp_err_to_name(fast_rejoin_err));
+                    } else {
+                        fast_rejoin_requested = true;
+                    }
+                } else if (attempt_wait_time % 30000 == 0 && attempt_wait_time > 0) { // Every 30 seconds
+                    // Periodically nudge the commissioning callback if still waiting
                     ESP_LOGI(TAG, "Attempting to force rejoin...");
                     zigbee_handler_reconnect();
                 }
@@ -294,6 +394,7 @@ void app_main(void)
                     }
                 }
                 
+                fast_rejoin_requested = false;
                 vTaskDelay(pdMS_TO_TICKS(5000)); // Wait 5 seconds before next attempt
             }
         }
@@ -302,15 +403,7 @@ void app_main(void)
     if (!connected) {
         ESP_LOGE(TAG, "Failed to connect to Zigbee network after %d attempts", MAX_CONNECTION_ATTEMPTS);
         
-        // Reset the has_connected flag to force a clean start on next boot if we restart
-        nvs_handle_t nvs_handle;
-        if (nvs_open("storage", NVS_READWRITE, &nvs_handle) == ESP_OK) {
-            uint8_t has_connected = 0;
-            nvs_set_blob(nvs_handle, "has_connected", &has_connected, sizeof(has_connected));
-            nvs_commit(nvs_handle);
-            nvs_close(nvs_handle);
-            ESP_LOGI(TAG, "Reset connection status in NVS for clean start on next boot");
-        }
+        clear_zigbee_network_state();
         
         ESP_LOGI(TAG, "Initializing sensor system anyway to allow local operation");
         
@@ -370,15 +463,7 @@ void app_main(void)
             nvs_flash_erase();
             nvs_flash_init(); // Re-initialize NVS
             
-            // Explicitly clear the has_connected flag to ensure clean start on next boot
-            nvs_handle_t nvs_handle;
-            if (nvs_open("storage", NVS_READWRITE, &nvs_handle) == ESP_OK) {
-                uint8_t has_connected = 0;
-                nvs_set_blob(nvs_handle, "has_connected", &has_connected, sizeof(has_connected));
-                nvs_commit(nvs_handle);
-                nvs_close(nvs_handle);
-                ESP_LOGI(TAG, "Reset connection status in NVS");
-            }
+            clear_zigbee_network_state();
             
             // Clear the bit
             xEventGroupClearBits(system_events, FACTORY_RESET_REQUESTED_BIT);
@@ -417,15 +502,7 @@ void app_main(void)
                                     reconnect_failures, MAX_RECONNECT_FAILURES);
                             reconnect_failures = 0;
                             
-                            // Reset the has_connected flag to force a clean start on next boot
-                            nvs_handle_t nvs_handle;
-                            if (nvs_open("storage", NVS_READWRITE, &nvs_handle) == ESP_OK) {
-                                uint8_t has_connected = 0;
-                                nvs_set_blob(nvs_handle, "has_connected", &has_connected, sizeof(has_connected));
-                                nvs_commit(nvs_handle);
-                                nvs_close(nvs_handle);
-                                ESP_LOGI(TAG, "Reset connection status in NVS for clean start on next boot");
-                            }
+                            clear_zigbee_network_state();
                             
                             esp_restart();
                         } else {
@@ -438,15 +515,7 @@ void app_main(void)
                 } else {
                     ESP_LOGE(TAG, "Zigbee stack is not started, restarting device");
                     
-                    // Reset the has_connected flag to force a clean start on next boot
-                    nvs_handle_t nvs_handle;
-                    if (nvs_open("storage", NVS_READWRITE, &nvs_handle) == ESP_OK) {
-                        uint8_t has_connected = 0;
-                        nvs_set_blob(nvs_handle, "has_connected", &has_connected, sizeof(has_connected));
-                        nvs_commit(nvs_handle);
-                        nvs_close(nvs_handle);
-                        ESP_LOGI(TAG, "Reset connection status in NVS for clean start on next boot");
-                    }
+                    clear_zigbee_network_state();
                     
                     esp_restart();
                 }

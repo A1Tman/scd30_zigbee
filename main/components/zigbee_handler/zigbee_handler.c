@@ -255,6 +255,10 @@ esp_err_t zigbee_handler_start(void)
         return err;
     }
 
+    commissioning_in_progress = false;
+    steering_in_flight = false;
+    pending_channel_mask = 0;
+    steering_started_at_ms = 0;
     ESP_LOGI(TAG, "Zigbee stack started, waiting for commissioning");
     steering_attempts = 0;
     return ESP_OK;
@@ -348,20 +352,30 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
     case ESP_ZB_BDB_SIGNAL_DEVICE_FIRST_START:
     case ESP_ZB_BDB_SIGNAL_DEVICE_REBOOT:
         ESP_LOGI(TAG, "Device startup signal received");
+        if (err_status != ESP_OK) {
+            ESP_LOGW(TAG, "Failed to initialize Zigbee stack on startup signal: %s",
+                     esp_err_to_name(err_status));
+            break;
+        }
+
         if (commissioning_in_progress && steering_is_stale()) {
             clear_stale_steering_state("startup signal arrived while steering was stale");
             commissioning_in_progress = false;
         }
 
-        if (!commissioning_in_progress) {
-            ESP_LOGI(TAG, "Starting commissioning sequence...");
-            commissioning_in_progress = true;
-            // Start network steering without forcing the trust center address.
-            esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb, 
-                                    ESP_ZB_BDB_MODE_NETWORK_STEERING, 
-                                    STEERING_RETRY_DELAY_MS);
+        if (esp_zb_bdb_is_factory_new()) {
+            if (!commissioning_in_progress) {
+                ESP_LOGI(TAG, "Factory-new device detected; starting commissioning sequence...");
+                commissioning_in_progress = true;
+                // Start network steering without forcing the trust center address.
+                esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,
+                                        ESP_ZB_BDB_MODE_NETWORK_STEERING,
+                                        STEERING_RETRY_DELAY_MS);
+            } else {
+                ESP_LOGI(TAG, "Commissioning already in progress");
+            }
         } else {
-            ESP_LOGI(TAG, "Commissioning already in progress");
+            ESP_LOGI(TAG, "Known network detected; waiting for fast rejoin before steering fallback");
         }
         break;
             
