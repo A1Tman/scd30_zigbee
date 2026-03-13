@@ -45,6 +45,7 @@ esp_err_t scd30_force_recalibration(uint16_t target_ppm);
 
 /* Configuration Values */
 #define SCD30_MEASUREMENT_INTERVAL  5       /*!< Measurement interval in seconds */
+#define SCD30_STARTUP_STABILIZATION_MS 10000 /*!< Delay publishing after measurement start */
 #define SCD30_AMBIENT_PRESSURE     1013    /*!< Default ambient pressure in mbar */
 #define SCD30_DEFAULT_ALTITUDE     500     /*!< Default altitude in meters */
 #define SCD30_HW_TEMP_OFFSET      2.5f    /*!< Hardware temperature offset in °C */

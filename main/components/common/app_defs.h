@@ -7,9 +7,6 @@
 /* System Events */
 extern EventGroupHandle_t system_events;
 
-/* SCD30 Configuration */
-#define SCD30_WARMUP_TIME_MS    5000    // 5 second warmup after connection
-
 /* System Event Group Bits */
 #define ZIGBEE_CONNECTED_BIT       BIT0    /*!< Event bit indicating Zigbee connection status */
 #define FACTORY_RESET_REQUESTED_BIT BIT1    /*!< Event bit for factory reset request */

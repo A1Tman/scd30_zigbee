@@ -419,7 +419,7 @@ esp_err_t zb_action_handler(esp_zb_core_action_callback_id_t callback_id, const 
         ret = zb_attribute_handler((esp_zb_zcl_set_attr_value_message_t *)message);
         break;
     default:
-        ESP_LOGW(TAG, "Receive Zigbee action(0x%x) callback", callback_id);
+        ESP_LOGD(TAG, "Ignoring unhandled Zigbee action callback (0x%x)", callback_id);
         break;
     }
     return ret;
@@ -807,7 +807,7 @@ static void handle_status(esp_zb_zcl_status_t status, uint16_t cluster_id, uint1
 {
     switch (status) {
         case ESP_ZB_ZCL_STATUS_SUCCESS:
-            ESP_LOGI(TAG, "Attribute 0x%04x in cluster 0x%04x updated successfully", attr_id, cluster_id);
+            ESP_LOGD(TAG, "Attribute 0x%04x in cluster 0x%04x updated successfully", attr_id, cluster_id);
             break;
         case ESP_ZB_ZCL_STATUS_INVALID_VALUE:
             ESP_LOGW(TAG, "Invalid value for attribute 0x%04x in cluster 0x%04x", attr_id, cluster_id);
@@ -836,13 +836,6 @@ static void handle_status(esp_zb_zcl_status_t status, uint16_t cluster_id, uint1
 /* Public API functions */
 esp_err_t zigbee_handler_update_measurements(float co2_ppm, float temperature, float humidity)
 {
-    static bool first_measurement = true;
-    if (first_measurement) {
-        ESP_LOGI(TAG, "First measurement after connection, waiting for warmup...");
-        vTaskDelay(pdMS_TO_TICKS(SCD30_WARMUP_TIME_MS));
-        first_measurement = false;
-    }
-    
     esp_zb_zcl_status_t status;
     
     // Convert values for Zigbee transmission:
@@ -858,14 +851,16 @@ esp_err_t zigbee_handler_update_measurements(float co2_ppm, float temperature, f
     }
     
     // Log the sensor readings with more decimal places for the scaled value:
-    ESP_LOGI(TAG, "Sending measurements - CO2: %.1f ppm (scaled: %.10f), Temp: %.2f°C (%d), Humidity: %.1f%% (%u)",
+    ESP_LOGD(TAG, "Sending measurements - CO2: %.1f ppm (scaled: %.10f), Temp: %.2f°C (%d), Humidity: %.1f%% (%u)",
              (double)co2_ppm, (double)zbCO2, (double)temperature, zbTemperature, (double)humidity, zbHumidity);
 
-    // Set attribute values in the local ZCL attribute table.
-    // esp_zb_zcl_set_attribute_val only writes to local storage; the Zigbee
-    // task's own main-loop drives any resulting OTA transmission, so calling
-    // esp_zb_stack_main_loop_iteration() from this task context is not needed
-    // and would be a thread-safety violation.
+    // Acquire the Zigbee stack lock before calling any Zigbee SDK API from this
+    // (non-Zigbee) task context.  The SDK docs state this is mandatory for all
+    // call sites that are not Zigbee callbacks.
+    if (!esp_zb_lock_acquire(pdMS_TO_TICKS(200))) {
+        ESP_LOGW(TAG, "Failed to acquire Zigbee lock for attribute update, skipping");
+        return ESP_ERR_TIMEOUT;
+    }
 
     // CO2 attribute
     status = esp_zb_zcl_set_attribute_val(HA_CUSTOM_CO2_ENDPOINT,
@@ -893,6 +888,8 @@ esp_err_t zigbee_handler_update_measurements(float co2_ppm, float temperature, f
         &zbHumidity, false);
     handle_status(status, ESP_ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
         ESP_ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID);
+
+    esp_zb_lock_release();
 
     return ESP_OK;
 }
@@ -1118,11 +1115,16 @@ esp_err_t zigbee_handler_cleanup(void)
     // Stop the Zigbee stack if it's running
     if (esp_zb_is_started()) {
         ESP_LOGI(TAG, "Stopping Zigbee scheduler");
-        
-        // Cancel specific alarms we know about
-        esp_zb_scheduler_alarm_cancel(configure_reporting_alarm_handler, 0);
-        esp_zb_scheduler_alarm_cancel((esp_zb_callback_t)bdb_start_top_level_commissioning_cb, 
-                                     ESP_ZB_BDB_MODE_NETWORK_STEERING);
+
+        if (esp_zb_lock_acquire(pdMS_TO_TICKS(200))) {
+            // Cancel specific alarms we know about
+            esp_zb_scheduler_alarm_cancel(configure_reporting_alarm_handler, 0);
+            esp_zb_scheduler_alarm_cancel((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,
+                                         ESP_ZB_BDB_MODE_NETWORK_STEERING);
+            esp_zb_lock_release();
+        } else {
+            ESP_LOGW(TAG, "Failed to acquire Zigbee lock for cleanup, alarms may remain");
+        }
     }
     
     ESP_LOGI(TAG, "Zigbee resources cleaned up successfully");
@@ -1150,12 +1152,17 @@ esp_err_t zigbee_handler_reconnect(void)
         return ESP_OK;
     }
 
+    if (!esp_zb_lock_acquire(pdMS_TO_TICKS(200))) {
+        ESP_LOGW(TAG, "Failed to acquire Zigbee lock for reconnect scheduling");
+        return ESP_ERR_TIMEOUT;
+    }
     // Route through the commissioning callback so channel rotation and
     // the steering_in_flight guard are applied consistently.
     esp_zb_scheduler_alarm((esp_zb_callback_t)bdb_start_top_level_commissioning_cb,
                            ESP_ZB_BDB_MODE_NETWORK_STEERING, 0);
+    esp_zb_lock_release();
     ESP_LOGI(TAG, "Reconnection scheduled via commissioning callback");
-    
+
     return ESP_OK;
 }
 

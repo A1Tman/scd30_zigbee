@@ -19,7 +19,7 @@
  
  static esp_err_t i2c_handler_recover_bus(void)
  {
-     ESP_LOGW(TAG, "Attempting I2C bus recovery...");
+     ESP_LOGI(TAG, "Performing I2C bus recovery...");
      
      // Configure SCL and SDA as GPIO
      gpio_config_t io_conf = {
@@ -71,7 +71,9 @@
          .clk_source = I2C_CLK_SRC_DEFAULT,
          .glitch_ignore_cnt = 7,
          .intr_priority = 0,
-         .trans_queue_depth = 1,
+         // Keep the bus in synchronous mode. This project does not register
+         // async callbacks, and synchronous mode is compatible with probe.
+         .trans_queue_depth = 0,
          .flags.enable_internal_pullup = true,
      };
  
@@ -100,16 +102,20 @@
          return ret;
      }
      ESP_LOGI(TAG, "SCD30 device added to I2C bus");
-   
-     vTaskDelay(pdMS_TO_TICKS(100));
- 
-     // Attempting to probe the SCD30 device
-     ret = i2c_handler_probe_device(SCD30_SENSOR_ADDR);  // <-- Provide the address as an argument
-     if (ret != ESP_OK) {
-         ESP_LOGW(TAG, "Device probe failed for address 0x%02x, but continuing anyway", SCD30_SENSOR_ADDR);
-     }
- 
+
      is_initialized = true;
+     vTaskDelay(pdMS_TO_TICKS(100));
+
+     // Attempting to probe the SCD30 device
+     ret = i2c_handler_probe_device(SCD30_SENSOR_ADDR);
+     if (ret != ESP_OK) {
+         ESP_LOGW(TAG,
+                  "Initial probe for address 0x%02x did not ACK (%s); continuing because the sensor may still be waking up",
+                  SCD30_SENSOR_ADDR, esp_err_to_name(ret));
+     } else {
+         ESP_LOGI(TAG, "Initial probe for address 0x%02x succeeded", SCD30_SENSOR_ADDR);
+     }
+
      return ESP_OK;
  }
  
@@ -204,22 +210,13 @@
  
  esp_err_t i2c_handler_probe_device(uint8_t address)
  {
-     if (!is_initialized || !i2c_bus_handle) {
+     if (!i2c_bus_handle) {
          return ESP_ERR_INVALID_STATE;
      }
 
-     ESP_LOGI(TAG, "Probing device at address 0x%02x...", address);
+     ESP_LOGD(TAG, "Probing device at address 0x%02x", address);
 
-     // Use the bus-level probe so that the address argument is actually used.
-     // i2c_master_probe sends a bare address frame and checks for an ACK.
-     esp_err_t ret = i2c_master_probe(i2c_bus_handle, address, I2C_MASTER_TIMEOUT_MS);
-     if (ret != ESP_OK) {
-         ESP_LOGE(TAG, "Probe failed for address 0x%02x: %s", address, esp_err_to_name(ret));
-         return ret;
-     }
-
-     ESP_LOGI(TAG, "Probe successful for address 0x%02x", address);
-     return ESP_OK;
+     return i2c_master_probe(i2c_bus_handle, address, I2C_MASTER_TIMEOUT_MS);
  }
  
  void i2c_scan(void) {
@@ -229,7 +226,7 @@
      if (ret == ESP_OK) {
          ESP_LOGI(TAG, "I2C device found at address 0x%02x", address);
      } else {
-         ESP_LOGW(TAG, "No I2C device found at address 0x%02x", address);
+         ESP_LOGW(TAG, "No I2C device found at address 0x%02x (%s)", address, esp_err_to_name(ret));
      }
  }
  

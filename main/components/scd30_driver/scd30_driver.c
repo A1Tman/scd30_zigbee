@@ -9,6 +9,7 @@
  #include "esp_log.h"
  #include "freertos/FreeRTOS.h"
  #include "freertos/task.h"
+ #include <stdio.h>
  #include <string.h>
  #include <driver/gpio.h>
  
@@ -17,6 +18,8 @@
  /* Static variables */
  static TaskHandle_t scd30_task_handle = NULL;
  static volatile bool task_running = false;
+
+#define SCD30_DEBUG_MAX_LOG_BYTES 18
  
  /* CRC calculation for SCD30 communication */
  static uint8_t scd30_crc8(const uint8_t *data, size_t len)
@@ -37,6 +40,32 @@
          }
      }
      return crc;
+ }
+
+ static void scd30_log_raw_data(const char *context, const uint8_t *data, size_t len)
+ {
+     char hex_buf[(SCD30_DEBUG_MAX_LOG_BYTES * 3) + 1] = {0};
+     size_t bytes_to_log = len;
+     size_t offset = 0;
+
+     if (bytes_to_log > SCD30_DEBUG_MAX_LOG_BYTES) {
+         bytes_to_log = SCD30_DEBUG_MAX_LOG_BYTES;
+     }
+
+     for (size_t i = 0; i < bytes_to_log && offset < sizeof(hex_buf); ++i) {
+         int written = snprintf(hex_buf + offset, sizeof(hex_buf) - offset,
+                                i + 1 < bytes_to_log ? "%02x " : "%02x", data[i]);
+         if (written < 0) {
+             return;
+         }
+         offset += (size_t)written;
+     }
+
+     ESP_LOGD(TAG, "%s raw data (%u bytes)%s: %s",
+              context,
+              (unsigned int)len,
+              len > bytes_to_log ? " [truncated]" : "",
+              hex_buf);
  }
  
  /* Send command to SCD30 */
@@ -87,19 +116,15 @@
  }
  
  /* Read data from SCD30 */
- static esp_err_t scd30_read_data(uint8_t *data, size_t len)
+ static esp_err_t scd30_read_data(uint8_t *data, size_t len, const char *context)
  {
      esp_err_t ret = i2c_handler_read(data, len);
      if (ret != ESP_OK) {
          ESP_LOGE(TAG, "Failed to read from sensor: %s", esp_err_to_name(ret));
          return ret;
      }
- 
-     // Log the raw data read from the sensor if enabled
-     ESP_LOGI(TAG, "Raw data read from sensor: ");
-         for (size_t i = 0; i < len; i++) {
-         ESP_LOGI(TAG, "0x%02x ", data[i]);
-         }
+
+     scd30_log_raw_data(context, data, len);
  
      // Verify CRC for each word (each word is 2 data bytes followed by 1 CRC byte)
      for (size_t i = 0; i < len; i += 3) {
@@ -223,10 +248,7 @@
         }
 
         ESP_LOGI(TAG, "SCD30 initialized successfully after %d attempt(s)", retry_count + 1);
-
-        // Full warm-up period before first reading
-        ESP_LOGI(TAG, "Waiting for 120 seconds for sensor warm-up...");
-        vTaskDelay(pdMS_TO_TICKS(120000));
+        ESP_LOGI(TAG, "SCD30 configuration complete; startup stabilization will continue in the measurement task");
 
         return ESP_OK;
     }
@@ -269,7 +291,7 @@
  
      vTaskDelay(pdMS_TO_TICKS(3));  // Wait for processing
  
-     ret = scd30_read_data(ready_buf, sizeof(ready_buf));
+     ret = scd30_read_data(ready_buf, sizeof(ready_buf), "data-ready status");
      if (ret == ESP_OK) {
          *data_ready = (ready_buf[0] << 8 | ready_buf[1]) == 1;
      }
@@ -309,7 +331,7 @@
 
     vTaskDelay(pdMS_TO_TICKS(15));
 
-    ret = scd30_read_data(data, sizeof(data));
+    ret = scd30_read_data(data, sizeof(data), "measurement");
     if (ret != ESP_OK) return ret;
 
     // CRC checks
@@ -340,6 +362,9 @@
      bool data_ready;
      esp_err_t ret;
      uint8_t consecutive_errors = 0;
+     TickType_t measurement_start_tick = xTaskGetTickCount();
+     bool stabilization_wait_logged = false;
+     bool stabilization_complete_logged = false;
  
      // Start continuous measurement with ambient pressure compensation
      ret = scd30_start_continuous_measurement(SCD30_AMBIENT_PRESSURE);
@@ -348,6 +373,9 @@
          vTaskDelete(NULL);
          return;
      }
+
+     ESP_LOGI(TAG, "Continuous measurement started; deferring publishes for %u ms while readings stabilize",
+              SCD30_STARTUP_STABILIZATION_MS);
  
      while (task_running) {
          // Check if new data is available
@@ -357,36 +385,55 @@
              ret = scd30_read_measurement(&measurement, true);
              if (ret == ESP_OK) {
                  // Validate measurements are within reasonable ranges
-                 if (measurement.co2_ppm >= SCD30_CO2_MIN && measurement.co2_ppm <= SCD30_CO2_MAX &&
-                     measurement.temperature >= SCD30_TEMP_MIN && measurement.temperature <= SCD30_TEMP_MAX &&
-                     measurement.humidity >= SCD30_HUM_MIN && measurement.humidity <= SCD30_HUM_MAX) {
-                     
-                     ESP_LOGI(TAG, "CO2: %.1f ppm, Temperature: %.2f°C, Humidity: %.1f%%",
-                             measurement.co2_ppm, measurement.temperature, measurement.humidity);
- 
-                     // Update Zigbee with raw values
-                     zigbee_handler_update_measurements(measurement.co2_ppm, 
-                                                      measurement.temperature, 
-                                                      measurement.humidity);
-                     
-                     consecutive_errors = 0;
-                 } else {
-                     ESP_LOGW(TAG, "Measurements out of valid range");
-                     consecutive_errors++;
-                 }
+                  if (measurement.co2_ppm >= SCD30_CO2_MIN && measurement.co2_ppm <= SCD30_CO2_MAX &&
+                      measurement.temperature >= SCD30_TEMP_MIN && measurement.temperature <= SCD30_TEMP_MAX &&
+                      measurement.humidity >= SCD30_HUM_MIN && measurement.humidity <= SCD30_HUM_MAX) {
+                      bool in_startup_stabilization =
+                          (xTaskGetTickCount() - measurement_start_tick) <
+                          pdMS_TO_TICKS(SCD30_STARTUP_STABILIZATION_MS);
+
+                      ESP_LOGI(TAG, "CO2: %.1f ppm, Temperature: %.2f°C, Humidity: %.1f%%",
+                              measurement.co2_ppm, measurement.temperature, measurement.humidity);
+
+                      if (in_startup_stabilization) {
+                          if (!stabilization_wait_logged) {
+                              ESP_LOGI(TAG, "Valid measurements received during startup stabilization; postponing Zigbee updates");
+                              stabilization_wait_logged = true;
+                          }
+                      } else {
+                          if (!stabilization_complete_logged) {
+                              ESP_LOGI(TAG, "Startup stabilization complete; publishing measurements");
+                              stabilization_complete_logged = true;
+                          }
+
+                          zigbee_handler_update_measurements(measurement.co2_ppm,
+                                                           measurement.temperature,
+                                                           measurement.humidity);
+                      }
+
+                      consecutive_errors = 0;
+                  } else {
+                      ESP_LOGW(TAG, "Measurements out of valid range");
+                      consecutive_errors++;
+                  }
              } else {
                  ESP_LOGW(TAG, "Failed to read measurements: %s", esp_err_to_name(ret));
                  consecutive_errors++;
              }
  
              // Check if we need to reset the sensor
-             if (consecutive_errors >= SCD30_MAX_CONSECUTIVE_ERRORS) {
-                 ESP_LOGE(TAG, "Too many consecutive errors, attempting sensor reset");
-                 scd30_reset();
-                 vTaskDelay(pdMS_TO_TICKS(SCD30_RECOVERY_DELAY_MS));
-                 scd30_start_continuous_measurement(SCD30_AMBIENT_PRESSURE);
-                 consecutive_errors = 0; // Reset error counter after sensor reset attempt
-             }
+              if (consecutive_errors >= SCD30_MAX_CONSECUTIVE_ERRORS) {
+                  ESP_LOGE(TAG, "Too many consecutive errors, attempting sensor reset");
+                  scd30_reset();
+                  vTaskDelay(pdMS_TO_TICKS(SCD30_RECOVERY_DELAY_MS));
+                  scd30_start_continuous_measurement(SCD30_AMBIENT_PRESSURE);
+                  measurement_start_tick = xTaskGetTickCount();
+                  stabilization_wait_logged = false;
+                  stabilization_complete_logged = false;
+                  ESP_LOGI(TAG, "Continuous measurement restarted; deferring publishes for %u ms while readings stabilize",
+                           SCD30_STARTUP_STABILIZATION_MS);
+                  consecutive_errors = 0; // Reset error counter after sensor reset attempt
+              }
  
              vTaskDelay(pdMS_TO_TICKS(5000));
          } else if (ret != ESP_OK) {
@@ -457,7 +504,7 @@
  
      vTaskDelay(pdMS_TO_TICKS(3));
  
-     ret = scd30_read_data(data, sizeof(data));
+     ret = scd30_read_data(data, sizeof(data), "temperature offset");
      if (ret != ESP_OK) {
          return ret;
      }
