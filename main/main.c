@@ -23,7 +23,6 @@ static const char *TAG = "MAIN";
 #define ZIGBEE_TASK_STACK_SIZE       4096
 #define ZIGBEE_CONNECTION_TIMEOUT_MS 120000  // 2 minutes
 #define CONNECTION_CHECK_INTERVAL_MS 2000    // Check connection every 2 seconds
-#define MAIN_TASK_DELAY_MS           500     // Check interval for factory reset
 #define ZIGBEE_FAST_REJOIN_DELAY_MS  4000    // Wait before forcing a saved-channel rejoin
 #define ZIGBEE_NVS_NAMESPACE         "storage"
 #define ZIGBEE_CONNECTED_KEY         "has_connected"
@@ -200,33 +199,6 @@ static esp_err_t init_sensor_system(void)
     return ESP_OK;
 }
 
-// Clean up application resources
-static void app_cleanup(void)
-{
-    ESP_LOGI(TAG, "Cleaning up application resources");
-    
-    // Stop SCD30 task
-    scd30_stop_task();
-    vTaskDelay(pdMS_TO_TICKS(100)); // Give the task time to stop
-    
-    // Clean up I2C resources
-    i2c_handler_cleanup();  // This returns void
-    
-    // Clean up Zigbee resources
-    esp_err_t ret = zigbee_handler_cleanup();
-    if (ret != ESP_OK) {
-        ESP_LOGW(TAG, "Zigbee cleanup encountered issues: %s", esp_err_to_name(ret));
-    }
-    
-    // Delete the event group
-    if (system_events != NULL) {
-        vEventGroupDelete(system_events);
-        system_events = NULL;
-    }
-    
-    ESP_LOGI(TAG, "Cleanup complete");
-}
-
 // Callback function for Zigbee connection status
 void zigbee_connection_callback(bool connected)
 {
@@ -256,7 +228,7 @@ void app_main(void)
         return;
     }
 
-    // Initialize factory reset button handler before anything else
+    // Initialize the maintenance button handler before anything else
     ESP_ERROR_CHECK(troubleshooting_init());
 
     // Initialize NVS
@@ -318,33 +290,13 @@ void app_main(void)
         
         while (!connected && attempt_wait_time < attempt_timeout) {
             EventBits_t bits = xEventGroupWaitBits(system_events,
-                                                 ZIGBEE_CONNECTED_BIT | FACTORY_RESET_REQUESTED_BIT,
+                                                 ZIGBEE_CONNECTED_BIT,
                                                  pdFALSE,
                                                  pdFALSE,  // Wait for either bit
                                                  pdMS_TO_TICKS(CONNECTION_CHECK_INTERVAL_MS));
 
             attempt_wait_time += CONNECTION_CHECK_INTERVAL_MS;
             total_wait_time += CONNECTION_CHECK_INTERVAL_MS;
-
-            if (bits & FACTORY_RESET_REQUESTED_BIT) {
-                ESP_LOGI(TAG, "Factory reset requested, performing reset...");
-                
-                // Use cleanup function instead of doing it manually
-                app_cleanup();
-                
-                // Perform factory reset
-                esp_zb_factory_reset();
-                
-                // Clear NVS - this will also clear the "has_connected" flag
-                nvs_flash_erase();
-                nvs_flash_init(); // Re-initialize NVS
-                
-                clear_zigbee_network_state();
-                
-                // Restart the device
-                ESP_LOGI(TAG, "Factory reset complete, restarting device");
-                esp_restart();
-            }
 
             if (bits & ZIGBEE_CONNECTED_BIT) {
                 connected = true;
@@ -443,35 +395,10 @@ void app_main(void)
     while (1) {
         // Use a shorter timeout to prevent watchdog triggering
         EventBits_t bits = xEventGroupWaitBits(system_events,
-                                            ZIGBEE_CONNECTED_BIT | FACTORY_RESET_REQUESTED_BIT,
+                                            ZIGBEE_CONNECTED_BIT,
                                             pdFALSE,  // Don't clear bits automatically
                                             pdFALSE,  // Wait for any bit
                                             pdMS_TO_TICKS(5000));  // 5-second check interval
-                                            
-        // Check for factory reset first
-        if (bits & FACTORY_RESET_REQUESTED_BIT) {
-            ESP_LOGI(TAG, "Factory reset requested, performing reset...");
-            
-            // Stop sensor task first
-            scd30_stop_task();
-            vTaskDelay(pdMS_TO_TICKS(100)); // Short delay to allow task to exit
-            
-            // Perform factory reset
-            esp_zb_factory_reset();
-            
-            // Clear NVS - this will also clear the "has_connected" flag
-            nvs_flash_erase();
-            nvs_flash_init(); // Re-initialize NVS
-            
-            clear_zigbee_network_state();
-            
-            // Clear the bit
-            xEventGroupClearBits(system_events, FACTORY_RESET_REQUESTED_BIT);
-            
-            // Restart the device
-            ESP_LOGI(TAG, "Factory reset complete, restarting device");
-            esp_restart();
-        }
         
         // Check connection status
         bool is_connected_now = (bits & ZIGBEE_CONNECTED_BIT);

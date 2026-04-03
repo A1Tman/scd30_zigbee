@@ -65,10 +65,9 @@ For complete ESP32-C6 GPIO information, see the [official documentation](https:/
   - Automatic measurement intervals
 
 - **User Controls**
-  - Boot button interface for debugging and troubleshooting
-  - Factory reset and network rejoin capabilities
-  - Diagnostic information display
-  - Debug mode toggle
+  - Simplified boot button maintenance controls
+  - Hold-to-rejoin Zigbee recovery
+  - Super-long-hold outdoor recalibration shortcut
 
 - **Reliability Features**
   - Automatic device reset on persistent errors
@@ -169,6 +168,7 @@ The SCD30 sensor is configured with:
 - Recovery delay (`SCD30_RECOVERY_DELAY_MS`) after sensor reset
 - Forced recalibration support
   - Use only when the sensor has been at a known reference concentration for at least 2 minutes
+  - The boot button shortcut uses `400 ppm` for outdoor air recalibration
 
 ## Project Structure
 
@@ -225,20 +225,15 @@ the SCD30's automatic self calibration routine.
 
 ### Button Controls
 
-The boot button (GPIO 9) provides diagnostic and control functions:
+The boot button (GPIO 9) is intentionally limited to two maintenance actions:
 
-#### Quick Press Patterns
-Complete within 3 seconds:
-
-* **Two quick presses** - Display diagnostic information
-* **Three quick presses** - Toggle debug mode for detailed logging  
-* **Four quick presses** - Factory reset (**WARNING**: Erases all Zigbee settings)
-
-#### Long Press
 * **Hold for 3 seconds** - Force network rejoin
-  * Use when device can't connect or needs to join different network
+  * Use when the device cannot reconnect or needs to rejoin a coordinator after being moved
+* **Hold for 12 seconds** - Trigger forced recalibration to outdoor air (`400 ppm`)
+  * Use only after the sensor has been sitting in clean outdoor/reference air for at least 2 minutes
+  * Keep the sensor away from your breath, doors, vents, vehicles, or other local CO₂ sources while calibrating
 
-> **Note:** All button presses include 100ms debounce protection.
+Short presses are ignored. All button actions include 100ms debounce protection.
 
 ## Home Assistant Setup
 
@@ -672,7 +667,7 @@ When connected via USB and viewing logs:
 
 > **Stale or Drifting CO₂ Values**  
 > - **Symptom:** Readings remain constant or slowly drift.  
-> - **Fix:** Perform manual calibration under known CO₂; allow up to 14 days for auto-calibration to stabilize.
+> - **Fix:** Perform manual calibration under known CO₂, or use the 12-second outdoor recalibration shortcut after at least 2 minutes in clean outdoor/reference air; allow up to 14 days for auto-calibration to stabilize.
 
 > **Unexpected Resets / Brown‑outs**  
 > - **Symptom:** Device reboots intermittently.  

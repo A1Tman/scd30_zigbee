@@ -4,7 +4,7 @@
 #include "app_defs.h"
 
 /**
- * @brief Initialize factory reset and troubleshooting buttons
+ * @brief Initialize the maintenance button handler
  * 
  * @return esp_err_t ESP_OK if successful
  */

@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.17 - 2026-04-03
+
+- Simplified the BOOT button behavior to two hold actions only: `3s` for Zigbee rejoin and `12s` for outdoor `400 ppm` forced recalibration.
+- Removed the old quick-press debug, diagnostics, and factory-reset maintenance menu from the firmware button handler.
+- Updated the documentation to match the new maintenance-button behavior and outdoor recalibration workflow.
+
 ## v1.0.16 - 2026-04-03
 
 - Mirrored accepted control writes back into the local Zigbee attribute table so cluster `0xFC00` reads stay in sync with the applied SCD30 configuration.
