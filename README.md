@@ -363,14 +363,17 @@ Useful ZCL attribute types for this cluster:
 
 ### 4. Create helper entities
 
-If you prefer dashboards based on helpers instead of writing raw cluster values directly, create `input_boolean` and `input_number` helpers and then sync them with ZHA scripts.
+If you prefer dashboards based on helpers instead of writing raw cluster values directly, use separate helpers for the desired auto-calibration setting and the last confirmed hardware state.
 
 ```yaml
 # configuration.yaml or helpers package
 input_boolean:
   scd30_auto_calibration:
-    name: SCD30 Auto Calibration
+    name: SCD30 Desired Auto Calibration
     icon: mdi:auto-fix
+  co2_auto_calibration:
+    name: CO2 Hardware Auto Calibration
+    icon: mdi:toggle-switch
 
 input_number:
   scd30_temperature_offset:
@@ -399,14 +402,16 @@ input_number:
     unit_of_measurement: "ppm"
 ```
 
-### 5. Write scripts that push helper values to the device
+Do not force `input_boolean.co2_auto_calibration` to an `initial:` value. Let Home Assistant restore the helper and then refresh it from the device after startup.
+
+### 5. Write scripts that push helper values to the device and read them back
 
 Replace `<YOUR_DEVICE_IEEE>` with the sensor's IEEE address from ZHA.
 
 ```yaml
 # scripts.yaml
-scd30_apply_auto_calibration:
-  alias: "SCD30 - Apply auto calibration"
+scd30_enable_auto_calibration:
+  alias: "SCD30 - Enable Auto Calibration"
   sequence:
     - action: zha_toolkit.attr_write
       data:
@@ -415,26 +420,99 @@ scd30_apply_auto_calibration:
         cluster: 0xFC00
         attribute: 0
         attr_type: 16
-        attr_val: "{{ 1 if is_state('input_boolean.scd30_auto_calibration', 'on') else 0 }}"
+        attr_val: 1
         read_before_write: false
         read_after_write: false
         tries: 3
-
-scd30_enable_auto_calibration:
-  alias: "SCD30 - Enable auto calibration"
-  sequence:
+        fail_exception: true
     - action: input_boolean.turn_on
       target:
         entity_id: input_boolean.scd30_auto_calibration
-    - action: script.scd30_apply_auto_calibration
+    - delay:
+        seconds: 2
+    - action: script.scd30_refresh_auto_calibration_actual
 
 scd30_disable_auto_calibration:
-  alias: "SCD30 - Disable auto calibration"
+  alias: "SCD30 - Disable Auto Calibration"
   sequence:
+    - action: zha_toolkit.attr_write
+      data:
+        ieee: "<YOUR_DEVICE_IEEE>"
+        endpoint: 12
+        cluster: 0xFC00
+        attribute: 0
+        attr_type: 16
+        attr_val: 0
+        read_before_write: false
+        read_after_write: false
+        tries: 3
+        fail_exception: true
     - action: input_boolean.turn_off
       target:
         entity_id: input_boolean.scd30_auto_calibration
-    - action: script.scd30_apply_auto_calibration
+    - delay:
+        seconds: 2
+    - action: script.scd30_refresh_auto_calibration_actual
+
+scd30_read_auto_calibrate:
+  alias: "SCD30 - Read Auto Calibration Status"
+  sequence:
+    - action: script.scd30_refresh_auto_calibration_actual
+
+scd30_sync_auto_calibration_after_startup:
+  alias: "SCD30 - Sync Auto Calibration After Startup"
+  mode: restart
+  sequence:
+    - wait_template: >-
+        {{ states('sensor.espressif_esp32c6_carbon_dioxide') not in ['unknown', 'unavailable', 'none', ''] }}
+      timeout: "00:01:30"
+      continue_on_timeout: true
+    - delay: "00:00:15"
+    - action: script.scd30_refresh_auto_calibration_actual
+      continue_on_error: true
+
+scd30_refresh_auto_calibration_actual:
+  alias: "SCD30 - Refresh Auto-Calibration Value"
+  mode: restart
+  sequence:
+    - variables:
+        auto_cal_actual_response: {}
+    - repeat:
+        count: 3
+        sequence:
+          - action: zha_toolkit.attr_read
+            continue_on_error: true
+            data:
+              ieee: "<YOUR_DEVICE_IEEE>"
+              endpoint: 12
+              cluster: 0xFC00
+              attribute: 0
+              use_cache: false
+              tries: 3
+            response_variable: auto_cal_actual_response
+          - choose:
+              - conditions: >
+                  {% set result_read = auto_cal_actual_response.result_read | default([], true) %}
+                  {% set values = result_read[0] if result_read | count > 0 else {} %}
+                  {% set errors = result_read[1] if result_read | count > 1 else {} %}
+                  {{ auto_cal_actual_response.success | default(false) and errors | count == 0 and values | count > 0 }}
+                sequence:
+                  - variables:
+                      auto_cal_value: >-
+                        {% set values = auto_cal_actual_response.result_read[0] | default({}, true) %}
+                        {{ values.get(0, values.get('0')) | string | trim | lower }}
+                  - action: input_boolean.turn_{{ 'on' if auto_cal_value in ['true', '1', 'on', 'bool.true'] else 'off' }}
+                    target:
+                      entity_id: input_boolean.co2_auto_calibration
+                  - stop: "SCD30 auto-calibration state refreshed"
+          - delay: "00:00:08"
+    - action: persistent_notification.create
+      data:
+        title: "SCD30 Auto-Calibration Refresh Failed"
+        message: >-
+          Unable to read the current hardware auto-calibration state from the SCD30 sensor.
+          {{ auto_cal_actual_response.errors | default([], true) | join('; ') }}
+          {{ auto_cal_actual_response.warnings | default([], true) | join('; ') }}
 
 scd30_apply_temperature_offset:
   alias: "SCD30 - Apply temperature offset"
@@ -513,13 +591,39 @@ scd30_calibrate_outdoor:
 ```
 
 Recommended usage:
+- Treat `input_boolean.scd30_auto_calibration` as the desired setting.
+- Treat `input_boolean.co2_auto_calibration` as the last confirmed hardware readback.
+- Normalize readbacks such as `1`, `true`, and `Bool.true` to `on` in the refresh script.
 - Use either `pressure_comp_mbar` or `altitude_comp_m`
 - Keep `force_recalibration_ppm` for deliberate maintenance actions, not routine automations
 - After writing a new temperature offset or compensation value, wait for the next stabilization window before judging the reading
 
-### 6. Optional Lovelace dashboard
+### 6. Keep the hardware state synced after Home Assistant restarts
 
-This example keeps the live measurement entities, exposes the helper inputs you edit directly, and uses scripts for the actual writes to the device.
+The live setup uses a delayed startup refresh instead of a single immediate read on boot. This avoids false `off` states when ZHA or the sleepy end device is not ready yet.
+
+```yaml
+# automations.yaml
+- alias: Poll CO2 Auto Calibration Status
+  trigger:
+    - platform: time_pattern
+      minutes: /5
+      id: periodic
+    - platform: homeassistant
+      event: start
+      id: startup
+  action:
+    - choose:
+        - conditions: "{{ trigger.id == 'startup' }}"
+          sequence:
+            - service: script.scd30_sync_auto_calibration_after_startup
+      default:
+        - service: script.scd30_read_auto_calibrate
+```
+
+### 7. Optional Lovelace dashboard
+
+This example keeps the live measurement entities, separates desired and actual auto-calibration state, and exposes refresh/apply scripts explicitly.
 
 ```yaml
 views:
@@ -549,10 +653,20 @@ views:
                   - entity: sensor.espressif_esp32c6_humidity
                     name: Humidity
                     icon: mdi:water-percent
+                  - entity: input_boolean.scd30_auto_calibration
+                    name: Desired Auto Calibration
+                    icon: mdi:auto-fix
+                  - entity: input_boolean.co2_auto_calibration
+                    name: Hardware Auto-Calibration Status
+                    icon: mdi:toggle-switch
               - type: entities
                 title: Quick Actions
                 icon: mdi:lightning-bolt
                 entities:
+                  - entity: script.scd30_refresh_auto_calibration_actual
+                    name: Refresh Hardware Auto-Calibration Status
+                    icon: mdi:refresh
+                    action_name: REFRESH
                   - entity: script.scd30_calibrate_outdoor
                     name: Calibrate to Outdoor Air (400 ppm)
                     icon: mdi:air-filter
@@ -590,13 +704,6 @@ views:
                     name: Apply Altitude Compensation
                     icon: mdi:content-save-outline
                     action_name: APPLY
-                  - entity: input_boolean.scd30_auto_calibration
-                    name: Auto Calibration
-                    icon: mdi:auto-fix
-                  - entity: script.scd30_apply_auto_calibration
-                    name: Apply Auto Calibration Setting
-                    icon: mdi:content-save-outline
-                    action_name: APPLY
               - type: entities
                 title: Advanced Controls
                 icon: mdi:cog
@@ -614,7 +721,7 @@ Suggested cleanup from older dashboards:
 - Remove `button.scd30_restart_measurements`
 - Remove `select.scd30_debug_commands`
 - Replace location-specific presets such as `script.scd30_set_oslo_environment` with generic pressure or altitude scripts
-- Prefer helper entities plus write scripts over direct writes from dashboard entity rows
+- Prefer helper entities plus explicit write/refresh scripts over direct writes from dashboard entity rows
 
 ---
 
