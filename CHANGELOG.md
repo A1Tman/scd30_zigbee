@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.16 - 2026-04-03
+
+- Mirrored accepted control writes back into the local Zigbee attribute table so cluster `0xFC00` reads stay in sync with the applied SCD30 configuration.
+- Updated the Home Assistant quirk example to define readable `0xFC00` attributes without manufacturer-specific flags.
+
 ## v1.0.15 - 2026-03-13
 
 - Persisted SCD30 control settings in NVS so temperature offset, ASC, and compensation settings survive reboot.

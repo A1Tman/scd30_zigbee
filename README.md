@@ -242,7 +242,7 @@ Complete within 3 seconds:
 
 ## Home Assistant Setup
 
-The device exposes standard measurement clusters plus a manufacturer-specific control cluster at `0xFC00`. To make those extra controls readable in ZHA, add a custom quirk and then build your helpers and scripts on top of the cluster attributes.
+The device exposes standard measurement clusters plus a custom control cluster at `0xFC00`. To make those extra controls readable in ZHA, add a custom quirk and then build your helpers and scripts on top of the cluster attributes.
 
 ### 1. Enable custom quirks
 
@@ -289,11 +289,11 @@ class CO2ControlCluster(CustomCluster, Diagnostic):
     ep_attribute = "co2_control"
 
     attributes = {
-        0x0000: ("auto_calibrate", t.Bool, True),
-        0x0001: ("temp_offset_x100", t.int16s, True),
-        0x0002: ("pressure_comp_mbar", t.uint16_t, True),
-        0x0003: ("altitude_comp_m", t.uint16_t, True),
-        0x0004: ("force_recalibration_ppm", t.uint16_t, True),
+        0x0000: ("auto_calibrate", t.Bool),
+        0x0001: ("temp_offset_x100", t.int16s),
+        0x0002: ("pressure_comp_mbar", t.uint16_t),
+        0x0003: ("altitude_comp_m", t.uint16_t),
+        0x0004: ("force_recalibration_ppm", t.uint16_t),
     }
 
     server_commands = {}
@@ -341,19 +341,21 @@ class ESP32CO2Device(CustomDevice):
 
 Restart Home Assistant after adding the quirk. If the device was already paired before the quirk existed, re-interview it or re-pair it so ZHA picks up the custom cluster mapping.
 
+Define these `0xFC00` attributes as ordinary typed attributes in the quirk. Marking them as manufacturer-specific can prevent reads from resolving correctly in ZHA.
+
 If you intentionally enable the maintenance-only firmware controls, extend the quirk with:
-- `0x0005: ("restart_measurement", t.Bool, True)`
-- `0x0006: ("debug_command", t.uint8_t, True)`
+- `0x0005: ("restart_measurement", t.Bool)`
+- `0x0006: ("debug_command", t.uint8_t)`
 
 ### 3. Optional: use ZHA Toolkit for inspection and troubleshooting
 
-ZHA Toolkit is useful for reading manufacturer-specific attributes, testing writes, and checking cluster behavior while building dashboards and scripts.
+ZHA Toolkit is useful for reading custom attributes, testing writes, and checking cluster behavior while building dashboards and scripts.
 
 Suggested workflow:
 - Install ZHA Toolkit in Home Assistant
 - Restart Home Assistant
 - Use it to inspect endpoint `12`, cluster `0xFC00`, and attributes `0x0000` through `0x0004`
-- Use `zha_toolkit.attr_write` for writes to the manufacturer-specific control cluster
+- Use `zha_toolkit.attr_write` for writes to the custom control cluster
 
 For this device, `zha_toolkit.attr_write` has proven more reliable than the built-in `zha.set_zigbee_cluster_attribute` action for custom `0xFC00` attributes. In Home Assistant, switch the action editor to YAML mode and use the device IEEE address directly.
 

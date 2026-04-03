@@ -50,6 +50,7 @@ static void clear_stale_steering_state(const char *reason);
 static void steering_watchdog_alarm_handler(uint8_t token);
 
 static esp_err_t handle_co2_control_attribute(const esp_zb_zcl_set_attr_value_message_t *message);
+static esp_err_t mirror_co2_control_attribute(uint16_t attr_id, const void *value, size_t value_size);
 static esp_err_t handle_auto_calibrate_attr(const esp_zb_zcl_set_attr_value_message_t *message);
 static esp_err_t handle_temp_offset_attr(const esp_zb_zcl_set_attr_value_message_t *message);
 static esp_err_t handle_pressure_comp_attr(const esp_zb_zcl_set_attr_value_message_t *message);
@@ -617,6 +618,24 @@ static esp_err_t handle_co2_control_attribute(const esp_zb_zcl_set_attr_value_me
     return ret;
 }
 
+static esp_err_t mirror_co2_control_attribute(uint16_t attr_id, const void *value, size_t value_size)
+{
+    esp_zb_zcl_attr_t *attr = esp_zb_zcl_get_attribute(
+        HA_CUSTOM_CO2_ENDPOINT,
+        CO2_CONTROL_CLUSTER_ID,
+        ESP_ZB_ZCL_CLUSTER_SERVER_ROLE,
+        attr_id
+    );
+
+    if (attr == NULL || attr->data_p == NULL) {
+        ESP_LOGW(TAG, "Unable to mirror CO2 control attribute 0x%04x into local Zigbee attribute table", attr_id);
+        return ESP_ERR_NOT_FOUND;
+    }
+
+    memcpy(attr->data_p, value, value_size);
+    return ESP_OK;
+}
+
 /**
  * @brief Handle auto calibration attribute
  */
@@ -631,6 +650,16 @@ static esp_err_t handle_auto_calibrate_attr(const esp_zb_zcl_set_attr_value_mess
     esp_err_t ret = scd30_update_auto_calibration(enable);
     
     if (ret == ESP_OK) {
+        uint8_t attr_value = enable ? 1 : 0;
+        esp_err_t mirror_ret = mirror_co2_control_attribute(
+            CO2_CONTROL_ATTR_AUTO_CALIBRATE_ID,
+            &attr_value,
+            sizeof(attr_value)
+        );
+        if (mirror_ret != ESP_OK) {
+            ESP_LOGW(TAG, "Auto calibration was applied but local attribute mirror failed: %s",
+                     esp_err_to_name(mirror_ret));
+        }
         ESP_LOGI(TAG, "Auto calibration update queued: %s", enable ? "ENABLED" : "DISABLED");
     } else {
         ESP_LOGE(TAG, "Failed to set auto calibration: %s", esp_err_to_name(ret));
@@ -665,6 +694,15 @@ static esp_err_t handle_temp_offset_attr(const esp_zb_zcl_set_attr_value_message
     esp_err_t ret = scd30_update_temperature_offset(offset_celsius);
     
     if (ret == ESP_OK) {
+        esp_err_t mirror_ret = mirror_co2_control_attribute(
+            CO2_CONTROL_ATTR_TEMP_OFFSET_ID,
+            &offset_x100,
+            sizeof(offset_x100)
+        );
+        if (mirror_ret != ESP_OK) {
+            ESP_LOGW(TAG, "Temperature offset was applied but local attribute mirror failed: %s",
+                     esp_err_to_name(mirror_ret));
+        }
         ESP_LOGI(TAG, "Temperature offset update queued: %.2f°C", offset_celsius);
     } else {
         ESP_LOGE(TAG, "Failed to set temperature offset: %s", esp_err_to_name(ret));
@@ -697,6 +735,15 @@ static esp_err_t handle_pressure_comp_attr(const esp_zb_zcl_set_attr_value_messa
     esp_err_t ret = scd30_update_pressure_compensation(pressure_mbar);
     
     if (ret == ESP_OK) {
+        esp_err_t mirror_ret = mirror_co2_control_attribute(
+            CO2_CONTROL_ATTR_PRESSURE_COMP_ID,
+            &pressure_mbar,
+            sizeof(pressure_mbar)
+        );
+        if (mirror_ret != ESP_OK) {
+            ESP_LOGW(TAG, "Pressure compensation was applied but local attribute mirror failed: %s",
+                     esp_err_to_name(mirror_ret));
+        }
         if (pressure_mbar == 0) {
             ESP_LOGI(TAG, "Pressure compensation disable queued");
         } else {
@@ -732,6 +779,15 @@ static esp_err_t handle_altitude_comp_attr(const esp_zb_zcl_set_attr_value_messa
     esp_err_t ret = scd30_update_altitude_compensation(altitude_m);
     
     if (ret == ESP_OK) {
+        esp_err_t mirror_ret = mirror_co2_control_attribute(
+            CO2_CONTROL_ATTR_ALTITUDE_COMP_ID,
+            &altitude_m,
+            sizeof(altitude_m)
+        );
+        if (mirror_ret != ESP_OK) {
+            ESP_LOGW(TAG, "Altitude compensation was applied but local attribute mirror failed: %s",
+                     esp_err_to_name(mirror_ret));
+        }
         if (altitude_m == 0) {
             ESP_LOGI(TAG, "Altitude compensation disable queued");
         } else {
@@ -745,7 +801,7 @@ static esp_err_t handle_altitude_comp_attr(const esp_zb_zcl_set_attr_value_messa
 }
 
 /**
- * @brief Handle forced recalibration attribute (UPDATED VERSION)
+ * @brief Handle forced recalibration attribute
  */
 static esp_err_t handle_force_recalibration_attr(const esp_zb_zcl_set_attr_value_message_t *message)
 {
