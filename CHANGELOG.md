@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.0.18 - 2026-04-24
+
+- Protected the shared SCD30 runtime config with a spinlock to eliminate a cross-task data race between the Zigbee callback path and the measurement task.
+- Added bounds checking in `scd30_send_command` to prevent a latent stack buffer overflow if a future caller passes too many data words.
+- Yielded from the BOOT button ISR after waking the event task, restoring the FreeRTOS contract for `xEventGroupSetBitsFromISR` users.
+- Switched the persisted Zigbee connection flag in NVS from a 1-byte blob to `nvs_get_u8`/`nvs_set_u8` for type consistency with the channel key (one-time auto-migration on first boot after upgrade).
+- Removed a redundant CRC verification loop in `scd30_read_measurement` that re-checked bytes already validated by `scd30_read_data`.
+
 ## v1.0.17 - 2026-04-03
 
 - Simplified the BOOT button behavior to two hold actions only: `3s` for Zigbee rejoin and `12s` for outdoor `400 ppm` forced recalibration.

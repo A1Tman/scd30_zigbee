@@ -86,6 +86,10 @@ static void IRAM_ATTR boot_button_isr_handler(void* arg) {
         }
         last_press_time = current_time;
     }
+
+    if (xHigherPriorityTaskWoken == pdTRUE) {
+        portYIELD_FROM_ISR();
+    }
 }
 
 esp_err_t troubleshooting_init(void) {

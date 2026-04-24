@@ -61,8 +61,7 @@ static bool load_zigbee_connection_flag(uint8_t *has_connected_before)
         return false;
     }
 
-    size_t required_size = sizeof(*has_connected_before);
-    err = nvs_get_blob(nvs_handle, ZIGBEE_CONNECTED_KEY, has_connected_before, &required_size);
+    err = nvs_get_u8(nvs_handle, ZIGBEE_CONNECTED_KEY, has_connected_before);
     nvs_close(nvs_handle);
 
     if (err == ESP_OK) {
@@ -111,8 +110,7 @@ static void save_zigbee_network_state(uint8_t last_channel)
         return;
     }
 
-    uint8_t has_connected = 1;
-    err = nvs_set_blob(nvs_handle, ZIGBEE_CONNECTED_KEY, &has_connected, sizeof(has_connected));
+    err = nvs_set_u8(nvs_handle, ZIGBEE_CONNECTED_KEY, 1);
     if (err == ESP_OK && last_channel >= ZIGBEE_CHANNEL_MIN && last_channel <= ZIGBEE_CHANNEL_MAX) {
         err = nvs_set_u8(nvs_handle, ZIGBEE_LAST_CHANNEL_KEY, last_channel);
     }

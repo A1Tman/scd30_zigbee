@@ -27,6 +27,23 @@
  static uint16_t scd30_last_force_recalibration_attr = 0;
  static bool scd30_config_loaded = false;
  static bool scd30_last_zigbee_attr_snapshot_valid = false;
+ // Guards scd30_config against torn reads/writes between the Zigbee task
+ // (scd30_update_*) and the measurement task (sync + error-recovery paths).
+ static portMUX_TYPE scd30_config_mux = portMUX_INITIALIZER_UNLOCKED;
+
+ static inline void scd30_config_snapshot(scd30_runtime_config_t *out)
+ {
+     portENTER_CRITICAL(&scd30_config_mux);
+     *out = scd30_config;
+     portEXIT_CRITICAL(&scd30_config_mux);
+ }
+
+ static inline void scd30_config_store(const scd30_runtime_config_t *in)
+ {
+     portENTER_CRITICAL(&scd30_config_mux);
+     scd30_config = *in;
+     portEXIT_CRITICAL(&scd30_config_mux);
+ }
 
 #define SCD30_DEBUG_MAX_LOG_BYTES 18
 #define SCD30_CONFIG_NVS_NAMESPACE "scd30_cfg"
@@ -218,9 +235,13 @@ static void scd30_sync_config_from_zigbee_attributes(TickType_t *measurement_sta
  /* Send command to SCD30 */
  static esp_err_t scd30_send_command(uint16_t command, const uint16_t *data, size_t words)
  {
-     uint8_t buf[20];  // Maximum command length (command + data + CRC)
+     uint8_t buf[20];  // 2 header bytes + up to 6 words * (2 data + 1 CRC) = 20
      size_t idx = 0;
- 
+
+     if (words > 6 || (words > 0 && data == NULL)) {
+         return ESP_ERR_INVALID_ARG;
+     }
+
      // Add command bytes
      buf[idx++] = command >> 8;
      buf[idx++] = command & 0xFF;
@@ -387,7 +408,7 @@ static void scd30_sync_config_from_zigbee_attributes(TickType_t *measurement_sta
              case SCD30_COMMAND_APPLY_CONFIG:
                  ret = scd30_restart_measurement_with_config(&command.config);
                  if (ret == ESP_OK) {
-                     scd30_config = command.config;
+                     scd30_config_store(&command.config);
                      *measurement_start_tick = xTaskGetTickCount();
                      *stabilization_wait_logged = false;
                      *stabilization_complete_logged = false;
@@ -421,7 +442,9 @@ static void scd30_sync_config_from_zigbee_attributes(TickType_t *measurement_sta
          return;
      }
 
-     scd30_runtime_config_t attr_config = scd30_config;
+     scd30_runtime_config_t current_config;
+     scd30_config_snapshot(&current_config);
+     scd30_runtime_config_t attr_config = current_config;
      esp_zb_zcl_attr_t *attr = NULL;
      uint16_t force_recalibration_ppm = 0;
 
@@ -469,14 +492,14 @@ static void scd30_sync_config_from_zigbee_attributes(TickType_t *measurement_sta
          attr_config.compensation_mode = attr_config.altitude_comp_m == 0 ?
              SCD30_COMPENSATION_MODE_NONE : SCD30_COMPENSATION_MODE_ALTITUDE;
      } else {
-         attr_config.compensation_mode = scd30_config.compensation_mode;
+         attr_config.compensation_mode = current_config.compensation_mode;
      }
      attr_config.version = SCD30_CONFIG_VERSION;
 
      scd30_last_zigbee_attr_snapshot = attr_config;
      scd30_last_zigbee_attr_snapshot_valid = true;
 
-     bool config_changed = memcmp(&attr_config, &scd30_config, sizeof(attr_config)) != 0;
+     bool config_changed = memcmp(&attr_config, &current_config, sizeof(attr_config)) != 0;
 
      if (!config_changed) {
          if (force_recalibration_ppm == 0 || force_recalibration_ppm == scd30_last_force_recalibration_attr) {
@@ -525,7 +548,7 @@ static void scd30_sync_config_from_zigbee_attributes(TickType_t *measurement_sta
      }
 
      if (scd30_restart_measurement_with_config(&attr_config) == ESP_OK) {
-         scd30_config = attr_config;
+         scd30_config_store(&attr_config);
          *measurement_start_tick = xTaskGetTickCount();
          *stabilization_wait_logged = false;
          *stabilization_complete_logged = false;
@@ -577,7 +600,7 @@ esp_err_t scd30_init(void)
         return ret;
     }
 
-    config = scd30_config;
+    scd30_config_snapshot(&config);
 
     while (retry_count < SCD30_INIT_RETRY_COUNT) {
         if (retry_count > 0) {
@@ -707,15 +730,6 @@ esp_err_t scd30_init(void)
 
     ret = scd30_read_data(data, sizeof(data), "measurement");
     if (ret != ESP_OK) return ret;
-
-    // CRC checks
-    for (int i = 0; i < 18; i += 6) {
-        if (scd30_crc8(&data[i], 2) != data[i+2] ||
-            scd30_crc8(&data[i+3], 2) != data[i+5]) {
-            ESP_LOGW(TAG, "CRC check failed for measurement block at offset %d", i);
-            return ESP_ERR_INVALID_CRC;
-        }
-    }
 
     measurement->co2_ppm     = parse_scd30_float(&data[0]);
     measurement->temperature = parse_scd30_float(&data[6]);
@@ -992,7 +1006,7 @@ esp_err_t scd30_get_config(scd30_runtime_config_t *config)
         return ret;
     }
 
-    *config = scd30_config;
+    scd30_config_snapshot(config);
     return ESP_OK;
 }
 
@@ -1007,7 +1021,8 @@ esp_err_t scd30_update_temperature_offset(float offset_celsius)
         return ret;
     }
 
-    scd30_runtime_config_t updated = scd30_config;
+    scd30_runtime_config_t updated;
+    scd30_config_snapshot(&updated);
     updated.temp_offset_x100 = (int16_t)lroundf(offset_celsius * 100.0f);
     updated.version = SCD30_CONFIG_VERSION;
 
@@ -1016,7 +1031,7 @@ esp_err_t scd30_update_temperature_offset(float offset_celsius)
         return ret;
     }
 
-    scd30_config = updated;
+    scd30_config_store(&updated);
 
     if (scd30_task_handle == NULL) {
         return ESP_OK;
@@ -1036,7 +1051,8 @@ esp_err_t scd30_update_auto_calibration(bool enable)
         return ret;
     }
 
-    scd30_runtime_config_t updated = scd30_config;
+    scd30_runtime_config_t updated;
+    scd30_config_snapshot(&updated);
     updated.auto_calibration = enable ? 1 : 0;
     updated.version = SCD30_CONFIG_VERSION;
 
@@ -1045,7 +1061,7 @@ esp_err_t scd30_update_auto_calibration(bool enable)
         return ret;
     }
 
-    scd30_config = updated;
+    scd30_config_store(&updated);
 
     if (scd30_task_handle == NULL) {
         return ESP_OK;
@@ -1069,7 +1085,8 @@ esp_err_t scd30_update_pressure_compensation(uint16_t pressure_mbar)
         return ret;
     }
 
-    scd30_runtime_config_t updated = scd30_config;
+    scd30_runtime_config_t updated;
+    scd30_config_snapshot(&updated);
     updated.pressure_comp_mbar = pressure_mbar;
     updated.compensation_mode = pressure_mbar == 0 ? SCD30_COMPENSATION_MODE_NONE
                                                    : SCD30_COMPENSATION_MODE_PRESSURE;
@@ -1080,7 +1097,7 @@ esp_err_t scd30_update_pressure_compensation(uint16_t pressure_mbar)
         return ret;
     }
 
-    scd30_config = updated;
+    scd30_config_store(&updated);
 
     if (scd30_task_handle == NULL) {
         return ESP_OK;
@@ -1104,7 +1121,8 @@ esp_err_t scd30_update_altitude_compensation(uint16_t altitude_meters)
         return ret;
     }
 
-    scd30_runtime_config_t updated = scd30_config;
+    scd30_runtime_config_t updated;
+    scd30_config_snapshot(&updated);
     updated.altitude_comp_m = altitude_meters;
     updated.compensation_mode = altitude_meters == 0 ? SCD30_COMPENSATION_MODE_NONE
                                                      : SCD30_COMPENSATION_MODE_ALTITUDE;
@@ -1115,7 +1133,7 @@ esp_err_t scd30_update_altitude_compensation(uint16_t altitude_meters)
         return ret;
     }
 
-    scd30_config = updated;
+    scd30_config_store(&updated);
 
     if (scd30_task_handle == NULL) {
         return ESP_OK;
