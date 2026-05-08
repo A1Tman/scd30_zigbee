@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.0.19 - 2026-05-08
+
+- Fixed `clear_zigbee_network_state` to use `nvs_erase_key` instead of writing a blob over the existing `u8` connection flag, which corrupted the key's NVS type and produced misleading logs on the next boot.
+- Corrected the startup log path so a missing NVS connection flag no longer reports "Previous connection detected".
+- Removed an unreachable `STEERING_MAX_ATTEMPTS` cap in `bdb_start_top_level_commissioning_cb` (the existing `>=8` reset always fires first) and dropped the dead `STEERING_MAX_ATTEMPTS`, `ESP_ZB_NETWORK_INIT_TIMEOUT`, `ED_SCAN_DURATION`, and `MAX_CHILDREN` defines.
+- Deleted the no-op `signal_struct->esp_err_status = ESP_FAIL` line in the `CAN_SLEEP` handler whose comment claimed to prevent sleep — sleep is governed by whether `esp_zb_sleep_now()` is called, not by mutating the signal struct.
+- Removed `main/zcl_utility.h`; its single declaration had no implementation and nothing referenced its types or macros.
+- Consolidated user-input bounds into named constants (`SCD30_FRC_TARGET_PPM_MIN/MAX`, `SCD30_TEMP_OFFSET_MIN_C/MAX_C`) and used them at every Zigbee/API entry point. The driver-internal `scd30_force_recalibration` keeps its 300 ppm diagnostic floor with an inline comment explaining why.
+
 ## v1.0.18 - 2026-04-24
 
 - Protected the shared SCD30 runtime config with a spinlock to eliminate a cross-task data race between the Zigbee callback path and the measurement task.

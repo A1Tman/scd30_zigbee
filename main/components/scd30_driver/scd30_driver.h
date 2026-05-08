@@ -60,6 +60,14 @@ esp_err_t scd30_force_recalibration(uint16_t target_ppm);
 #define SCD30_HUM_MIN 0
 #define SCD30_HUM_MAX 100
 
+/* User-configurable input bounds enforced at API boundaries (Zigbee writes,
+ * persisted-config updates). The SCD30 datasheet specifies the FRC target
+ * range as 400-2000 ppm. */
+#define SCD30_FRC_TARGET_PPM_MIN   400
+#define SCD30_FRC_TARGET_PPM_MAX   2000
+#define SCD30_TEMP_OFFSET_MIN_C    (-10.0f)
+#define SCD30_TEMP_OFFSET_MAX_C    (10.0f)
+
 /**
  * @brief Measurement data structure
  */

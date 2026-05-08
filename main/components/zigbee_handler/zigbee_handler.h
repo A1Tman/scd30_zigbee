@@ -10,13 +10,11 @@
 #include "esp_err.h"
 #include "esp_log.h"
 #include "ha/esp_zigbee_ha_standard.h"
-#include "zcl_utility.h"
 #include "esp_zigbee_cluster.h"
 #include "zb_vendor.h"
 #include "esp_zigbee_core.h"
 
 /* Zigbee Network Configuration */
-#define MAX_CHILDREN                   0     /*!< End devices cannot have children */
 #define INSTALLCODE_POLICY_ENABLE      false  /*!< Install code policy for security */
 #define ED_AGING_TIMEOUT               ESP_ZB_ED_AGING_TIMEOUT_64MIN /*!< End device aging timeout */
 #define ED_KEEP_ALIVE                  3000   /*!< Keep alive time in milliseconds */
@@ -36,10 +34,7 @@
 #define ENABLE_MAINTENANCE_ZIGBEE_CONTROLS      0
 
 /* Network Steering & Initializing Configuration */
-#define ESP_ZB_NETWORK_INIT_TIMEOUT    90000  /*!< Timeout for Zigbee network initialization in ms */
-#define STEERING_MAX_ATTEMPTS          100    /*!< Maximum number of steering attempts */
 #define STEERING_RETRY_DELAY_MS        5000   /*!< Delay between steering attempts in ms */
-#define ED_SCAN_DURATION              3     /*!< Scan duration 0-7, higher is longer */
 
 /* Basic manufacturer information */
 #define ESP_MANUFACTURER_NAME "\x09""ESPRESSIF"      /*!< Customized manufacturer name */

@@ -282,12 +282,6 @@ static void bdb_start_top_level_commissioning_cb(uint8_t mode_mask)
             return;
         }
 
-        if (steering_attempts >= STEERING_MAX_ATTEMPTS) {
-            ESP_LOGW(TAG, "Maximum commissioning attempts (%d) reached", STEERING_MAX_ATTEMPTS);
-            steering_attempts = 0;
-            return;
-        }
-
         uint32_t channel_mask = pending_channel_mask;
         if (channel_mask != 0) {
             pending_channel_mask = 0;
@@ -473,8 +467,9 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
         break;
     
     case ESP_ZB_COMMON_SIGNAL_CAN_SLEEP:
-        signal_struct->esp_err_status = ESP_FAIL;  // Prevent sleep
-        ESP_LOGD(TAG, "Sleep prevented - device busy");
+        // Informational signal: stack reports it has no pending work. We never
+        // call esp_zb_sleep_now(), so the device simply stays awake.
+        ESP_LOGD(TAG, "CAN_SLEEP signal received; remaining awake");
         break;
 
     default:
@@ -685,8 +680,7 @@ static esp_err_t handle_temp_offset_attr(const esp_zb_zcl_set_attr_value_message
     // Convert to float (divide by 100)
     float offset_celsius = offset_x100 / 100.0f;
     
-    // Validate range (-10°C to +10°C seems reasonable)
-    if (offset_celsius < -10.0f || offset_celsius > 10.0f) {
+    if (offset_celsius < SCD30_TEMP_OFFSET_MIN_C || offset_celsius > SCD30_TEMP_OFFSET_MAX_C) {
         ESP_LOGW(TAG, "Temperature offset out of range: %.2f°C", offset_celsius);
         return ESP_ERR_INVALID_ARG;
     }
@@ -820,8 +814,7 @@ static esp_err_t handle_force_recalibration_attr(const esp_zb_zcl_set_attr_value
         return ESP_OK;
     }
 
-    // Validate range: SCD30 datasheet specifies FRC is valid for 400-2000 ppm.
-    if (target_ppm < 400 || target_ppm > 2000) {
+    if (target_ppm < SCD30_FRC_TARGET_PPM_MIN || target_ppm > SCD30_FRC_TARGET_PPM_MAX) {
         ESP_LOGW(TAG, "Force recalibration value out of range: %u ppm", target_ppm);
         return ESP_ERR_INVALID_ARG;
     }

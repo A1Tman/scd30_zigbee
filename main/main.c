@@ -13,7 +13,6 @@
 #include "i2c_handler.h"
 #include "zigbee_handler.h"
 #include "scd30_driver.h"
-#include "zcl_utility.h"
 #include "troubleshooting.h"
 #include <inttypes.h> // Include for PRIu32 macros
 
@@ -137,8 +136,10 @@ static void clear_zigbee_network_state(void)
         return;
     }
 
-    uint8_t has_connected = 0;
-    err = nvs_set_blob(nvs_handle, ZIGBEE_CONNECTED_KEY, &has_connected, sizeof(has_connected));
+    err = nvs_erase_key(nvs_handle, ZIGBEE_CONNECTED_KEY);
+    if (err == ESP_ERR_NVS_NOT_FOUND) {
+        err = ESP_OK;
+    }
     if (err == ESP_OK) {
         esp_err_t erase_err = nvs_erase_key(nvs_handle, ZIGBEE_LAST_CHANNEL_KEY);
         if (erase_err != ESP_OK && erase_err != ESP_ERR_NVS_NOT_FOUND) {
@@ -226,7 +227,8 @@ void app_main(void)
         return;
     }
 
-    // Initialize the maintenance button handler before anything else
+    // Init the maintenance button handler now that system_events exists
+    // (the ISR sets bits on it).
     ESP_ERROR_CHECK(troubleshooting_init());
 
     // Initialize NVS
@@ -261,7 +263,9 @@ void app_main(void)
 
     // Never erase Zigbee storage automatically during normal boot.
     // A missing or zero-valued flag only means "no confirmed prior join", not "wipe credentials now".
-    if (has_connection_flag && has_connected_before == 0) {
+    if (!has_connection_flag) {
+        ESP_LOGI(TAG, "No previous Zigbee connection flag found; attempting normal start");
+    } else if (has_connected_before == 0) {
         ESP_LOGW(TAG, "No confirmed previous Zigbee join recorded; attempting normal start without erasing network storage");
     } else if (fast_rejoin_eligible) {
         ESP_LOGI(TAG, "Previous connection detected, attempting normal start with saved channel %u fast rejoin fallback",

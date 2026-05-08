@@ -510,7 +510,8 @@ static void scd30_sync_config_from_zigbee_attributes(TickType_t *measurement_sta
      if (force_recalibration_ppm != 0 && force_recalibration_ppm != scd30_last_force_recalibration_attr) {
          scd30_last_force_recalibration_attr = force_recalibration_ppm;
 
-         if (force_recalibration_ppm < 400 || force_recalibration_ppm > 2000) {
+         if (force_recalibration_ppm < SCD30_FRC_TARGET_PPM_MIN ||
+             force_recalibration_ppm > SCD30_FRC_TARGET_PPM_MAX) {
              ESP_LOGW(TAG, "Ignoring out-of-range forced recalibration request from Zigbee attributes: %u ppm",
                       force_recalibration_ppm);
          } else if (scd30_force_recalibration(force_recalibration_ppm) == ESP_OK) {
@@ -561,9 +562,16 @@ static void scd30_sync_config_from_zigbee_attributes(TickType_t *measurement_sta
  
  esp_err_t scd30_force_recalibration(uint16_t target_ppm)
  {
-     // Validate input range (typical outdoor air is ~400 ppm)
-     if (target_ppm < 300 || target_ppm > 2000) {
-         ESP_LOGE(TAG, "Invalid recalibration target: %u ppm (valid range: 300-2000)", target_ppm);
+     // Datasheet FRC range is SCD30_FRC_TARGET_PPM_MIN..MAX (400-2000 ppm),
+     // but we accept down to 300 here intentionally: when the sensor's
+     // baseline has drifted low, calling FRC with a sub-400 value is used as
+     // a diagnostic — the sensor's response signals that ASC needs to be
+     // re-run. The Zigbee-facing entry points (handle_force_recalibration_attr,
+     // scd30_sync_config_from_zigbee_attributes) still enforce the datasheet
+     // range, so over-the-air callers cannot reach this lower band.
+     if (target_ppm < 300 || target_ppm > SCD30_FRC_TARGET_PPM_MAX) {
+         ESP_LOGE(TAG, "Invalid recalibration target: %u ppm (valid range: 300-%u)",
+                  target_ppm, SCD30_FRC_TARGET_PPM_MAX);
          return ESP_ERR_INVALID_ARG;
      }
      
@@ -1012,7 +1020,7 @@ esp_err_t scd30_get_config(scd30_runtime_config_t *config)
 
 esp_err_t scd30_update_temperature_offset(float offset_celsius)
 {
-    if (offset_celsius < -10.0f || offset_celsius > 10.0f) {
+    if (offset_celsius < SCD30_TEMP_OFFSET_MIN_C || offset_celsius > SCD30_TEMP_OFFSET_MAX_C) {
         return ESP_ERR_INVALID_ARG;
     }
 
