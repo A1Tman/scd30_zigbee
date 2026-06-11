@@ -30,7 +30,14 @@
          .intr_type = GPIO_INTR_DISABLE,
      };
      gpio_config(&io_conf);
- 
+
+     // Release both lines before clocking. gpio_config() keeps the GPIO output
+     // register at its previous value (0 after reset), which would actively
+     // hold SDA low and prevent a stuck slave from shifting its bit out.
+     gpio_set_level(I2C_MASTER_SDA_IO, 1);
+     gpio_set_level(I2C_MASTER_SCL_IO, 1);
+     esp_rom_delay_us(5);
+
      // Toggle SCL 9 times to recover any stuck device
      for(int i = 0; i < 9; i++) {
          gpio_set_level(I2C_MASTER_SCL_IO, 1);
@@ -119,29 +126,6 @@
      return ESP_OK;
  }
  
- esp_err_t i2c_handler_add_device(uint8_t device_addr, i2c_master_dev_handle_t* dev_handle)
- {
-     if (!is_initialized) {
-         ESP_LOGE(TAG, "I2C not initialized");
-         return ESP_ERR_INVALID_STATE;
-     }
- 
-     i2c_device_config_t dev_config = {
-         .dev_addr_length = I2C_ADDR_BIT_LEN_7,
-         .device_address = device_addr,
-         .scl_speed_hz = I2C_MASTER_FREQ_HZ,
-     };
- 
-     esp_err_t ret = i2c_master_bus_add_device(i2c_bus_handle, &dev_config, dev_handle);
-     if (ret != ESP_OK) {
-         ESP_LOGE(TAG, "Failed to add device (0x%x): %s", device_addr, esp_err_to_name(ret));
-         return ret;
-     }
- 
-     ESP_LOGI(TAG, "Successfully added device with address 0x%x", device_addr);
-     return ESP_OK;
- }
- 
  void i2c_handler_cleanup(void)
  {
      if (i2c_dev_handle != NULL) {
@@ -188,22 +172,6 @@
      esp_err_t ret = i2c_master_receive(i2c_dev_handle, data, len, I2C_MASTER_TIMEOUT_MS);
      if (ret != ESP_OK) {
          ESP_LOGE(TAG, "I2C read failed: %s", esp_err_to_name(ret));
-     }
-     return ret;
- }
- 
- esp_err_t i2c_handler_write_read(const uint8_t* write_data, size_t write_len, uint8_t* read_data, size_t read_len)
- {
-     if (!is_initialized || !i2c_dev_handle) {
-         return ESP_ERR_INVALID_STATE;
-     }
- 
-     esp_err_t ret = i2c_master_transmit_receive(i2c_dev_handle, 
-                                               write_data, write_len,
-                                               read_data, read_len,
-                                               I2C_MASTER_TIMEOUT_MS);
-     if (ret != ESP_OK) {
-         ESP_LOGE(TAG, "I2C write-read failed: %s", esp_err_to_name(ret));
      }
      return ret;
  }

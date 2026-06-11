@@ -82,15 +82,11 @@ void esp_zb_task(void *pvParameters);
 
 /**
  * @brief Start Zigbee network operations
+ * @note Called from esp_zb_task after stack init and endpoint registration;
+ *       must not be called from other tasks while the Zigbee task is starting.
  * @return ESP_OK if successful, otherwise error code
  */
 esp_err_t zigbee_handler_start(void);
-
-/**
- * @brief Initialize power save functionality
- * @return ESP_OK if successful, otherwise error code
- */
-esp_err_t zigbee_handler_power_save_init(void);
 
 //Main public interface functions
 /**
@@ -123,19 +119,6 @@ void zigbee_handler_set_connection_callback(zigbee_connection_callback_t callbac
 void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct);
 esp_err_t zb_action_handler(esp_zb_core_action_callback_id_t callback_id, const void *message);
 esp_err_t zb_attribute_handler(const esp_zb_zcl_set_attr_value_message_t *message);
-esp_err_t zigbee_handler_configure_reporting(void);
-
-/**
- * @brief Perform a clean start of the Zigbee stack (erases storage)
- * @return ESP_OK on success, or error code
- */
-esp_err_t zigbee_handler_clean_start(void);
-
-/**
- * @brief Cleanup Zigbee resources before shutdown
- * @return ESP_OK if successful, otherwise error code
- */
-esp_err_t zigbee_handler_cleanup(void);
 
 /**
  * @brief Attempt to reconnect to the Zigbee network

@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.0.20 - 2026-06-11
+
+- Fixed a Zigbee forced-recalibration write triggering the FRC command twice: the attribute handler now only validates, and the sensor task's attribute sync applies the FRC exactly once before clearing the attribute back to `0`.
+- Fixed sub-tick sensor delays that evaluated to zero at the 100 Hz FreeRTOS tick: the >3 ms command-to-read gaps now busy-wait via `esp_rom_delay_us`, and the remaining `vTaskDelay` gaps add one tick so the SCD30 minimum command spacing is always honored.
+- Persisted the Zigbee connection flag and channel when a connection is established from the main monitoring loop, so joins completing after the startup wait window no longer lose the fast-rejoin state on the next boot.
+- Moved `esp_zb_start` into the Zigbee task after stack init and endpoint registration, removing a startup race where `app_main` could start a half-initialized stack.
+- Stopped aborting the device when sensor initialization fails: the firmware now logs the failure and keeps the Zigbee connection alive instead of panicking into a reboot loop.
+- Released SDA/SCL before clocking in the I2C bus recovery sequence; the GPIO output register previously held SDA low, preventing a stuck slave from shifting out its bit.
+- Loaded the persisted SCD30 config into a local buffer and published it through the existing spinlock, eliminating a torn-read window during the blocking NVS read at startup.
+- Counted button events dropped by `xEventGroupSetBitsFromISR` (timer queue full) and reported them from the button task, instead of silently discarding them.
+- Made `steering_attempts` volatile and moved its reconnect-path reset under the Zigbee lock to avoid racing the commissioning callback.
+- Wired `ESP_ZB_ZCL_VERSION` and `ESP_ZB_POWER_SOURCE` into the basic cluster config so the device reports "DC source" instead of the SDK default.
+- Removed dead code: `zigbee_handler_clean_start`, `zigbee_handler_cleanup`, `zigbee_handler_power_save_init`, the disabled attribute-reporting configuration path, `i2c_handler_add_device`, `i2c_handler_write_read`, and `scd30_set_pressure_compensation`, along with their now-unused includes.
+
 ## v1.0.19 - 2026-05-08
 
 - Fixed `clear_zigbee_network_state` to use `nvs_erase_key` instead of writing a blob over the existing `u8` connection flag, which corrupted the key's NVS type and produced misleading logs on the next boot.

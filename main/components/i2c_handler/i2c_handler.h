@@ -61,25 +61,6 @@ esp_err_t i2c_handler_write(const uint8_t* data, size_t len);
 esp_err_t i2c_handler_read(uint8_t* data, size_t len);
 
 /**
- * @brief Write then read data from I2C device (combined operation)
- * @param write_data Pointer to data buffer to write
- * @param write_len Length of data to write
- * @param read_data Pointer to data buffer for reading
- * @param read_len Length of data to read
- * @return ESP_OK if successful, otherwise error code
- */
-esp_err_t i2c_handler_write_read(const uint8_t* write_data, size_t write_len,
-                                uint8_t* read_data, size_t read_len);
-
-/**
- * @brief Add I2C device to the bus
- * @param device_addr Device I2C address
- * @param dev_handle Pointer to store the device handle
- * @return ESP_OK if successful, otherwise error code
- */
-esp_err_t i2c_handler_add_device(uint8_t device_addr, i2c_master_dev_handle_t* dev_handle);
-
-/**
  * @brief Probe the I2C device to check if it's responsive
  * @return ESP_OK if device responds, otherwise error code
  */

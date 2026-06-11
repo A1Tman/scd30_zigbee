@@ -11,6 +11,7 @@
  #include "freertos/queue.h"
  #include "freertos/task.h"
  #include "nvs.h"
+ #include "esp_rom_sys.h"
  #include <math.h>
  #include <stdio.h>
  #include <string.h>
@@ -144,29 +145,33 @@ static void scd30_sync_config_from_zigbee_attributes(TickType_t *measurement_sta
          return ESP_OK;
      }
 
-     scd30_set_default_config(&scd30_config);
+     // Load into a local first and publish via scd30_config_store(): this can
+     // be reached from both the Zigbee task and the main task, and writing
+     // scd30_config directly during the blocking NVS read could be observed
+     // as a torn value by a concurrent scd30_config_snapshot().
+     scd30_runtime_config_t loaded;
+     scd30_set_default_config(&loaded);
 
      nvs_handle_t nvs_handle;
      esp_err_t err = nvs_open(SCD30_CONFIG_NVS_NAMESPACE, NVS_READWRITE, &nvs_handle);
      if (err != ESP_OK) {
          ESP_LOGW(TAG, "Failed to open NVS for SCD30 config, using defaults: %s", esp_err_to_name(err));
-         scd30_config_loaded = true;
-         return ESP_OK;
-     }
+     } else {
+         size_t required_size = sizeof(loaded);
+         err = nvs_get_blob(nvs_handle, SCD30_CONFIG_NVS_KEY, &loaded, &required_size);
+         nvs_close(nvs_handle);
 
-     size_t required_size = sizeof(scd30_config);
-     err = nvs_get_blob(nvs_handle, SCD30_CONFIG_NVS_KEY, &scd30_config, &required_size);
-     nvs_close(nvs_handle);
-
-     if (err != ESP_OK || required_size != sizeof(scd30_config) ||
-         scd30_config.version != SCD30_CONFIG_VERSION) {
-         scd30_set_default_config(&scd30_config);
-         if (err != ESP_ERR_NVS_NOT_FOUND) {
-             ESP_LOGW(TAG, "Invalid or missing stored SCD30 config, using defaults");
+         if (err != ESP_OK || required_size != sizeof(loaded) ||
+             loaded.version != SCD30_CONFIG_VERSION) {
+             scd30_set_default_config(&loaded);
+             if (err != ESP_ERR_NVS_NOT_FOUND) {
+                 ESP_LOGW(TAG, "Invalid or missing stored SCD30 config, using defaults");
+             }
          }
      }
 
-     scd30_last_zigbee_attr_snapshot = scd30_config;
+     scd30_config_store(&loaded);
+     scd30_last_zigbee_attr_snapshot = loaded;
      scd30_last_zigbee_attr_snapshot_valid = true;
      scd30_config_loaded = true;
      return ESP_OK;
@@ -257,14 +262,16 @@ static void scd30_sync_config_from_zigbee_attributes(TickType_t *measurement_sta
          }
      }
  
-     vTaskDelay(pdMS_TO_TICKS(10));
-    
+     // +1 tick: vTaskDelay(n) can return after as little as (n-1) ticks, so the
+     // extra tick guarantees the full inter-command gap at any tick rate.
+     vTaskDelay(pdMS_TO_TICKS(10) + 1);
+
      esp_err_t ret = i2c_handler_write(buf, idx);
      if (ret != ESP_OK) {
          ESP_LOGW(TAG, "Failed to send command 0x%04x: %s", command, esp_err_to_name(ret));
-     }   
- 
-     vTaskDelay(pdMS_TO_TICKS(20));
+     }
+
+     vTaskDelay(pdMS_TO_TICKS(20) + 1);
      
      return ret;
  }
@@ -694,8 +701,10 @@ esp_err_t scd30_init(void)
          return ret;
      }
  
-     vTaskDelay(pdMS_TO_TICKS(3));  // Wait for processing
- 
+     // Datasheet requires >3 ms between command and read. With the 100 Hz tick,
+     // pdMS_TO_TICKS(3) is 0 ticks (no delay at all), so busy-wait instead.
+     esp_rom_delay_us(3000);
+
      ret = scd30_read_data(ready_buf, sizeof(ready_buf), "data-ready status");
      if (ret == ESP_OK) {
          *data_ready = (ready_buf[0] << 8 | ready_buf[1]) == 1;
@@ -734,7 +743,7 @@ esp_err_t scd30_init(void)
     ret = scd30_send_command(SCD30_CMD_READ_MEASUREMENT, NULL, 0);
     if (ret != ESP_OK) return ret;
 
-    vTaskDelay(pdMS_TO_TICKS(15));
+    vTaskDelay(pdMS_TO_TICKS(15) + 1);
 
     ret = scd30_read_data(data, sizeof(data), "measurement");
     if (ret != ESP_OK) return ret;
@@ -923,8 +932,9 @@ esp_err_t scd30_init(void)
          return ret;
      }
  
-     vTaskDelay(pdMS_TO_TICKS(3));
- 
+     // >3 ms command-to-read gap; sub-tick, so busy-wait (see data-ready read).
+     esp_rom_delay_us(3000);
+
      ret = scd30_read_data(data, sizeof(data), "temperature offset");
      if (ret != ESP_OK) {
          return ret;
@@ -977,25 +987,6 @@ esp_err_t scd30_init(void)
      return scd30_send_command(SCD30_CMD_ALTI_COMP, &altitude_meters, 1);
  }
  
-esp_err_t scd30_set_pressure_compensation(uint16_t pressure_mbar)
-{
-     static uint16_t prev_pressure = 0xFFFF;
-
-     if (pressure_mbar != prev_pressure) {
-         if (pressure_mbar == 0) {
-             ESP_LOGI(TAG, "Disabling pressure compensation");
-         } else {
-             ESP_LOGI(TAG, "Setting pressure compensation to %u mbar", pressure_mbar);
-         }
-         prev_pressure = pressure_mbar;
-     }
-
-     // For SCD30, ambient pressure compensation is supplied as the argument to the
-     // "start continuous measurement" command. Writing the command again while the
-     // sensor is measuring updates the compensation value.
-     return scd30_start_continuous_measurement(pressure_mbar);
-}
-
 esp_err_t scd30_set_auto_calibration(bool enable)
 {
     uint16_t value = enable ? 1 : 0;

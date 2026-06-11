@@ -273,7 +273,9 @@ void app_main(void)
     } else {
         ESP_LOGI(TAG, "Previous connection detected, attempting normal start");
     }
-    ESP_ERROR_CHECK(zigbee_handler_start());
+    // The Zigbee stack itself is started by esp_zb_task right before it enters
+    // the stack main loop, after esp_zb_init() and endpoint registration have
+    // completed. Starting it here would race that initialization.
 
     // Improved connection waiting with progressive backoff
     bool connected = false;
@@ -356,33 +358,26 @@ void app_main(void)
 
     if (!connected) {
         ESP_LOGE(TAG, "Failed to connect to Zigbee network after %d attempts", MAX_CONNECTION_ATTEMPTS);
-        
+
         clear_zigbee_network_state();
-        
-        ESP_LOGI(TAG, "Initializing sensor system anyway to allow local operation");
-        
-        // We'll initialize the sensor even without Zigbee - this allows local operation
+
+        // Initialize the sensor even without Zigbee - this allows local operation
         // and will be ready when network connectivity returns
-        ESP_ERROR_CHECK(init_sensor_system());
-        
-        // Scan the I2C bus
-        i2c_scan();
-        
-        // Start the sensor task anyway
-        ESP_LOGI(TAG, "Starting SCD30 task...");
-        ESP_ERROR_CHECK(scd30_start_task(SCD30_TASK_PRIORITY));
-        
-        // Continue to main loop, which will keep trying to reconnect
+        ESP_LOGI(TAG, "Initializing sensor system anyway to allow local operation");
     } else {
         ESP_LOGI(TAG, "Zigbee connected, initializing sensor system");
-        
-        // Now initialize I2C and sensors
-        ESP_ERROR_CHECK(init_sensor_system());
-        
+    }
+
+    // A sensor failure must not abort the device: the main loop below still
+    // maintains the Zigbee connection, and the sensor may be fixed/replugged.
+    esp_err_t sensor_err = init_sensor_system();
+    if (sensor_err != ESP_OK) {
+        ESP_LOGE(TAG, "Sensor system initialization failed: %s; continuing without measurements",
+                 esp_err_to_name(sensor_err));
+    } else {
         // Scan the I2C bus
         i2c_scan();
-        
-        // Create sensor task only after everything is initialized
+
         ESP_LOGI(TAG, "Starting SCD30 task...");
         ESP_ERROR_CHECK(scd30_start_task(SCD30_TASK_PRIORITY));
     }
@@ -467,10 +462,15 @@ void app_main(void)
         else if (!was_connected && is_connected_now) {
             ESP_LOGI(TAG, "Zigbee connection established/restored");
             reconnect_failures = 0; // Reset failure counter on successful connection
-            
+
             // Log connection details
             ESP_LOGI(TAG, "Connected to network - Short addr: 0x%04x, PAN ID: 0x%04x, Channel: %d",
                      esp_zb_get_short_address(), esp_zb_get_pan_id(), esp_zb_get_current_channel());
+
+            // Persist the connection flag and channel so the next boot can fast
+            // rejoin even when the join happened after the startup wait window
+            // (which may have cleared this state on timeout).
+            save_zigbee_network_state((uint8_t)esp_zb_get_current_channel());
         }
         // Still connected
         else if (is_connected_now) {

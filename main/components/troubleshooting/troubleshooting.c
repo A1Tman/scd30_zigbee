@@ -13,6 +13,9 @@ static const char *TAG = "TROUBLESHOOTING";
 static volatile int64_t press_start_time = 0;
 static volatile bool button_pressed = false;
 static volatile int64_t last_press_time = 0;
+// Counts button events that xEventGroupSetBitsFromISR failed to deliver
+// (timer service queue full). Logged from task context since the ISR cannot.
+static volatile uint32_t dropped_button_events = 0;
 
 // Forward declarations
 static void handle_button_events(void);
@@ -26,8 +29,16 @@ static void handle_button_events(void) {
         return;
     }
 
+    static uint32_t reported_dropped_events = 0;
+    uint32_t dropped = dropped_button_events;
+    if (dropped != reported_dropped_events) {
+        ESP_LOGW(TAG, "%u button event(s) were dropped in the ISR (timer queue full)",
+                 (unsigned int)(dropped - reported_dropped_events));
+        reported_dropped_events = dropped;
+    }
+
     EventBits_t bits = xEventGroupGetBits(system_events);
-    
+
     if (bits & REJOIN_REQUESTED_BIT) {
         ESP_LOGI(TAG, "Rejoin requested via long press");
         esp_err_t err = zigbee_handler_reconnect();
@@ -73,13 +84,17 @@ static void IRAM_ATTR boot_button_isr_handler(void* arg) {
                 int64_t press_duration = current_time - press_start_time;
 
                 if (press_duration >= OUTDOOR_RECAL_PRESS_TIME_MS) {
-                    xEventGroupSetBitsFromISR(system_events, 
-                        OUTDOOR_RECAL_REQUESTED_BIT,
-                        &xHigherPriorityTaskWoken);
+                    if (xEventGroupSetBitsFromISR(system_events,
+                            OUTDOOR_RECAL_REQUESTED_BIT,
+                            &xHigherPriorityTaskWoken) == pdFAIL) {
+                        dropped_button_events++;
+                    }
                 } else if (press_duration >= REJOIN_PRESS_TIME_MS) {
-                    xEventGroupSetBitsFromISR(system_events,
-                        REJOIN_REQUESTED_BIT,
-                        &xHigherPriorityTaskWoken);
+                    if (xEventGroupSetBitsFromISR(system_events,
+                            REJOIN_REQUESTED_BIT,
+                            &xHigherPriorityTaskWoken) == pdFAIL) {
+                        dropped_button_events++;
+                    }
                 }
             }
             button_pressed = false;

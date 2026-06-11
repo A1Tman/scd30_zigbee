@@ -175,14 +175,6 @@ esp_err_t scd30_get_temperature_offset(float *offset_celsius);
 esp_err_t scd30_set_altitude_compensation(uint16_t altitude_meters);
 
 /**
- * @brief Set pressure compensation for CO2 measurements
- * @param pressure_mbar Ambient pressure in mbar (700-1400 typical range)
- * @return ESP_OK on success, ESP_ERR_INVALID_ARG for invalid pressure
- * @note Alternative to altitude compensation - do not use both simultaneously
- */
-esp_err_t scd30_set_pressure_compensation(uint16_t pressure_mbar);
-
-/**
  * @brief Enable or disable the sensor's automatic self calibration feature
  * @param enable Set to true to enable, false to disable
  * @return ESP_OK on success, otherwise error code
